@@ -1,14 +1,14 @@
 {
   "schema": 1,
   "id": "pinned-oracle-v1",
-  "profile_version": 3,
+  "profile_version": 4,
   "image": "mooncmd-oracle:phase0",
   "base_image_digest": "sha256:2e863c44b718727c860746568e1d54afd13b2fa71b160f5cd9058fc436217b30",
   "image_digest": "",
   "versions": "",
   "versions_sha256": "",
-  "dockerfile_sha256": "1e9fc3dccc0be8833c29dfda927f98acb65e368295c57273b0baf34b1e7f8965",
-  "versions_script_sha256": "5535f19b351cf95bc9a09cac74192a04a0d340097ebe81abad7dae0dc9cfcedf",
+  "dockerfile_sha256": "b68e75c220f4e63fc075186824dbe85b7816acb094c066303404b09f51b87a2d",
+  "versions_script_sha256": "ddf99487e5c47ace31bce21b8d462aa2d635353b8b5cf54768a0de4a94c5b4ed",
   "sources": [],
   "binding_status": "unsealed: verify recipe bytes inside the exact image and the complete executable inventory before sealing"
 }

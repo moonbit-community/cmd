@@ -1,0 +1,28 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/truncate/internal/resize"
+
+// Values
+pub async fn apply(Size, String, no_create~ : Bool) -> Unit
+
+pub async fn from_reference(String, Size?) -> Size
+
+pub fn parse(String) -> Size raise
+
+pub fn target(Size, Int64) -> Int64 raise
+
+// Errors
+
+// Types and methods
+pub(all) enum Size {
+  Exact(Int64)
+  Add(Int64)
+  Subtract(Int64)
+  AtMost(Int64)
+  AtLeast(Int64)
+  RoundDown(Int64)
+  RoundUp(Int64)
+}
+
+// Type aliases
+
+// Traits

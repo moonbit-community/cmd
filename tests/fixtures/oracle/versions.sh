@@ -9,6 +9,9 @@ cmp --version | head -n1
 sed --version | head -n1
 patch --version | head -n1
 gzip --version | head -n1
+tar --version | head -n1
+zip -v | head -n2 | tail -n1
+unzip -v | head -n1
 hexdump --version | head -n1
 column --version | head -n1
 rev --version | head -n1
@@ -16,6 +19,7 @@ strings --version | head -n1
 tree --version | head -n1
 find --version | head -n1
 xargs --version | head -n1
+awk --version | head -n1
 grep --version | head -n1
 rg --version | head -n1
 typst --version

@@ -9,7 +9,11 @@ pub async fn execute_scenario(
   let start = @async.now()
   // Network comparisons need the candidate and oracle wire/stream receipts
   // after success as well as failure; a suite-level pass is not that evidence.
-  let retain_success = retain_success || @network.supports(fixture.id)
+  let retain_success = retain_success ||
+    @network.supports(fixture.id) ||
+    fixture.id == "mv-no-copy-cross-device" ||
+    fixture.id.has_suffix("-windows-checksum-modes") ||
+    fixture.id.has_suffix("-windows-text-modes")
   let report_id = "scenario:" + fixture.id
   let device_boundary = fixture.id == "diff-directory-devices-boundary"
   let tee_boundary = fixture.id == "tee-default-pipe-boundary"
@@ -57,6 +61,49 @@ pub async fn execute_scenario(
     ),
     () => {
       match fixture.id {
+        "mv-no-copy-cross-device" => mv_cross_device_scenario(root, work)
+        "grep-windows-text-modes"
+        | "cat-windows-text-modes"
+        | "diff-windows-text-modes"
+        | "rg-windows-text-modes" =>
+          windows_text_scenario(root, fixture.command, work)
+        "cksum-windows-checksum-modes"
+        | "md5sum-windows-checksum-modes"
+        | "sha1sum-windows-checksum-modes"
+        | "sha256sum-windows-checksum-modes"
+        | "sha512sum-windows-checksum-modes" =>
+          windows_checksum_scenario(root, fixture.command, work)
+        "tty-linux-pty" => tty_pty(work, root)
+        "kill-linux-reference"
+        | "tput-linux-reference"
+        | "clear-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "uname-fields-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "id-fields-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "fs-df-proc-host" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "ps-fields-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "uname-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "hostname-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "id-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "whoami-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "groups-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "uptime-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "free-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "ps-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "nproc-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
         "serve-static" => serve_static_scenario(root, work, false)
         "serve-policy" => serve_static_scenario(root, work, true)
         "typst-artifacts" => typst_artifacts_scenario(root, work)
@@ -274,6 +321,21 @@ pub async fn execute_scenario(
         "network-refusal-recovery" => refused_retry_scenario(root, work)
         "network-option-effects" => network_options_scenario(root, work)
         "tail-follow-interval" => follow_interval_scenario(root, work)
+        "tail-name-rotation" => {
+          @filesystem.check_tail_rotation(
+            @harness.command_program(),
+            @harness.command_args(root, "tail", []),
+            work,
+          )
+          if oracle_image is Some(image) {
+            @filesystem.check_helper_oracle(
+              work + "/oracle",
+              image,
+              mode="tail-rotation",
+              command="tail",
+            )
+          }
+        }
         "stream-failure-prefixes" => failure_prefix_scenario(root, work)
         "ls-link-facets" => link_dereference_scenario(root, work)
         "network-auth-cookie" => network_cli_scenario(root, work, oracle_image?)

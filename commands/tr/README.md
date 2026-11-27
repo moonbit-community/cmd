@@ -10,7 +10,7 @@ printf 'hello\n' | moonx cli/tr 'a-z' 'A-Z'
 printf 'a  b\n' | moonx cli/tr -s ' '
 ```
 
-Read stdin and write stdout. Sets support ranges, byte escapes and C-locale character classes.
+Read stdin and write stdout. Sets support ranges, byte escapes and byte character classes. In C and C.UTF-8, [:lower:] and [:upper:] translate ASCII letters and retain non-ASCII bytes.
 
 ## Common options
 

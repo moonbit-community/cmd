@@ -17,6 +17,7 @@ test "cp overwrite flags are absent by default" {
 ///|
 fn copy_options() -> CpOptions {
   {
+    remove_destination: false,
     recursive: true,
     no_clobber: false,
     no_target_directory: false,

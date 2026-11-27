@@ -2,7 +2,7 @@
 
 ///|
 fn metadata_help() -> String {
-  "Usage: cp [--no-preserve=mode] [-R] [-H|-L|-P] [-f|-i|-n] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nCopying requires --no-preserve=mode and a new destination. Existing-file overwrites, archive and preserve modes are unsupported. Parsed force/interactive/backup flags do not enable replacement.\nTree validation finishes before copying; existing empty directories report no copy.\nProject alias: --dereference-command-line selects -H; GNU cp exposes only the short spelling.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nOption values and operands after -- remain literal during alias normalization.\n"
+  "Usage: cp [--no-preserve=mode] [-R] [-H|-L|-P] [-f|-i|-n] [--remove-destination] [-u|--update=MODE] [-b|--backup[=CONTROL]] [-S SUFFIX] [-T] [-v] SOURCE... DEST\n      --help      display this help and exit\n      --version   display version and exit\nCopying requires --no-preserve=mode. On POSIX, --remove-destination unlinks a regular file or symbolic link before copying one source. Ordinary in-place overwrite, archive and preserve modes are unsupported.\nTree validation finishes before copying; existing empty directories report no copy.\nProject alias: --dereference-command-line selects -H; GNU cp exposes only the short spelling.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\nOption values and operands after -- remain literal during alias normalization.\n"
 }
 
 ///|
@@ -27,5 +27,6 @@ fn option_specs() -> Array[@cli.OptionSpec] {
     @cli.flag("archive", short='a'),
     @cli.flag("verbose", short='v'),
     @cli.flag("help"),
+    @cli.flag("remove-destination"),
   ]
 }

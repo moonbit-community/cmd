@@ -76,8 +76,10 @@ async test "workspace dependency manifests keep one async baseline and the selec
   let retained_core_coordinates = [
     "cli/core@0.9.5", "cli/core@0.10.0", "cli/core@0.11.3",
   ]
+  let contracts = commands().map(contract => contract.name)
+  contracts.sort()
   let commands = command_names(root + "commands")
-  assert_eq(commands.length(), 82)
+  assert_eq(commands, contracts)
   let independent = [
     "dirname", "echo", "false", "jqlog", "printenv", "serve", "sleep", "touch", "true",
     "typst", "unlink", "yes",
@@ -86,7 +88,6 @@ async test "workspace dependency manifests keep one async baseline and the selec
   for command in commands {
     modules.push("commands/" + command)
   }
-  assert_eq(modules.length(), 85)
   for directory in modules {
     let text = @fs.read_file(root + directory + "/moon.mod").text()
     let expected_name = if directory == "core" {

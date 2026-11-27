@@ -21,9 +21,10 @@ async test "realpath resolves an existing file and rejects a missing path" {
   let file = @fs.open(file_path, mode=WriteOnly, create_mode=CreateNew)
   file.close()
   let expected = @fs.realpath(file_path)
-  assert_eq(resolve_path(file_path, Existing, false), expected)
-  try resolve_path(root + "/missing", Existing, false) catch {
-    error => assert_eq(error_text(error), "No such file or directory")
+  assert_eq(@pathresolve.resolve_path(file_path, Existing, false), expected)
+  try @pathresolve.resolve_path(root + "/missing", Existing, false) catch {
+    error =>
+      assert_eq(@pathresolve.error_text(error), "No such file or directory")
   } noraise {
     _ => fail("missing paths must be rejected")
   }

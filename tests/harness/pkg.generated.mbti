@@ -151,7 +151,7 @@ pub fn sha256_bytes(Bytes) -> String
 
 pub fn sha256_text(String) -> String
 
-pub async fn snapshot(String, observe? : ArrayView[String], content? : Bool, baseline? : Bool, preserve_identity? : Bool, stat_path? : String, readlink_path? : String) -> Array[SnapshotEntry]
+pub async fn snapshot(String, observe? : ArrayView[String], content? : Bool, baseline? : Bool, preserve_identity? : Bool, stat_path? : String, readlink_path? : String, unreadable_inputs? : ArrayView[String]) -> Array[SnapshotEntry]
 
 pub fn snapshot_fingerprint(ArrayView[SnapshotEntry]) -> String
 

@@ -2,6 +2,66 @@
   "schema": 2,
   "cases": [
     {
+      "id": "comm-locale-c-ordered-bytes",
+      "command": "comm",
+      "args": [
+        "-12",
+        "left",
+        "right"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "left",
+          "content_hex": "410a5a0a610ac3840ac3a40aff0a"
+        },
+        {
+          "path": "right",
+          "content_hex": "5a0ac3840ac3a40aff0a"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "5a0ac3840ac3a40aff0a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "comm-locale-utf8-ordered-bytes",
+      "command": "comm",
+      "args": [
+        "-12",
+        "left",
+        "right"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "left",
+          "content_hex": "410a5a0a610ac3840ac3a40aff0a"
+        },
+        {
+          "path": "right",
+          "content_hex": "5a0ac3840ac3a40aff0a"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "5a0ac3840ac3a40aff0a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11",
+      "expected_stderr_text": ""
+    },
+    {
       "id": "phase3-comm-columns",
       "command": "comm",
       "args": [

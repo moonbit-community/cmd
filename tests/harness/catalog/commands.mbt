@@ -33,6 +33,66 @@ fn contract(
 // diagnostic contracts are recorded in docs/compatibility.md and CLI cases.
 pub fn commands() -> Array[CommandContract] {
   [
+    contract("stat", Extended, NoInput, LineStream, [FileRead], exit_codes=[
+      0, 1,
+    ]),
+    contract("du", Extended, NoInput, LineStream, [FileRead], exit_codes=[0, 1]),
+    contract("df", Extended, NoInput, LineStream, [FileRead], exit_codes=[0, 1]),
+    contract("readlink", Extended, NoInput, ByteStream, [FileRead], exit_codes=[
+      0, 1,
+    ]),
+    contract(
+      "install",
+      Restricted,
+      NoInput,
+      LineStream,
+      [FileRead, FileWrite, PermissionMutation],
+      exit_codes=[0, 1],
+    ),
+    contract("truncate", Extended, NoInput, LineStream, [FileRead, FileWrite], exit_codes=[
+      0, 1,
+    ]),
+    contract("clear", Extended, NoInput, ByteStream, [FileRead], exit_codes=[
+      0, 1, 2, 3, 4,
+    ]),
+    contract("tput", Extended, NoInput, ByteStream, [FileRead], exit_codes=[
+      0, 1, 2, 3, 4,
+    ]),
+    contract("tty", Extended, NoInput, LineStream, [FileRead], exit_codes=[
+      0, 1, 2,
+    ]),
+    contract("kill", Extended, NoInput, LineStream, [], exit_codes=[0, 1]),
+    contract(
+      "awk",
+      Restricted,
+      FileOrStdin,
+      ByteStream,
+      [FileRead, FileWrite],
+      exit_codes=[0, 2],
+    ),
+    contract("uname", Extended, NoInput, LineStream, [FileRead], exit_codes=[
+      0, 1,
+    ]),
+    contract("hostname", Extended, NoInput, LineStream, [FileRead], exit_codes=[
+      0, 1,
+    ]),
+    contract("id", Extended, NoInput, LineStream, [FileRead], exit_codes=[0, 1]),
+    contract("whoami", Extended, NoInput, LineStream, [FileRead], exit_codes=[
+      0, 1,
+    ]),
+    contract("groups", Extended, NoInput, LineStream, [FileRead], exit_codes=[
+      0, 1,
+    ]),
+    contract("uptime", Extended, NoInput, LineStream, [FileRead], exit_codes=[
+      0, 1,
+    ]),
+    contract("free", Extended, NoInput, LineStream, [FileRead], exit_codes=[
+      0, 1,
+    ]),
+    contract("ps", Extended, NoInput, LineStream, [FileRead], exit_codes=[0, 1]),
+    contract("nproc", Extended, NoInput, LineStream, [FileRead], exit_codes=[
+      0, 1,
+    ]),
     contract("serve", Restricted, NoInput, LineStream, [FileRead, Network], exit_codes=[
       0, 1,
     ]),
@@ -306,6 +366,25 @@ pub fn commands() -> Array[CommandContract] {
     contract("fmt", Core, FileOrStdin, ByteStream, [FileRead]),
     // The gzip family streams input and output, including validation mode.
     contract("gzip", Extended, FileOrStdin, ByteStream, [FileRead]),
+    contract("tar", Extended, FileOrStdin, ByteStream, [FileRead, FileWrite], exit_codes=[
+      0, 2,
+    ]),
+    contract(
+      "zip",
+      Extended,
+      OptionalStdin,
+      ByteStream,
+      [FileRead, FileWrite],
+      exit_codes=[0, 1],
+    ),
+    contract(
+      "unzip",
+      Extended,
+      FileOrStdin,
+      ByteStream,
+      [FileRead, FileWrite],
+      exit_codes=[0, 1],
+    ),
     contract("gunzip", Extended, FileOrStdin, ByteStream, [FileRead]),
     contract("zcat", Core, FileOrStdin, ByteStream, [FileRead]),
     contract("strings", Core, FileOrStdin, LineStream, [FileRead]),

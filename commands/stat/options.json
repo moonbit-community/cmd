@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "command": "stat",
+  "help": "Usage: stat [-L] -c FORMAT FILE...\n{{help:format:0}}\n{{help:dereference:0}}\n{{help:help:0}}\n{{help:version:0}}\n\nUse --format with %n, %F, %s, %X, %Y, %Z and %%. Size uses the host's entry-size observation, including POSIX symbolic links. macOS directory sizes, raw mode, ownership, inode numbers and allocated blocks require additional metadata.\n",
+  "catalog_options": [
+    "format",
+    "dereference",
+    "help",
+    "version"
+  ],
+  "options": [
+    {
+      "name": "format",
+      "aliases": [
+        "-c",
+        "--format"
+      ],
+      "value": "required",
+      "description": "Print the selected fields and a newline.",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -c, --format VALUE  Print the selected fields and a newline."
+      ]
+    },
+    {
+      "name": "dereference",
+      "aliases": [
+        "-L",
+        "--dereference"
+      ],
+      "value": "none",
+      "description": "Follow symbolic links.",
+      "short": "L",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -L, --dereference  Follow symbolic links."
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show command help.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  --help  Show command help."
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show the package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  --version  Show the package version."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "format",
+        "dereference",
+        "help",
+        "version"
+      ]
+    }
+  ]
+}

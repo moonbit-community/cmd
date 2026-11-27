@@ -6,6 +6,7 @@ fn Matcher::may_match_block(
   ignore_case : Bool,
 ) -> Bool {
   match self {
+    Unicode(_) => true
     ManyFixed(set) => ignore_case || set.matches(data)
     Fixed(patterns, _, _) =>
       ignore_case ||

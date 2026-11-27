@@ -4,7 +4,7 @@ type CandidateCache = Map[(Int32, Int32), Array[(Int32, Int32)]]
 ///|
 fn Pattern::epsilon_nodes(
   self : Pattern,
-  value : StringView,
+  value : CaptureInput,
   position : Int32,
   node : Int32,
   nodes : Map[Int32, Bool],
@@ -22,7 +22,7 @@ fn Pattern::epsilon_nodes(
       }
       Save(_, next) | SaveOptional(_, next) => pending.push(next)
       Assert(assertion, next) =>
-        if assertion is (End | LineEnd) || assertion.holds(value, position) {
+        if assertion is (End | LineEnd) || value.assertion(assertion, position) {
           pending.push(next)
         }
       _ => ()
@@ -33,35 +33,20 @@ fn Pattern::epsilon_nodes(
 ///|
 fn Pattern::byte_next(
   self : Pattern,
-  value : StringView,
+  value : CaptureInput,
   pc : Int32,
   position : Int32,
 ) -> Int32? {
   if position >= value.length() || !self.allows(value, pc, position) {
     return None
   }
-  match self.program[pc] {
-    Byte(c, next) =>
-      if value[position].to_int() == c {
-        Some(next)
-      } else {
-        None
-      }
-    Any(next) => Some(next)
-    Class(members, next) =>
-      if value[position].to_int() < 256 && members[value[position].to_int()] {
-        Some(next)
-      } else {
-        None
-      }
-    _ => None
-  }
+  value.consume(self.program[pc], position)
 }
 
 ///|
 fn Pattern::arrival(
   self : Pattern,
-  value : StringView,
+  value : CaptureInput,
   from : (Int32, Int32),
   to : (Int32, Int32),
   group : Int32,
@@ -96,7 +81,7 @@ fn Pattern::arrival(
           stack.push((next, position))
         }
       Assert(assertion, next) =>
-        if assertion is (End | LineEnd) || assertion.holds(value, position) {
+        if assertion is (End | LineEnd) || value.assertion(assertion, position) {
           stack.push((next, position))
         }
       Reference(_, next) =>
@@ -124,36 +109,12 @@ fn Pattern::arrival(
 }
 
 ///|
-fn equal_reference(
-  value : StringView,
-  left : Int32,
-  right : Int32,
-  position : Int32,
-  ignore_case : Bool,
-) -> Bool {
-  if position + right - left > value.length() {
-    return false
-  }
-  if ignore_case {
-    for offset in 0..<(right - left) {
-      if ascii_fold(value[left + offset].to_int()) !=
-        ascii_fold(value[position + offset].to_int()) {
-        return false
-      }
-    }
-    true
-  } else {
-    value[left:right] == value[position:position + right - left]
-  }
-}
-
-///|
 // Keep the ordered node set at each byte separately from capture registers.
 // GNU selects the first closing node at a byte, then checks arrival without
 // crossing another close/open of that group. Cache spans, not report tags.
 fn Pattern::candidate_log(
   self : Pattern,
-  value : StringView,
+  value : CaptureInput,
   start : Int32,
   whole : Bool,
   word : Bool,
@@ -281,7 +242,7 @@ fn Pattern::candidate_log(
     if nodes
       .keys()
       .any(pc => self.program[pc] is Accept && self.allows(value, pc, position)) &&
-      accepted(value, start, position, whole, word) {
+      value.accepts(start, position, whole, word) {
       end = Some(position)
     }
     for pc in nodes.keys() {

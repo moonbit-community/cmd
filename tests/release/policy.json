@@ -2,6 +2,319 @@
   "schema": 1,
   "commands": [
     {
+      "name": "clear",
+      "package_name": "cli/clear",
+      "compare_profile": "contract",
+      "supported_options": [
+        "help",
+        "keep-scrollback",
+        "terminal",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "clear-scrollback",
+        "clear-preserve-scrollback",
+        "clear-reject-operand",
+        "clear-linux-reference"
+      ],
+      "oracle_boundary": "Directory terminfo contents depend on the host. Linux correctness runs a same-host ncurses reference; portable cases use a compiled tic fixture."
+    },
+    {
+      "name": "tput",
+      "package_name": "cli/tput",
+      "compare_profile": "contract",
+      "supported_options": [
+        "help",
+        "terminal",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "tput-position",
+        "tput-numeric",
+        "tput-absent-number",
+        "tput-boolean",
+        "tput-absent-boolean",
+        "tput-absent-string",
+        "tput-unknown",
+        "tput-longname",
+        "tput-termcap-spelling",
+        "tput-live-size",
+        "tput-linux-reference"
+      ],
+      "oracle_boundary": "Directory terminfo contents depend on the host. Linux correctness runs a same-host ncurses reference; portable cases use a compiled tic fixture."
+    },
+    {
+      "name": "tty",
+      "package_name": "cli/tty",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "help",
+        "silent",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "tty-pipe",
+        "tty-linux-pty",
+        "tty-silent-pipe",
+        "tty-windows-refusal"
+      ]
+    },
+    {
+      "name": "kill",
+      "package_name": "cli/kill",
+      "oracle_boundary": "The sealed comparison image has no kill executable. Linux correctness also checks procps signal translation on the host.",
+      "compare_profile": "contract",
+      "supported_options": [
+        "help",
+        "list",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "kill-int-name",
+        "kill-linux-reference",
+        "kill-term-number",
+        "kill-delivery-refusal"
+      ]
+    },
+    {
+      "name": "awk",
+      "package_name": "cli/awk",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "assign",
+        "csv",
+        "field-separator",
+        "file",
+        "help",
+        "source",
+        "version"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "awk-dynamic-getline-with-main-stdin",
+        "awk-dynamic-getline-from-stdin",
+        "awk-rules-fields-and-counters",
+        "awk-default-action-regex",
+        "awk-function-array-and-next",
+        "awk-field-rebuild",
+        "awk-range",
+        "awk-multiple-files-assignment",
+        "awk-mutable-argv",
+        "awk-nextfile",
+        "awk-exit-with-end",
+        "awk-program-files-and-source",
+        "awk-option-order",
+        "awk-custom-rs",
+        "awk-paragraphs",
+        "awk-getline-main",
+        "awk-getline-redirect",
+        "awk-redirection-close-append",
+        "awk-stderr-before-exit",
+        "awk-utf8-fields",
+        "awk-stdin-script-with-file",
+        "awk-environment",
+        "awk-cr-preserved",
+        "awk-cli-double-dash",
+        "awk-subst-match",
+        "awk-invalid-program",
+        "awk-invalid-utf8",
+        "awk-pipe-writer-rejected",
+        "awk-pipe-reader-rejected",
+        "awk-system-rejected",
+        "awk-invalid-variable",
+        "awk-missing-program",
+        "awk-unknown-option",
+        "awk-csv-multiline",
+        "awk-file-argument-after-script",
+        "awk-regexp-rs",
+        "awk-utf8-bom",
+        "awk-read-and-write-same-program",
+        "awk-version",
+        "awk-help"
+      ]
+    },
+    {
+      "name": "uname",
+      "package_name": "cli/uname",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "help",
+        "kernel-name",
+        "kernel-release",
+        "kernel-version",
+        "nodename",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "uname-extra-operand",
+        "uname-fields-linux-reference",
+        "uname-linux-kernel",
+        "uname-darwin-kernel",
+        "uname-windows-kernel",
+        "uname-linux-reference"
+      ]
+    },
+    {
+      "name": "hostname",
+      "package_name": "cli/hostname",
+      "compare_profile": "contract",
+      "supported_options": [
+        "help",
+        "short",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "hostname-extra-operand",
+        "hostname-linux-reference"
+      ],
+      "oracle_boundary": "Host-dependent observations must share the process, account or kernel namespace. The Linux correctness scenario compares the Wasm command with the host executable."
+    },
+    {
+      "name": "id",
+      "package_name": "cli/id",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "group",
+        "groups",
+        "help",
+        "name",
+        "real",
+        "user",
+        "version",
+        "zero"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "id-extra-operand",
+        "id-fields-linux-reference",
+        "id-linux-reference"
+      ],
+      "oracle_boundary": "Host-dependent observations must share the process, account or kernel namespace. The Linux correctness scenario compares the Wasm command with the host executable."
+    },
+    {
+      "name": "whoami",
+      "package_name": "cli/whoami",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "help",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "whoami-extra-operand",
+        "whoami-linux-reference"
+      ],
+      "oracle_boundary": "Host-dependent observations must share the process, account or kernel namespace. The Linux correctness scenario compares the Wasm command with the host executable."
+    },
+    {
+      "name": "groups",
+      "package_name": "cli/groups",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "help",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "groups-extra-operand",
+        "groups-linux-reference"
+      ],
+      "oracle_boundary": "Host-dependent observations must share the process, account or kernel namespace. The Linux correctness scenario compares the Wasm command with the host executable."
+    },
+    {
+      "name": "uptime",
+      "package_name": "cli/uptime",
+      "compare_profile": "contract",
+      "supported_options": [
+        "help",
+        "pretty",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "uptime-extra-operand",
+        "uptime-linux-reference"
+      ],
+      "oracle_boundary": "Host-dependent observations must share the process, account or kernel namespace. The Linux correctness scenario compares the Wasm command with the host executable."
+    },
+    {
+      "name": "free",
+      "package_name": "cli/free",
+      "compare_profile": "contract",
+      "supported_options": [
+        "bytes",
+        "gibi",
+        "help",
+        "kibi",
+        "mebi",
+        "total",
+        "version",
+        "wide"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "free-extra-operand",
+        "free-linux-reference"
+      ],
+      "oracle_boundary": "Host-dependent observations must share the process, account or kernel namespace. The Linux correctness scenario compares the Wasm command with the host executable."
+    },
+    {
+      "name": "ps",
+      "package_name": "cli/ps",
+      "compare_profile": "contract",
+      "supported_options": [
+        "format",
+        "help",
+        "pid",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "ps-extra-operand",
+        "ps-fields-linux-reference",
+        "ps-no-such-process",
+        "ps-linux-reference"
+      ],
+      "oracle_boundary": "Host-dependent observations must share the process, account or kernel namespace. The Linux correctness scenario compares the Wasm command with the host executable."
+    },
+    {
+      "name": "nproc",
+      "package_name": "cli/nproc",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "all",
+        "help",
+        "ignore",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "nproc-extra-operand",
+        "nproc-openmp-limit",
+        "nproc-linux-reference"
+      ]
+    },
+    {
       "name": "timeout",
       "package_name": "cli/timeout",
       "compare_profile": "gnu",
@@ -117,6 +430,8 @@
         "o9-sysv",
         "o9-sysv-zero",
         "p0-cksum-stdin",
+        "cksum-posix-default-marker",
+        "cksum-windows-checksum-modes",
         "release-metadata-cksum-help",
         "release-metadata-cksum-version"
       ]
@@ -642,6 +957,8 @@
       "releasable": true,
       "case_ids": [
         "compat-stdin-cat",
+        "cat-windows-text-modes",
+        "cat-show-ends-split-crlf",
         "compat-text-line-33",
         "compat-text-line-675",
         "compat-catalog-line-22",
@@ -677,6 +994,12 @@
         "phase4-chmod-numeric",
         "release-metadata-chmod-help",
         "p8-chmod-symbolic-assignment",
+        "chmod-symbolic-increments",
+        "chmod-symbolic-copy",
+        "chmod-symbolic-conditional",
+        "chmod-symbolic-subtract-copy",
+        "chmod-symbolic-depends",
+        "chmod-symbolic-subtract-mixed",
         "release-metadata-chmod-version",
         "compat-text-chmod-reference-rejected",
         "compat-filesystem-windows-chmod-boundary",
@@ -731,6 +1054,8 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
+        "comm-locale-c-ordered-bytes",
+        "comm-locale-utf8-ordered-bytes",
         "phase3-comm-columns",
         "compat-text-comm-nul-records",
         "compat-text-comm-check-order",
@@ -766,7 +1091,8 @@
       "compare_profile": "gnu",
       "supported_options": [
         "help",
-        "version"
+        "version",
+        "remove-destination"
       ],
       "policy_sensitive": true,
       "releasable": true,
@@ -793,7 +1119,23 @@
         "f17-cp-alias-dereference-command-line",
         "f17-cp-suffix-value-short",
         "f17-cp-suffix-value-long",
-        "f17-cp-literal-internal-looking-operand"
+        "f17-cp-literal-internal-looking-operand",
+        "cp-remove-detach-regular",
+        "cp-remove-source-hardlink",
+        "cp-remove-same-name",
+        "cp-remove-destination-link",
+        "cp-remove-dangling-link",
+        "cp-remove-source-link-to-target",
+        "cp-remove-source-link",
+        "cp-remove-link-self",
+        "cp-remove-missing-source",
+        "cp-remove-directory-link",
+        "cp-remove-literal-directory-link",
+        "cp-remove-no-clobber",
+        "cp-remove-windows",
+        "cp-remove-interactive",
+        "cp-remove-unreadable",
+        "cp-remove-parent-alias"
       ]
     },
     {
@@ -1351,7 +1693,38 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
+        "grep-locale-c-unicode-fixed",
+        "grep-locale-utf8-unicode-fixed",
+        "grep-locale-c-posix-classes",
+        "grep-locale-utf8-posix-classes",
+        "grep-locale-c-word-anchors",
+        "grep-locale-utf8-word-anchors",
+        "grep-locale-c-word-option",
+        "grep-locale-utf8-word-option",
+        "grep-locale-c-scalar-repetition",
+        "grep-locale-utf8-scalar-repetition",
+        "grep-locale-c-basic-backreference",
+        "grep-locale-utf8-basic-backreference",
+        "grep-locale-c-malformed-report",
+        "grep-locale-utf8-malformed-report",
+        "grep-locale-c-summarize-malformed",
+        "grep-locale-utf8-summarize-malformed",
+        "grep-locale-c-leftmost-longest",
+        "grep-locale-utf8-leftmost-longest",
+        "grep-locale-utf8-utf8-ctype-priority",
+        "grep-locale-utf8-reject-collation-range",
+        "grep-locale-c-literal-fold-width-and-greek",
+        "grep-locale-utf8-literal-fold-width-and-greek",
+        "grep-locale-c-malformed-precedence",
+        "grep-locale-utf8-malformed-precedence",
+        "grep-locale-c-nullable-capture",
+        "grep-locale-utf8-nullable-capture",
+        "grep-locale-c-independent-captures",
+        "grep-locale-utf8-independent-captures",
+        "grep-locale-c-class-boundaries",
+        "grep-locale-utf8-class-boundaries",
         "phase3-grep-stdin",
+        "grep-windows-text-modes",
         "compat-text-line-209",
         "compat-text-line-218",
         "compat-text-line-227",
@@ -1441,6 +1814,8 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
+        "join-locale-c-folded-sort-order",
+        "join-locale-utf8-folded-sort-order",
         "compat-text-join-output-list",
         "compat-text-join-nul-records",
         "p9-join-check-order",
@@ -2239,6 +2614,8 @@
       "case_ids": [
         "p8-mv-update-none",
         "phase4-mv-regular",
+        "mv-no-copy-rename",
+        "mv-no-copy-cross-device",
         "repair-fs-mv-backup",
         "repair-fs-mv-same-path",
         "release-metadata-mv-help",
@@ -2762,6 +3139,8 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
+        "sha256sum-posix-default-marker",
+        "sha256sum-windows-checksum-modes",
         "release-metadata-sha256sum-help",
         "compat-stdin-sha256sum",
         "compat-text-sha256sum-ignore-missing",
@@ -2832,6 +3211,10 @@
       "policy_sensitive": true,
       "releasable": true,
       "case_ids": [
+        "sort-locale-c-byte-collation",
+        "sort-locale-utf8-byte-collation",
+        "sort-locale-c-fold-dictionary",
+        "sort-locale-utf8-fold-dictionary",
         "phase3-sort-basic",
         "sort-exact-integer-unique",
         "sort-exact-integer-stable",
@@ -2950,6 +3333,8 @@
       "case_ids": [
         "compat-catalog-line-260",
         "compat-tail-follow-name-boundary",
+        "tail-name-rotation",
+        "tail-name-windows",
         "compat-tail-follow-stdin",
         "compat-tail-infinite-interval",
         "compat-tail-interval-without-follow",
@@ -3025,6 +3410,8 @@
       "releasable": true,
       "case_ids": [
         "phase3-test-string",
+        "test-redirected-stdin",
+        "test-windows-terminal-refusal",
         "test-ef-hardlink",
         "test-ef-symlink",
         "test-ef-equal-content",
@@ -3499,6 +3886,8 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
+        "tr-locale-c-byte-case-classes",
+        "tr-locale-utf8-byte-case-classes",
         "phase3-tr-range",
         "p9-tr-octal-escape",
         "p9-tr-middle-repeat",
@@ -4118,6 +4507,8 @@
         "o9-sum-status-warn",
         "o9-sum-status-wrong",
         "o9-sum-tag-escaped",
+        "md5sum-posix-default-marker",
+        "md5sum-windows-checksum-modes",
         "release-metadata-md5sum-help"
       ]
     },
@@ -4141,6 +4532,8 @@
         "checksum-sha1sum-wrong-length",
         "checksum-sha1sum-zero-check",
         "o9-sha1sum-tag",
+        "sha1sum-posix-default-marker",
+        "sha1sum-windows-checksum-modes",
         "release-metadata-sha1sum-help"
       ]
     },
@@ -4162,6 +4555,8 @@
         "checksum-sha512sum-stdin",
         "checksum-sha512sum-version",
         "o9-sha512sum-tag",
+        "sha512sum-posix-default-marker",
+        "sha512sum-windows-checksum-modes",
         "release-metadata-sha512sum-help"
       ]
     },
@@ -4326,6 +4721,7 @@
       "releasable": true,
       "case_ids": [
         "p1-diff-normal",
+        "diff-windows-text-modes",
         "p1-diff-unified",
         "p1-diff-context",
         "p1-diff-empty-add",
@@ -4415,6 +4811,10 @@
         "patch-context-output-stdout",
         "patch-reverse-output-stdout",
         "patch-existing-write-boundary",
+        "patch-default-reject-hardlink",
+        "patch-default-reject-symlink",
+        "patch-default-reject-file",
+        "patch-default-reject-directory",
         "patch-unsafe-path-boundary",
         "patch-create-null",
         "patch-delete-null",
@@ -4951,6 +5351,7 @@
       "releasable": true,
       "case_ids": [
         "rg-boundary-dfa-budget",
+        "rg-windows-text-modes",
         "rg-boundary-dfa-zero",
         "rg-noop-worker-mmap-options",
         "rg-noop-worker-mmap-reverse",
@@ -5127,6 +5528,272 @@
         "serve-failure-diagnostic-source-name"
       ],
       "oracle_boundary": "Project-specific server; the pinned oracle has no corresponding executable or upstream contract."
+    },
+    {
+      "name": "tar",
+      "package_name": "cli/tar",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "create",
+        "list",
+        "extract",
+        "file",
+        "gzip",
+        "to-stdout",
+        "help",
+        "version",
+        "directory"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "archive-tar-version",
+        "archive-tar-gzip-list",
+        "archive-tar-pipe-selected",
+        "archive-tar-extract-directory",
+        "archive-tar-create-gzip",
+        "archive-tar-stdout",
+        "archive-tar-stdin",
+        "archive-tar-existing-output",
+        "archive-tar-existing-member",
+        "archive-tar-invalid",
+        "archive-tar-help",
+        "archive-tar-linked-parent"
+      ]
+    },
+    {
+      "name": "zip",
+      "package_name": "cli/zip",
+      "compare_profile": "info-zip",
+      "supported_options": [
+        "recursive",
+        "quiet",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "help",
+        "version",
+        "test"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "archive-zip-version",
+        "archive-zip-verify-system",
+        "archive-zip-deflate",
+        "archive-zip-directory",
+        "archive-zip-refuse-update",
+        "archive-zip-deflate-1",
+        "archive-zip-deflate-2",
+        "archive-zip-deflate-3",
+        "archive-zip-deflate-4",
+        "archive-zip-deflate-5",
+        "archive-zip-deflate-6",
+        "archive-zip-deflate-7",
+        "archive-zip-deflate-8",
+        "archive-zip-help",
+        "archive-zip-linked-operand"
+      ]
+    },
+    {
+      "name": "unzip",
+      "package_name": "cli/unzip",
+      "compare_profile": "info-zip",
+      "supported_options": [
+        "names",
+        "pipe",
+        "test",
+        "quiet",
+        "never-overwrite",
+        "directory",
+        "help",
+        "version"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "archive-unzip-version",
+        "archive-unzip-names",
+        "archive-unzip-binary-pipe",
+        "archive-unzip-extract",
+        "archive-unzip-skip-existing",
+        "archive-unzip-crc",
+        "archive-unzip-invalid",
+        "archive-unzip-help"
+      ]
+    },
+    {
+      "name": "df",
+      "package_name": "cli/df",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "output",
+        "help",
+        "version"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "fs-df-mount-type",
+        "fs-df-capacity",
+        "fs-df-other-host",
+        "fs-df-help",
+        "fs-df-version",
+        "fs-df-proc-host"
+      ],
+      "oracle_boundary": "Mount targets depend on the mount namespace. Compare the target field with GNU df on the same Linux host."
+    },
+    {
+      "name": "du",
+      "package_name": "cli/du",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "bytes",
+        "apparent-size",
+        "block-size",
+        "kilobytes",
+        "all",
+        "summarize",
+        "inodes",
+        "total",
+        "count-links",
+        "dereference",
+        "null",
+        "help",
+        "version"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "fs-du-bytes",
+        "fs-du-null-total",
+        "fs-du-block-size",
+        "fs-du-kilobyte",
+        "fs-du-hardlinks",
+        "fs-du-symlink",
+        "fs-du-allocated",
+        "fs-du-directory",
+        "fs-du-help",
+        "fs-du-version",
+        "fs-du-tree",
+        "fs-du-all",
+        "fs-du-inode-hardlinks",
+        "fs-du-link-bytes",
+        "fs-du-follow-cycle",
+        "fs-du-short-apparent"
+      ]
+    },
+    {
+      "name": "install",
+      "package_name": "cli/install",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "directory",
+        "leading",
+        "mode",
+        "help",
+        "version"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "fs-install-file",
+        "fs-install-dirs",
+        "fs-install-leading",
+        "fs-install-existing",
+        "fs-install-windows-mode",
+        "fs-install-help",
+        "fs-install-version",
+        "fs-install-same-identity"
+      ]
+    },
+    {
+      "name": "readlink",
+      "package_name": "cli/readlink",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "canonicalize",
+        "canonicalize-existing",
+        "canonicalize-missing",
+        "zero",
+        "no-newline",
+        "verbose",
+        "help",
+        "version"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "fs-readlink-existing",
+        "fs-readlink-missing-last",
+        "fs-readlink-missing-tree",
+        "fs-readlink-resolved-link",
+        "fs-readlink-stored-target",
+        "fs-readlink-ordinary-quiet",
+        "fs-readlink-verbose-missing",
+        "fs-readlink-help",
+        "fs-readlink-version"
+      ]
+    },
+    {
+      "name": "stat",
+      "package_name": "cli/stat",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "format",
+        "dereference",
+        "help",
+        "version"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "fs-stat-file",
+        "fs-stat-directory",
+        "fs-stat-timestamp",
+        "fs-stat-symlink",
+        "fs-stat-dereference",
+        "fs-stat-unavailable",
+        "fs-stat-help",
+        "fs-stat-version",
+        "fs-stat-link-bytes",
+        "fs-stat-proc-size",
+        "fs-stat-mac-directory-size"
+      ]
+    },
+    {
+      "name": "truncate",
+      "package_name": "cli/truncate",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "size",
+        "no-create",
+        "help",
+        "version",
+        "reference"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "fs-truncate-zero",
+        "fs-truncate-extend",
+        "fs-truncate-create",
+        "fs-truncate-no-create",
+        "fs-truncate-hardlink",
+        "fs-truncate-reject-shrink",
+        "fs-truncate-help",
+        "fs-truncate-version",
+        "fs-truncate-reference",
+        "fs-truncate-relative-reference",
+        "fs-truncate-absolute-reference"
+      ]
     }
   ]
 }

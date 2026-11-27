@@ -30,68 +30,6 @@ priv suberror ChmodError {
 }
 
 ///|
-fn parse_symbolic_mode(text : String) -> Int32 raise ChmodError {
-  if text == "" {
-    raise ChmodError("empty symbolic mode")
-  }
-  let mut mode = 0
-  let mut user = false
-  let mut group = false
-  let mut other = false
-  for clause_view in text.split(",") {
-    let clause = clause_view.to_owned()
-    guard clause.find("=") is Some(equal) else {
-      raise ChmodError("symbolic mode must use '='")
-    }
-    if clause[equal + 1:].contains("=") || equal == 0 {
-      raise ChmodError("invalid symbolic assignment: '\{clause}'")
-    }
-    let mut clause_user = false
-    let mut clause_group = false
-    let mut clause_other = false
-    for who in clause[:equal] {
-      match who {
-        'u' => clause_user = true
-        'g' => clause_group = true
-        'o' => clause_other = true
-        'a' => {
-          clause_user = true
-          clause_group = true
-          clause_other = true
-        }
-        _ => raise ChmodError("invalid symbolic class: '\{who}'")
-      }
-    }
-    let mut permissions = 0
-    for permission in clause[equal + 1:] {
-      match permission {
-        'r' => permissions = permissions | 4
-        'w' => permissions = permissions | 2
-        'x' => permissions = permissions | 1
-        _ =>
-          raise ChmodError("unsupported symbolic permission: '\{permission}'")
-      }
-    }
-    if clause_user {
-      user = true
-      mode = (mode & (0o700).lnot()) | (permissions << 6)
-    }
-    if clause_group {
-      group = true
-      mode = (mode & (0o070).lnot()) | (permissions << 3)
-    }
-    if clause_other {
-      other = true
-      mode = (mode & (0o007).lnot()) | permissions
-    }
-  }
-  if !user || !group || !other {
-    raise ChmodError("symbolic mode must explicitly assign u, g, and o")
-  }
-  mode
-}
-
-///|
 async fn chmod_numeric_path(
   path : String,
   mode : Int32,

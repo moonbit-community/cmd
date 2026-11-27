@@ -48,7 +48,7 @@ Only cleanup is shielded; output backpressure remains cancellable.
 
 ## Package ownership
 
-All 82 command roots contain only the binary entry, configuration, generated
+Command roots contain only the binary entry, configuration, generated
 interface and documentation. Each entry delegates to `internal/driver`, which
 owns argument adaptation, diagnostics, exit status and I/O ordering. Small
 commands retain a single driver. Domain packages exist for an actual boundary:

@@ -2,6 +2,664 @@
   "schema": 2,
   "cases": [
     {
+      "id": "grep-windows-text-modes",
+      "command": "grep",
+      "isolated": true,
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "windows"
+      ],
+      "timeout_ms": 120000,
+      "source_version": "MSYS2 GNU grep on windows-2025; executable version retained with raw stream receipts.",
+      "diagnostic_reason": "Compare raw streams and status for named files, redirected files and pipes with mixed line endings, NUL, invalid UTF-8 and Ctrl-Z."
+    },
+    {
+      "id": "grep-locale-c-unicode-fixed",
+      "command": "grep",
+      "args": [
+        "-a",
+        "-Fibo",
+        "-e",
+        "ä",
+        "-e",
+        "S",
+        "-e",
+        "k",
+        "-e",
+        "Σ"
+      ],
+      "stdin_hex": "c384c3a42053747261c39f65205354524153534520c5bf53206be284aa20cf82cea320e4b8ad204120d9a320f09f87a80aceb1ceb220ceb1ceb22078c785580a61ff0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "323ac3a40a353a530a31333a530a31373a530a31383a530a32333a530a32353a6b0a33323acea30a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "grep-locale-utf8-unicode-fixed",
+      "command": "grep",
+      "args": [
+        "-a",
+        "-Fibo",
+        "-e",
+        "ä",
+        "-e",
+        "S",
+        "-e",
+        "k",
+        "-e",
+        "Σ"
+      ],
+      "stdin_hex": "c384c3a42053747261c39f65205354524153534520c5bf53206be284aa20cf82cea320e4b8ad204120d9a320f09f87a80aceb1ceb220ceb1ceb22078c785580a61ff0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "303ac3840a323ac3a40a353a530a31333a530a31373a530a31383a530a32313ac5bf0a32333a530a32353a6b0a33303acf820a33323acea30a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "grep-locale-c-posix-classes",
+      "command": "grep",
+      "args": [
+        "-aEo",
+        "[[:alpha:]]+|[[:digit:]]+"
+      ],
+      "stdin_hex": "c384c3a42053747261c39f65205354524153534520c5bf53206be284aa20cf82cea320e4b8ad204120d9a320f09f87a80aceb1ceb220ceb1ceb22078c785580a61ff0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "537472610a650a535452415353450a530a6b0a410a780a580a610a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "grep-locale-utf8-posix-classes",
+      "command": "grep",
+      "args": [
+        "-aEo",
+        "[[:alpha:]]+|[[:digit:]]+"
+      ],
+      "stdin_hex": "c384c3a42053747261c39f65205354524153534520c5bf53206be284aa20cf82cea320e4b8ad204120d9a320f09f87a80aceb1ceb220ceb1ceb22078c785580a61ff0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "c384c3a40a53747261c39f650a535452415353450ac5bf530a6be284aa0acf82cea30ae4b8ad0a410ad9a30aceb1ceb20aceb1ceb20a78c785580a610a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "grep-locale-c-word-anchors",
+      "command": "grep",
+      "args": [
+        "-aEo",
+        "\\bαβ\\b|\\<中\\>"
+      ],
+      "stdin_hex": "c384c3a42053747261c39f65205354524153534520c5bf53206be284aa20cf82cea320e4b8ad204120d9a320f09f87a80aceb1ceb220ceb1ceb22078c785580a61ff0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 1,
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "grep-locale-utf8-word-anchors",
+      "command": "grep",
+      "args": [
+        "-aEo",
+        "\\bαβ\\b|\\<中\\>"
+      ],
+      "stdin_hex": "c384c3a42053747261c39f65205354524153534520c5bf53206be284aa20cf82cea320e4b8ad204120d9a320f09f87a80aceb1ceb220ceb1ceb22078c785580a61ff0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "e4b8ad0aceb1ceb20aceb1ceb20a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "grep-locale-c-word-option",
+      "command": "grep",
+      "args": [
+        "-aFwi",
+        "s"
+      ],
+      "stdin_hex": "c384c3a42053747261c39f65205354524153534520c5bf53206be284aa20cf82cea320e4b8ad204120d9a320f09f87a80aceb1ceb220ceb1ceb22078c785580a61ff0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "c384c3a42053747261c39f65205354524153534520c5bf53206be284aa20cf82cea320e4b8ad204120d9a320f09f87a80a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "grep-locale-utf8-word-option",
+      "command": "grep",
+      "args": [
+        "-aFwi",
+        "s"
+      ],
+      "stdin_hex": "c384c3a42053747261c39f65205354524153534520c5bf53206be284aa20cf82cea320e4b8ad204120d9a320f09f87a80aceb1ceb220ceb1ceb22078c785580a61ff0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 1,
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "grep-locale-c-scalar-repetition",
+      "command": "grep",
+      "args": [
+        "-aEbo",
+        "^.{2}|[αβω]+|🇨+"
+      ],
+      "stdin_hex": "c384c3a42053747261c39f65205354524153534520c5bf53206be284aa20cf82cea320e4b8ad204120d9a320f09f87a80aceb1ceb220ceb1ceb22078c785580a61ff0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "303ac3840a33303acf0a33323ace0a34343af09f87a80a34393aceb1ceb20a35343aceb1ceb20a36343a61ff0a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "grep-locale-utf8-scalar-repetition",
+      "command": "grep",
+      "args": [
+        "-aEbo",
+        "^.{2}|[αβω]+|🇨+"
+      ],
+      "stdin_hex": "c384c3a42053747261c39f65205354524153534520c5bf53206be284aa20cf82cea320e4b8ad204120d9a320f09f87a80aceb1ceb220ceb1ceb22078c785580a61ff0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "303ac384c3a40a34343af09f87a80a34393aceb1ceb20a35343aceb1ceb20a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "grep-locale-c-basic-backreference",
+      "command": "grep",
+      "args": [
+        "-aGibo",
+        "\\(ä\\)\\1"
+      ],
+      "stdin_hex": "c384c3a42053747261c39f65205354524153534520c5bf53206be284aa20cf82cea320e4b8ad204120d9a320f09f87a80aceb1ceb220ceb1ceb22078c785580a61ff0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 1,
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": "",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "grep-locale-utf8-basic-backreference",
+      "command": "grep",
+      "args": [
+        "-aGibo",
+        "\\(ä\\)\\1"
+      ],
+      "stdin_hex": "c384c3a42053747261c39f65205354524153534520c5bf53206be284aa20cf82cea320e4b8ad204120d9a320f09f87a80aceb1ceb220ceb1ceb22078c785580a61ff0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "303ac384c3a40a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "grep-locale-c-malformed-report",
+      "command": "grep",
+      "args": [
+        "a"
+      ],
+      "stdin_hex": "61610a61ff0a62610a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "61610a61ff0a62610a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "grep-locale-utf8-malformed-report",
+      "command": "grep",
+      "args": [
+        "a"
+      ],
+      "stdin_hex": "61610a61ff0a62610a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "61610a62610a",
+      "expected_stderr_hex": "677265703a20287374616e6461726420696e707574293a2062696e6172792066696c65206d6174636865730a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12"
+    },
+    {
+      "id": "grep-locale-c-summarize-malformed",
+      "command": "grep",
+      "args": [
+        "-Ic",
+        "a"
+      ],
+      "stdin_hex": "61610a61ff0a62610a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "330a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "grep-locale-utf8-summarize-malformed",
+      "command": "grep",
+      "args": [
+        "-Ic",
+        "a"
+      ],
+      "stdin_hex": "61610a61ff0a62610a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "330a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "grep-locale-c-leftmost-longest",
+      "command": "grep",
+      "args": [
+        "-aEo",
+        "α|αβ|ä+"
+      ],
+      "stdin_hex": "c384c3a42053747261c39f65205354524153534520c5bf53206be284aa20cf82cea320e4b8ad204120d9a320f09f87a80aceb1ceb220ceb1ceb22078c785580a61ff0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "c3a40aceb1ceb20aceb1ceb20a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "grep-locale-utf8-leftmost-longest",
+      "command": "grep",
+      "args": [
+        "-aEo",
+        "α|αβ|ä+"
+      ],
+      "stdin_hex": "c384c3a42053747261c39f65205354524153534520c5bf53206be284aa20cf82cea320e4b8ad204120d9a320f09f87a80aceb1ceb220ceb1ceb22078c785580a61ff0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "c3a40aceb1ceb20aceb1ceb20a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "grep-locale-utf8-utf8-ctype-priority",
+      "command": "grep",
+      "args": [
+        "-aFio",
+        "ä"
+      ],
+      "stdin_hex": "c384c3a42053747261c39f65205354524153534520c5bf53206be284aa20cf82cea320e4b8ad204120d9a320f09f87a80aceb1ceb220ceb1ceb22078c785580a61ff0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "",
+        "LC_CTYPE": "C.utf8",
+        "LANG": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "c3840ac3a40a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "grep-locale-utf8-reject-collation-range",
+      "command": "grep",
+      "args": [
+        "-aE",
+        "[α-ω]"
+      ],
+      "stdin_hex": "610a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 2,
+      "expected_stderr_hex": "677265703a20496e76616c696420636f6c6c6174696f6e206368617261637465720a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stdout_text": ""
+    },
+    {
+      "id": "grep-locale-c-literal-fold-width-and-greek",
+      "command": "grep",
+      "args": [
+        "-aFibwo",
+        "-e",
+        "s",
+        "-e",
+        "σ",
+        "-e",
+        "K",
+        "-e",
+        "ß"
+      ],
+      "stdin_hex": "c5bf20cf8220cea320e284aa20c39f2053530a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "31333ac39f0a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "grep-locale-utf8-literal-fold-width-and-greek",
+      "command": "grep",
+      "args": [
+        "-aFibwo",
+        "-e",
+        "s",
+        "-e",
+        "σ",
+        "-e",
+        "K",
+        "-e",
+        "ß"
+      ],
+      "stdin_hex": "c5bf20cf8220cea320e284aa20c39f2053530a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "303ac5bf0a333acf820a363acea30a31333ac39f0a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "grep-locale-c-malformed-precedence",
+      "command": "grep",
+      "args": [
+        "-Ia",
+        "a"
+      ],
+      "stdin_hex": "61ff0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "61ff0a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "grep-locale-utf8-malformed-precedence",
+      "command": "grep",
+      "args": [
+        "-Ia",
+        "a"
+      ],
+      "stdin_hex": "61ff0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "61ff0a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "grep-locale-c-nullable-capture",
+      "command": "grep",
+      "args": [
+        "-aEio",
+        "(ä*){1,2}\\1"
+      ],
+      "stdin_hex": "c3a40ac3a4c3a4c3a40a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "c3a4c3a4c3a40a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "grep-locale-utf8-nullable-capture",
+      "command": "grep",
+      "args": [
+        "-aEio",
+        "(ä*){1,2}\\1"
+      ],
+      "stdin_hex": "c3a40ac3a4c3a4c3a40a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "c3a4c3a40a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "grep-locale-c-independent-captures",
+      "command": "grep",
+      "args": [
+        "-aEibo",
+        "-e",
+        "(ä)\\1",
+        "-e",
+        "(ß)\\1",
+        "-e",
+        "ß+"
+      ],
+      "stdin_hex": "c3a4c38420c39fc39f0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "353ac39fc39f0a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "grep-locale-utf8-independent-captures",
+      "command": "grep",
+      "args": [
+        "-aEibo",
+        "-e",
+        "(ä)\\1",
+        "-e",
+        "(ß)\\1",
+        "-e",
+        "ß+"
+      ],
+      "stdin_hex": "c3a4c38420c39fc39f0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "303ac3a4c3840a353ac39fc39f0a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "grep-locale-c-class-boundaries",
+      "command": "grep",
+      "args": [
+        "-aEo",
+        "[[:blank:]]|[[:upper:]]+|[[:punct:]]+"
+      ],
+      "stdin_hex": "cea3c2a0e38080e280a8c2a120f09f98800a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "200a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "grep-locale-utf8-class-boundaries",
+      "command": "grep",
+      "args": [
+        "-aEo",
+        "[[:blank:]]|[[:upper:]]+|[[:punct:]]+"
+      ],
+      "stdin_hex": "cea3c2a0e38080e280a8c2a120f09f98800a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "cea30ac2a00ae380800ac2a10a200af09f98800a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU grep 3.12",
+      "expected_stderr_text": ""
+    },
+    {
       "id": "phase3-grep-stdin",
       "command": "grep",
       "args": [
@@ -422,7 +1080,7 @@
         "help"
       ],
       "source_version": "workspace cli/grep@0.3.3 metadata contract",
-      "expected_stdout_text": "Usage: grep [-EFGivnclLqHhxwrRbszo] [-A NUM] [-B NUM] [-C NUM] [--include=GLOB] [--exclude=GLOB] [--binary-files=TYPE] [-e PATTERN] [-f FILE] [PATTERN] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n-r and -R recurse without following symbolic links.\n",
+      "expected_stdout_text": "Usage: grep [-EFGIaivnclLqHhxwrRbszo] [-A NUM] [-B NUM] [-C NUM] [--include=GLOB] [--exclude=GLOB] [--binary-files=TYPE] [-e PATTERN] [-f FILE] [PATTERN] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n-r and -R recurse without following symbolic links.\nC.UTF-8 matches UTF-8 characters, Unicode classes and simple case equivalents.\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-catalog-line-99"
@@ -446,7 +1104,7 @@
         "version"
       ],
       "source_version": "workspace cli/grep@0.3.3 metadata contract",
-      "expected_stdout_text": "grep 0.3.7\n",
+      "expected_stdout_text": "grep 0.3.8\n",
       "expected_stderr_text": ""
     },
     {

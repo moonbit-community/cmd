@@ -1,0 +1,7 @@
+import {
+  "cli/tput/internal/driver",
+}
+
+supported_targets = "wasm"
+
+pkgtype(kind: "executable")

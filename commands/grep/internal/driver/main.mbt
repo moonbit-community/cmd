@@ -34,6 +34,7 @@ priv struct GrepOptions {
 
 ///|
 priv enum Matcher {
+  Unicode(@bytere.Utf8Pattern, Bool, Bool)
   Fixed(Array[Bytes], Bool, Bool)
   ManyFixed(@bytere.LiteralSet)
   Regular(Array[@bytere.RecordMatcher], Bool, Bool)
@@ -74,7 +75,20 @@ fn bytes_as_string(bytes : BytesView) -> String {
 fn compile_matcher(
   patterns : Array[String],
   options : GrepOptions,
+  profile~ : @textwidth.Profile = CBytes,
 ) -> Matcher raise {
+  if profile == Utf8 {
+    return Unicode(
+      @bytere.compile_utf8(
+        patterns,
+        fixed=options.fixed,
+        extended=options.extended,
+        ignore_case=options.ignore_case,
+      ),
+      options.whole_line,
+      options.word,
+    )
+  }
   if options.fixed {
     let literals = patterns.map(text => {
       let bytes = @utf8.encode(text)
@@ -289,20 +303,23 @@ pub async fn run_main() -> Unit {
       return
     }
   }
-  let binary_mode = if parsed.last_occurrence(["binary-files", "text"]) ==
-    Some("text") {
-    Text
-  } else {
-    match parsed.last_value("binary-files") {
-      None | Some("binary") => Report
-      Some("text") => Text
-      Some("without-match") => WithoutMatch
-      Some(value) => {
-        @stdio.stderr.text.write("grep: unknown binary-files type '\{value}'\n")
-        @env.exit(2)
-        return
+  let binary_mode = match
+    parsed.last_occurrence(["binary-files", "text", "without-match"]) {
+    Some("text") => Text
+    Some("without-match") => WithoutMatch
+    _ =>
+      match parsed.last_value("binary-files") {
+        None | Some("binary") => Report
+        Some("text") => Text
+        Some("without-match") => WithoutMatch
+        Some(value) => {
+          @stdio.stderr.text.write(
+            "grep: unknown binary-files type '\{value}'\n",
+          )
+          @env.exit(2)
+          return
+        }
       }
-    }
   }
   let options : GrepOptions = {
     fixed: parsed.last_occurrence([
@@ -361,7 +378,12 @@ pub async fn run_main() -> Unit {
     }
     patterns.append(split_lines(text))
   }
-  let matcher = compile_matcher(patterns, options) catch {
+  let matcher = compile_matcher(patterns, options, profile=@textwidth.current()) catch {
+    @bytere.PatternError("Invalid collation character") => {
+      @stdio.stderr.text.write("grep: Invalid collation character\n")
+      @env.exit(2)
+      return
+    }
     @bytere.PatternError(message) => {
       @stdio.stderr.text.write("grep: invalid regular expression: \{message}\n")
       @env.exit(2)

@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "scope": "All82 packages accounted for:56 timing commands,2 explicit correctness-only dispositions and24 explained not-timed commands. Finite source, generated-output and bounded-tree operations; ln/test measure startup-inclusive operation latency, not byte throughput. No application-frequency or massive-directory claim.",
+  "scope": "Each command has a timing, correctness-only or not-timed disposition. Finite source, generated-output and bounded-tree operations; ln/test measure startup-inclusive operation latency, not byte throughput. No application-frequency or massive-directory claim.",
   "source_catalog": "tests/fixtures/benchmark/real-sources.json",
   "facet_vocabulary": [
     "bytes",
@@ -26,6 +26,118 @@
   "timing_command_count": 56,
   "correctness_only_command_count": 2,
   "commands": [
+    {
+      "command": "awk",
+      "disposition": "not-timed",
+      "reason": "The pattern-action profile has executable record, evaluator and file I/O contracts. A representative timing corpus has not been calibrated.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "clear",
+      "disposition": "not-timed",
+      "reason": "Short capability or descriptor query with byte-exact correctness checks.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "tput",
+      "disposition": "not-timed",
+      "reason": "Short capability or descriptor query with byte-exact correctness checks.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "tty",
+      "disposition": "not-timed",
+      "reason": "Short capability or descriptor query with byte-exact correctness checks.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "kill",
+      "disposition": "not-timed",
+      "reason": "Short capability or descriptor query with byte-exact correctness checks.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "uname",
+      "disposition": "not-timed",
+      "reason": "Small host query whose result depends on kernel state; validated against same-host observations.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "hostname",
+      "disposition": "not-timed",
+      "reason": "Small host query whose result depends on kernel state; validated against same-host observations.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "id",
+      "disposition": "not-timed",
+      "reason": "Small host query whose result depends on kernel state; validated against same-host observations.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "whoami",
+      "disposition": "not-timed",
+      "reason": "Small host query whose result depends on kernel state; validated against same-host observations.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "groups",
+      "disposition": "not-timed",
+      "reason": "Small host query whose result depends on kernel state; validated against same-host observations.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "uptime",
+      "disposition": "not-timed",
+      "reason": "Small host query whose result depends on kernel state; validated against same-host observations.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "free",
+      "disposition": "not-timed",
+      "reason": "Small host query whose result depends on kernel state; validated against same-host observations.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "ps",
+      "disposition": "not-timed",
+      "reason": "Small host query whose result depends on kernel state; validated against same-host observations.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "nproc",
+      "disposition": "not-timed",
+      "reason": "Small host query whose result depends on kernel state; validated against same-host observations.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
     {
       "command": "cp",
       "disposition": "timing",
@@ -1244,6 +1356,96 @@
       "local_case_ids": [
         "serve-static",
         "serve-policy"
+      ]
+    },
+    {
+      "command": "tar",
+      "disposition": "not-timed",
+      "reason": "The archive profile has byte and filesystem correctness fixtures. A timing baseline requires a reviewed archive corpus with member-count, compression and directory-layout distributions.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": [
+        "archive-tar-create-gzip"
+      ]
+    },
+    {
+      "command": "zip",
+      "disposition": "not-timed",
+      "reason": "The archive profile has byte and filesystem correctness fixtures. A timing baseline requires a reviewed archive corpus with member-count, compression and directory-layout distributions.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": [
+        "archive-zip-deflate"
+      ]
+    },
+    {
+      "command": "unzip",
+      "disposition": "not-timed",
+      "reason": "The archive profile has byte and filesystem correctness fixtures. A timing baseline requires a reviewed archive corpus with member-count, compression and directory-layout distributions.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": [
+        "archive-unzip-extract"
+      ]
+    },
+    {
+      "command": "df",
+      "disposition": "not-timed",
+      "reason": "The portable filesystem profile has CLI and filesystem witnesses. Timing requires a reviewed workload with filesystem layout, file sizes and host cache state recorded.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": [
+        "fs-df-mount-type"
+      ]
+    },
+    {
+      "command": "du",
+      "disposition": "not-timed",
+      "reason": "The portable filesystem profile has CLI and filesystem witnesses. Timing requires a reviewed workload with filesystem layout, file sizes and host cache state recorded.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": [
+        "fs-du-bytes"
+      ]
+    },
+    {
+      "command": "install",
+      "disposition": "not-timed",
+      "reason": "The portable filesystem profile has CLI and filesystem witnesses. Timing requires a reviewed workload with filesystem layout, file sizes and host cache state recorded.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": [
+        "fs-install-file"
+      ]
+    },
+    {
+      "command": "readlink",
+      "disposition": "not-timed",
+      "reason": "The portable filesystem profile has CLI and filesystem witnesses. Timing requires a reviewed workload with filesystem layout, file sizes and host cache state recorded.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": [
+        "fs-readlink-existing"
+      ]
+    },
+    {
+      "command": "stat",
+      "disposition": "not-timed",
+      "reason": "The portable filesystem profile has CLI and filesystem witnesses. Timing requires a reviewed workload with filesystem layout, file sizes and host cache state recorded.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": [
+        "fs-stat-file"
+      ]
+    },
+    {
+      "command": "truncate",
+      "disposition": "not-timed",
+      "reason": "The portable filesystem profile has CLI and filesystem witnesses. Timing requires a reviewed workload with filesystem layout, file sizes and host cache state recorded.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": [
+        "fs-truncate-zero"
       ]
     }
   ],
@@ -3838,5 +4040,5 @@
       ]
     }
   ],
-  "not_timed_command_count": 24
+  "not_timed_command_count": 47
 }

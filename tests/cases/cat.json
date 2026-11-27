@@ -2,6 +2,50 @@
   "schema": 2,
   "cases": [
     {
+      "id": "cat-show-ends-split-crlf",
+      "command": "cat",
+      "args": [
+        "-E",
+        "first",
+        "second"
+      ],
+      "files": [
+        {
+          "path": "first",
+          "content_hex": "410d"
+        },
+        {
+          "path": "second",
+          "content_hex": "0a420d580d"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_hex": "415e4d240a420d580d",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "cat-windows-text-modes",
+      "command": "cat",
+      "isolated": true,
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "windows"
+      ],
+      "timeout_ms": 120000,
+      "source_version": "MSYS2 GNU coreutils on windows-2025; executable version retained with raw stream receipts.",
+      "diagnostic_reason": "Compare raw streams and status for named files, redirected files and pipes with mixed line endings, NUL, invalid UTF-8 and Ctrl-Z."
+    },
+    {
       "id": "phase0-cat-double-dash",
       "command": "cat",
       "args": [
@@ -205,7 +249,7 @@
         "help"
       ],
       "source_version": "workspace cli/cat@0.2.5 metadata contract",
-      "expected_stdout_text": "Usage: cat [OPTION]... [FILE]...\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nConcatenate FILEs (or stdin) to standard output, byte-transparently:\nno decoding, no newline normalization. Use '-' or no file for stdin.\n\n  -n, --number             Number all output lines.\n  -b, --number-nonblank    Number nonempty output lines (overrides -n).\n  -s, --squeeze-blank      Suppress repeated empty output lines.\n  -T, --show-tabs          Display TAB as ^I.\n  -E, --show-ends          Display '$' at the end of each line.\n  -v, --show-nonprinting   Display nonprinting bytes visibly.\n  -A, --show-all           Equivalent to -vET.\n  -e                       Equivalent to -vE.\n  -t                       Equivalent to -vT.\n  -u, --unbuffered         Accepted no-op (-u is GNU; long spelling is a project alias).\n\nProject aliases: --show-ends-nonprinting = -e; --show-tabs-nonprinting = -t.\n--unbuffered is a project alias of the GNU -u no-op; -h is a project help alias.\n\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+      "expected_stdout_text": "Usage: cat [OPTION]... [FILE]...\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nConcatenate FILEs (or stdin) to standard output, byte-transparently:\nno decoding, no newline normalization. Use '-' or no file for stdin.\n\n  -n, --number             Number all output lines.\n  -b, --number-nonblank    Number nonempty output lines (overrides -n).\n  -s, --squeeze-blank      Suppress repeated empty output lines.\n  -T, --show-tabs          Display TAB as ^I.\n  -E, --show-ends          Display '$' at each LF; show CRLF as '^M$'.\n  -v, --show-nonprinting   Display nonprinting bytes visibly.\n  -A, --show-all           Equivalent to -vET.\n  -e                       Equivalent to -vE.\n  -t                       Equivalent to -vT.\n  -u, --unbuffered         Accepted no-op (-u is GNU; long spelling is a project alias).\n\nProject aliases: --show-ends-nonprinting = -e; --show-tabs-nonprinting = -t.\n--unbuffered is a project alias of the GNU -u no-op; -h is a project help alias.\n\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
       "expected_stderr_text": ""
     },
     {
@@ -224,7 +268,7 @@
         "version"
       ],
       "source_version": "workspace cli/cat@0.2.5 metadata contract",
-      "expected_stdout_text": "cat 0.2.8\n",
+      "expected_stdout_text": "cat 0.2.9\n",
       "expected_stderr_text": ""
     },
     {
@@ -434,7 +478,7 @@
         "help"
       ],
       "source_version": "Issue #22 project metadata alias: exact help bytes, stdout, status0 and empty stderr.",
-      "expected_stdout_text": "Usage: cat [OPTION]... [FILE]...\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nConcatenate FILEs (or stdin) to standard output, byte-transparently:\nno decoding, no newline normalization. Use '-' or no file for stdin.\n\n  -n, --number             Number all output lines.\n  -b, --number-nonblank    Number nonempty output lines (overrides -n).\n  -s, --squeeze-blank      Suppress repeated empty output lines.\n  -T, --show-tabs          Display TAB as ^I.\n  -E, --show-ends          Display '$' at the end of each line.\n  -v, --show-nonprinting   Display nonprinting bytes visibly.\n  -A, --show-all           Equivalent to -vET.\n  -e                       Equivalent to -vE.\n  -t                       Equivalent to -vT.\n  -u, --unbuffered         Accepted no-op (-u is GNU; long spelling is a project alias).\n\nProject aliases: --show-ends-nonprinting = -e; --show-tabs-nonprinting = -t.\n--unbuffered is a project alias of the GNU -u no-op; -h is a project help alias.\n\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+      "expected_stdout_text": "Usage: cat [OPTION]... [FILE]...\n  -h, --help      display this help and exit\n      --version   display version and exit\n\nConcatenate FILEs (or stdin) to standard output, byte-transparently:\nno decoding, no newline normalization. Use '-' or no file for stdin.\n\n  -n, --number             Number all output lines.\n  -b, --number-nonblank    Number nonempty output lines (overrides -n).\n  -s, --squeeze-blank      Suppress repeated empty output lines.\n  -T, --show-tabs          Display TAB as ^I.\n  -E, --show-ends          Display '$' at each LF; show CRLF as '^M$'.\n  -v, --show-nonprinting   Display nonprinting bytes visibly.\n  -A, --show-all           Equivalent to -vET.\n  -e                       Equivalent to -vE.\n  -t                       Equivalent to -vT.\n  -u, --unbuffered         Accepted no-op (-u is GNU; long spelling is a project alias).\n\nProject aliases: --show-ends-nonprinting = -e; --show-tabs-nonprinting = -t.\n--unbuffered is a project alias of the GNU -u no-op; -h is a project help alias.\n\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
       "expected_stderr_text": "",
       "aliases": [],
       "oracle": false

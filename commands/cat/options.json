@@ -12,7 +12,14 @@
     "squeeze-blank",
     "unbuffered"
   ],
-  "readme_options": ["number","number-nonblank","squeeze-blank","show-all","help","version"],
+  "readme_options": [
+    "number",
+    "number-nonblank",
+    "squeeze-blank",
+    "show-all",
+    "help",
+    "version"
+  ],
   "options": [
     {
       "short": "n",
@@ -77,7 +84,7 @@
     {
       "short": "E",
       "name": "show-ends",
-      "description": "Display $ before each newline.",
+      "description": "Display '$' at each LF and '^M' for the CR immediately before it.",
       "aliases": [
         "-E",
         "--show-ends"
@@ -86,7 +93,7 @@
       "repeatable": false,
       "allow_attached": false,
       "help_lines": [
-        "  -E, --show-ends          Display '$' at the end of each line."
+        "  -E, --show-ends          Display '$' at each LF; show CRLF as '^M$'."
       ]
     },
     {

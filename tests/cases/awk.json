@@ -1,0 +1,790 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "awk-dynamic-getline-with-main-stdin",
+      "command": "awk",
+      "args": [
+        "-v",
+        "path=names",
+        "{ if ((getline extra < path) > 0) print $0, extra }"
+      ],
+      "stdin_text": "one\ntwo\n",
+      "files": [
+        {
+          "path": "names",
+          "content_text": "a\nb\n"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "one a\ntwo b\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-dynamic-getline-from-stdin",
+      "command": "awk",
+      "args": [
+        "-v",
+        "path=/dev/stdin",
+        "BEGIN { getline first < path; print first }"
+      ],
+      "stdin_text": "first\nsecond\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "first\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-rules-fields-and-counters",
+      "command": "awk",
+      "args": [
+        "-F:",
+        "-v",
+        "prefix=row",
+        "BEGIN { print \"start\" } $2 > 1 { printf \"%s:%d:%s\\n\",prefix,NR,$1 } END { print \"end\",NR }"
+      ],
+      "stdin_text": "aa:2\nbb:1\ncc:3",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "start\nrow:1:aa\nrow:3:cc\nend 3\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-default-action-regex",
+      "command": "awk",
+      "args": [
+        "/ab+/"
+      ],
+      "stdin_text": "ab\nba\nabbb\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "ab\nabbb\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-function-array-and-next",
+      "command": "awk",
+      "args": [
+        "function twice(x) { return 2*x } $1 == \"skip\" { next } { a[$1] += twice($2) } END { print a[\"y\"],a[\"x\"] }"
+      ],
+      "stdin_text": "x 1\nskip 1\ny 3\nx 4\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "6 10\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-field-rebuild",
+      "command": "awk",
+      "args": [
+        "BEGIN { OFS=\":\" } { $2=toupper($2); print NF,$0 }"
+      ],
+      "stdin_text": "a two\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "2:a:TWO\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-range",
+      "command": "awk",
+      "args": [
+        "/start/,/end/"
+      ],
+      "stdin_text": "no\nstart\nmiddle\nend\nno\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "start\nmiddle\nend\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-multiple-files-assignment",
+      "command": "awk",
+      "args": [
+        "{ print FILENAME,FNR,NR,flag,$1 }",
+        "flag=A",
+        "one",
+        "flag=B",
+        "two"
+      ],
+      "files": [
+        {
+          "path": "one",
+          "content_text": "u\nv\n"
+        },
+        {
+          "path": "two",
+          "content_text": "w"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "one 1 1 A u\none 2 2 A v\ntwo 1 3 B w\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-mutable-argv",
+      "command": "awk",
+      "args": [
+        "BEGIN { delete ARGV[1] } { print FILENAME,$0 }",
+        "omit",
+        "keep"
+      ],
+      "files": [
+        {
+          "path": "keep",
+          "content_text": "x\n"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "keep x\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-nextfile",
+      "command": "awk",
+      "args": [
+        "{ print FILENAME,FNR,$0; nextfile }",
+        "one",
+        "two"
+      ],
+      "files": [
+        {
+          "path": "one",
+          "content_text": "first\nextra\n"
+        },
+        {
+          "path": "two",
+          "content_text": "second\nextra\n"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "one 1 first\ntwo 1 second\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-exit-with-end",
+      "command": "awk",
+      "args": [
+        "{ print; exit 7 } END { print \"done\" }"
+      ],
+      "stdin_text": "first\nsecond\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 7,
+      "expected_stdout_text": "first\ndone\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-program-files-and-source",
+      "command": "awk",
+      "args": [
+        "-f",
+        "lib",
+        "-e",
+        "{print twice($1)}"
+      ],
+      "stdin_text": "3\n",
+      "files": [
+        {
+          "path": "lib",
+          "content_text": "function twice(x){return x*2}\n"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "6\n",
+      "expected_stderr_text": "",
+      "coverage": [
+        "source",
+        "file"
+      ]
+    },
+    {
+      "id": "awk-option-order",
+      "command": "awk",
+      "args": [
+        "-F:",
+        "-vFS=,",
+        "{print NF,$2}"
+      ],
+      "stdin_text": "a,b,c\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "3 b\n",
+      "expected_stderr_text": "",
+      "coverage": [
+        "assign",
+        "field-separator"
+      ]
+    },
+    {
+      "id": "awk-custom-rs",
+      "command": "awk",
+      "args": [
+        "-v",
+        "RS=:",
+        "{ print NR,\"[\" $0 \"]\" }"
+      ],
+      "stdin_text": "abc:def:ghi",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "1 [abc]\n2 [def]\n3 [ghi]\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-paragraphs",
+      "command": "awk",
+      "args": [
+        "BEGIN {RS=\"\"} {print NR,NF,$1}"
+      ],
+      "stdin_text": "a b\nc\n\nx\n\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "1 3 a\n2 1 x\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-getline-main",
+      "command": "awk",
+      "args": [
+        "BEGIN { getline first; print \"first\",NR,first } { print \"rest\",NR,$0 }"
+      ],
+      "stdin_text": "one\ntwo\nthree\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "first 1 one\nrest 2 two\nrest 3 three\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-getline-redirect",
+      "command": "awk",
+      "args": [
+        "BEGIN { while ((getline x < \"input\") > 0) print x; print close(\"input\") }"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "a\nb\n"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "a\nb\n0\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-redirection-close-append",
+      "command": "awk",
+      "args": [
+        "BEGIN {print \"new\" > \"out\"; print close(\"out\"); print \"tail\" >> \"out\"; close(\"out\"); while ((getline x < \"out\") > 0) print x}"
+      ],
+      "files": [
+        {
+          "path": "out",
+          "content_text": "old\n"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_files": [
+        {
+          "path": "out",
+          "content_text": "new\ntail\n"
+        }
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "0\nnew\ntail\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-stderr-before-exit",
+      "command": "awk",
+      "args": [
+        "BEGIN {print \"notice\" > \"/dev/stderr\"; print \"out\"; exit 4}"
+      ],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 4,
+      "expected_stdout_text": "out\n",
+      "expected_stderr_text": "notice\n"
+    },
+    {
+      "id": "awk-utf8-fields",
+      "command": "awk",
+      "args": [
+        "{ print NF, length($1), $2 }"
+      ],
+      "stdin_text": "猫星 café\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "2 2 café\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-stdin-script-with-file",
+      "command": "awk",
+      "args": [
+        "-f",
+        "-",
+        "data"
+      ],
+      "stdin_text": "{ print $2 }\n",
+      "files": [
+        {
+          "path": "data",
+          "content_text": "alpha beta\n"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "beta\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-environment",
+      "command": "awk",
+      "args": [
+        "BEGIN { print ENVIRON[\"CMD_AWK_TEST\"] }"
+      ],
+      "files": [],
+      "environment": {
+        "CMD_AWK_TEST": "visible"
+      },
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "visible\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-cr-preserved",
+      "command": "awk",
+      "args": [
+        "{ print length($0) }"
+      ],
+      "stdin_text": "a\r\nb\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "2\n1\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-cli-double-dash",
+      "command": "awk",
+      "args": [
+        "--",
+        "{ print $1 }"
+      ],
+      "stdin_text": "literal\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "literal\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-subst-match",
+      "command": "awk",
+      "args": [
+        "{gsub(/[aeiou]/,\"_\"); print $0,match($0,/b/),RSTART,RLENGTH}"
+      ],
+      "stdin_text": "abracadabra\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "_br_c_d_br_ 2 2 1\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-invalid-program",
+      "command": "awk",
+      "args": [
+        "BEGIN {"
+      ],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "cli/awk development profile",
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "awk: unexpected end\n"
+    },
+    {
+      "id": "awk-invalid-utf8",
+      "command": "awk",
+      "args": [
+        "{ print }"
+      ],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "cli/awk development profile",
+      "stdin_hex": "610aff0a",
+      "expected_status": 2,
+      "expected_stdout_text": "a\n",
+      "expected_stderr_text": "awk: invalid UTF-8 input\n"
+    },
+    {
+      "id": "awk-pipe-writer-rejected",
+      "command": "awk",
+      "args": [
+        "BEGIN {print \"before\"; print 1 | \"cat\"}"
+      ],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "cli/awk development profile",
+      "expected_status": 2,
+      "expected_stdout_text": "before\n",
+      "expected_stderr_text": "awk: process pipes and system() are unavailable in this awk profile\n"
+    },
+    {
+      "id": "awk-pipe-reader-rejected",
+      "command": "awk",
+      "args": [
+        "BEGIN {\"cat\" | getline x; print x}"
+      ],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "cli/awk development profile",
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "awk: process pipes and system() are unavailable in this awk profile\n"
+    },
+    {
+      "id": "awk-system-rejected",
+      "command": "awk",
+      "args": [
+        "BEGIN { print \"before\"; system(\"echo test\") }"
+      ],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "cli/awk development profile",
+      "expected_status": 2,
+      "expected_stdout_text": "before\n",
+      "expected_stderr_text": "awk: process pipes and system() are unavailable in this awk profile\n"
+    },
+    {
+      "id": "awk-invalid-variable",
+      "command": "awk",
+      "args": [
+        "-v",
+        "x-y=2",
+        "BEGIN{print 1}"
+      ],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "cli/awk development profile",
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "awk: expected NAME=VALUE: x-y=2\n"
+    },
+    {
+      "id": "awk-missing-program",
+      "command": "awk",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "cli/awk development profile",
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "awk: missing program\n"
+    },
+    {
+      "id": "awk-unknown-option",
+      "command": "awk",
+      "args": [
+        "--unavailable"
+      ],
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "cli/awk development profile",
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "awk: unknown option\n"
+    },
+    {
+      "id": "awk-csv-multiline",
+      "command": "awk",
+      "args": [
+        "--csv",
+        "{ print NR,NF,$1,\"[\" $2 \"]\" }"
+      ],
+      "stdin_text": "one,\"two,three\"\nnext,\"a\nb\"\n",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "1 2 one [two,three]\n2 2 next [a\nb]\n",
+      "expected_stderr_text": "",
+      "coverage": [
+        "csv"
+      ]
+    },
+    {
+      "id": "awk-file-argument-after-script",
+      "command": "awk",
+      "args": [
+        "{print $0}",
+        "--help"
+      ],
+      "files": [
+        {
+          "path": "--help",
+          "content_text": "operand\n"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "operand\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-regexp-rs",
+      "command": "awk",
+      "args": [
+        "BEGIN{RS=\"[,:]+\"}{print \"[\" $0 \"]\", RT}"
+      ],
+      "stdin_text": "a,b::c",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "[a] ,\n[b] ::\n[c] \n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-utf8-bom",
+      "command": "awk",
+      "args": [
+        "{print length($0)}"
+      ],
+      "stdin_text": "﻿a\n",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "2\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-read-and-write-same-program",
+      "command": "awk",
+      "args": [
+        "{print $2 >> $1;close($1)}END{while((getline x < \"g\")>0)print x}"
+      ],
+      "stdin_text": "g hello\ng world\n",
+      "files": [
+        {
+          "path": "g",
+          "content_text": ""
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_files": [
+        {
+          "path": "g",
+          "content_text": "hello\nworld\n"
+        }
+      ],
+      "expected_stdout_text": "hello\nworld\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-version",
+      "command": "awk",
+      "args": [
+        "--version"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "cli/awk development profile",
+      "expected_status": 0,
+      "coverage": [
+        "version"
+      ],
+      "expected_stdout_text": "awk 0.1.0\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-help",
+      "command": "awk",
+      "args": [
+        "--help"
+      ],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "source_version": "cli/awk development profile",
+      "expected_status": 0,
+      "coverage": [
+        "help"
+      ],
+      "expected_stdout_text": "Usage: awk [-F SEP] [-v NAME=VALUE] [-f SCRIPT] [PROGRAM] [NAME=VALUE|FILE]...\nRun a pattern-action program over UTF-8 input. Use - for stdin.\n  -F, --field-separator VALUE  Set the field separator.\n  -v, --assign VALUE  Assign a variable before BEGIN.\n  -f, --file VALUE  Read program text from a file.\n  -e, --source VALUE  Add a program fragment.\n  --csv  Read quoted CSV records and fields.\n  --help  Show help.\n  --version  Show the version.\n",
+      "expected_stderr_text": ""
+    }
+  ]
+}

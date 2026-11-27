@@ -1,0 +1,36 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/core/procfs"
+
+// Values
+pub async fn credentials() -> Credentials
+
+pub async fn kernel_field(UtsField) -> String
+
+pub async fn local_names(NameDatabase, Array[String]) -> Array[String]
+
+// Errors
+
+// Types and methods
+pub(all) struct Credentials {
+  real_uid : String
+  effective_uid : String
+  real_gid : String
+  effective_gid : String
+  groups : Array[String]
+}
+
+pub(all) enum NameDatabase {
+  Passwd
+  Group
+}
+
+pub(all) enum UtsField {
+  System
+  Node
+  Release
+  Version
+}
+
+// Type aliases
+
+// Traits

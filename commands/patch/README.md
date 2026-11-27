@@ -37,6 +37,6 @@ Use `--help` for the complete option list.
 Build from source with the MoonBit 1.0 RC1 toolchain.
 
 - Rewriting existing files and named --output paths are rejected because source mode metadata is unavailable. Use --dry-run or --output=-; creating a new patch target remains supported.
-- Existing reject files cannot be replaced. Binary patches and extended rename/mode patch formats are unsupported.
+- A default `.rej` file is replaced with a new regular file. Other links to the previous file retain their contents. An explicit `-r FILE` requires a new file. Binary patches and extended rename/mode patch formats are unsupported.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

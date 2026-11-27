@@ -36,7 +36,7 @@ Use `--help` for the complete option list.
 
 ## Notes
 
-- Cross-filesystem moves are unsupported. Windows rejects moving symlinks/junctions and backing up destination links.
+- `--no-copy` moves by rename. If the rename fails after `-b` saved the destination, its previous contents remain at the backup name. The default move restores that backup on failure. Cross-filesystem copying remains unsupported. Windows rejects moving symlinks/junctions and backing up destination links.
 - On POSIX, `-u` skips distinct files with equal timestamps and `-i` prompts before replacing them. Without backups, both detect hard-link aliases before moving. Windows retains the equal-time refusal because the filesystem type cannot be verified.
 - If both a move and backup restoration fail, inspect the destination and backup paths named in the diagnostic before retrying.
 

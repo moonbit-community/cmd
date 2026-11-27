@@ -62,6 +62,7 @@ pub fn compile(
 ) -> Pattern raise {
   let parser = Parser::{
     source: pattern,
+    scalar_sets: None,
     extended,
     emacs,
     grep_syntax,
@@ -176,7 +177,7 @@ pub fn Pattern::rfind_span(
       continue
     }
     if self.backreferences {
-      match self.reference_result(value, start, false, false, true) {
+      match self.reference_result(ByteText(value), start, false, false, true) {
         Matched(hit) => return Some((hit.start, hit.end))
         InvalidSelection => return None
         Miss => ()

@@ -1,10 +1,11 @@
 {
   "schema": 1,
   "command": "tail",
-  "help": "Usage: tail [-fz] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]\n{{help:zero-terminated:0}}\nStreamed last-N selection retains selected records, including an unfinished final record.\n{{help:help:0}}\n{{help:version:0}}\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+  "help": "Usage: tail [-fFz] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]\n{{help:follow-name:0}}\n{{help:zero-terminated:0}}\nStreamed last-N selection retains selected records, including an unfinished final record.\n{{help:help:0}}\n{{help:version:0}}\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
   "catalog_options": [
     "bytes",
     "follow",
+    "follow-name",
     "lines",
     "quiet",
     "sleep-interval",
@@ -47,6 +48,16 @@
       "short": "f",
       "repeatable": true,
       "allow_attached": false
+    },
+    {
+      "name": "follow-name",
+      "aliases": ["-F", "--follow-name"],
+      "value": "none",
+      "description": "Follow regular files by name and retry on Linux and macOS.",
+      "short": "F",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": ["  -F  follow regular files by name and retry on Linux and macOS"]
     },
     {
       "name": "zero-terminated",
@@ -146,6 +157,7 @@
         "quiet",
         "verbose",
         "follow",
+        "follow-name",
         "zero-terminated",
         "lines",
         "bytes",

@@ -79,8 +79,10 @@ fn render_line(
   if number_lines && (!number_nonblank || nonblank) {
     append_number(output, number)
   }
-  for byte in line {
-    if show_nonprinting {
+  for index, byte in line {
+    if byte == b'\r' && terminated && show_ends && index + 1 == line.length() {
+      append_text(output, "^M")
+    } else if show_nonprinting {
       append_visible_byte(output, byte, show_tabs)
     } else if show_tabs && byte == b'\t' {
       append_text(output, "^I")

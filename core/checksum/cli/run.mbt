@@ -142,6 +142,10 @@ async fn run_command(
   }
   let tag_choice = parsed.last_occurrence(["tag", "untagged"])
   let binary_choice = parsed.last_occurrence(["binary", "text"])
+  let binary_marker = match binary_choice {
+    Some(choice) => choice == "binary"
+    None => @platform.is_windows()
+  }
   if check && tag_choice == Some("tag") {
     return usage_error(
       command, "the --tag option is meaningless when verifying checksums",
@@ -257,15 +261,7 @@ async fn run_command(
       } else {
         @stdio.stdout.text.write(
           output_record(
-            spec,
-            digest,
-            count,
-            source,
-            implicit,
-            tagged,
-            binary_choice == Some("binary"),
-            zero,
-            base64,
+            spec, digest, count, source, implicit, tagged, binary_marker, zero, base64,
           ),
         )
       }

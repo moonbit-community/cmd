@@ -1,6 +1,7 @@
 import {
   "cli/core/checksum",
   "cli/core/cli" @args,
+  "cli/core/platform",
   "cli/core/stream",
   "moonbitlang/core/encoding/base64",
   "moonbitlang/core/encoding/hex",

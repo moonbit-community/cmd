@@ -112,12 +112,12 @@
         "--text"
       ],
       "value": "none",
-      "description": "mark untagged output as text (default)",
+      "description": "mark untagged output as text (POSIX default)",
       "short": "t",
       "repeatable": true,
       "allow_attached": false,
       "help_lines": [
-        "  -t, --text            mark untagged output as text (default)"
+        "  -t, --text            mark untagged output as text (POSIX default)"
       ]
     },
     {

@@ -2,6 +2,52 @@
   "schema": 2,
   "cases": [
     {
+      "command": "tail",
+      "args": [],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "normalizations": [],
+      "expected_status": 0,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "stdin_text": "",
+      "id": "tail-name-rotation",
+      "comparison": "scenario",
+      "oracle": true,
+      "host_platforms": [
+        "posix"
+      ],
+      "timeout_ms": 45000,
+      "coverage": [
+        "follow-name"
+      ],
+      "source_version": "GNU coreutils tail -F. Line-by-line child observations synchronize each rotation and verify unread offsets."
+    },
+    {
+      "command": "tail",
+      "args": [
+        "-F",
+        "input"
+      ],
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "normalizations": [],
+      "expected_status": 1,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "tail: unsupported capability: comparable Windows file identities\n",
+      "stdin_text": "",
+      "id": "tail-name-windows",
+      "comparison": "contract",
+      "oracle": false,
+      "host_platforms": [
+        "windows"
+      ]
+    },
+    {
       "id": "phase3-tail-line-count",
       "command": "tail",
       "args": [
@@ -131,9 +177,8 @@
       "expected_stdout_text": "",
       "expected_files": [],
       "source_version": "Issue #22: ordinary usage failure status corrected to the fixed command baseline; capability refusals remain separate.",
-      "expected_stderr_contains": "unknown short option",
-      "diagnostic_reason": "OS path formatting may vary; status, empty stdout and declared filesystem effects remain exact.",
-      "expected_rejection": "unknown short option"
+      "expected_stderr_text": "tail: cannot follow '-' by name\n",
+      "expected_rejection": "cannot follow '-' by name"
     },
     {
       "id": "compat-catalog-line-260",
@@ -209,7 +254,7 @@
         "help"
       ],
       "source_version": "workspace cli/tail@0.2.5 metadata contract",
-      "expected_stdout_text": "Usage: tail [-fz] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]\n  -z, --zero-terminated  use NUL as the record delimiter\nStreamed last-N selection retains selected records, including an unfinished final record.\n      --help      display this help and exit\n      --version   display version and exit\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+      "expected_stdout_text": "Usage: tail [-fFz] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]\n  -F  follow regular files by name and retry on Linux and macOS\n  -z, --zero-terminated  use NUL as the record delimiter\nStreamed last-N selection retains selected records, including an unfinished final record.\n      --help      display this help and exit\n      --version   display version and exit\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
       "expected_stderr_text": ""
     },
     {
@@ -228,7 +273,7 @@
         "version"
       ],
       "source_version": "workspace cli/tail@0.2.5 metadata contract",
-      "expected_stdout_text": "tail 0.2.8\n",
+      "expected_stdout_text": "tail 0.2.9\n",
       "expected_stderr_text": ""
     },
     {

@@ -2,6 +2,7 @@ import {
   "cli/core/bytesearch",
   "cli/core/fswalk",
   "cli/core/bytere",
+  "cli/core/textwidth",
   "cli/core/cli",
   "cli/core/stream",
   "moonbitlang/core/async/fs",

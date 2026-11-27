@@ -2,9 +2,49 @@
   "schema": 2,
   "cases": [
     {
-      "id": "checksum-sha512sum-stdin",
+      "id": "sha512sum-posix-default-marker",
       "command": "sha512sum",
       "args": [],
+      "files": [],
+      "stdin_text": "",
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e  -\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 on POSIX"
+    },
+    {
+      "id": "sha512sum-windows-checksum-modes",
+      "command": "sha512sum",
+      "isolated": true,
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "coverage": [
+        "-b",
+        "-t"
+      ],
+      "host_platforms": [
+        "windows"
+      ],
+      "timeout_ms": 120000,
+      "diagnostic_reason": "Compare raw output with MSYS2 GNU checksums for named files, redirected files and pipes.",
+      "source_version": "MSYS2 GNU coreutils on windows-2025; exact version retained with raw streams."
+    },
+    {
+      "id": "checksum-sha512sum-stdin",
+      "command": "sha512sum",
+      "args": ["-t"],
       "oracle": true,
       "source_version": "GNU coreutils 9.11",
       "files": [],
@@ -113,7 +153,7 @@
       "environment": {},
       "normalizations": [],
       "expected_status": 0,
-      "expected_stdout_text": "sha512sum 0.1.7\n",
+      "expected_stdout_text": "sha512sum 0.1.8\n",
       "expected_stderr_text": "",
       "comparison": "contract",
       "source_version": "workspace cli/sha512sum@0.1.4 metadata contract",
@@ -141,7 +181,7 @@
         "help"
       ],
       "source_version": "workspace cli/sha512sum@0.1.4 metadata contract",
-      "expected_stdout_text": "Usage: sha512sum [OPTION]... [FILE]...\nPrint or check checksums. With no FILE, or FILE -, read stdin.\n\n  -b, --binary          mark untagged output as binary\n  -t, --text            mark untagged output as text (default)\n      --tag             print BSD tagged records\n  -c, --check           read checksum records and verify files\n  -z, --zero            end output records with NUL; disable escaping\n      --ignore-missing  skip missing files when checking\n      --quiet           suppress successful verification output\n      --status          suppress verification results and summaries\n      --strict          fail if a checksum line is malformed\n  -w, --warn            warn for each malformed checksum line\n      --help            display this help and exit\n      --version         display version and exit\n\nInput bytes are unchanged by -b or -t on every supported platform.\n",
+      "expected_stdout_text": "Usage: sha512sum [OPTION]... [FILE]...\nPrint or check checksums. With no FILE, or FILE -, read stdin.\n\n  -b, --binary          mark untagged output as binary\n  -t, --text            mark untagged output as text (POSIX default)\n      --tag             print BSD tagged records\n  -c, --check           read checksum records and verify files\n  -z, --zero            end output records with NUL; disable escaping\n      --ignore-missing  skip missing files when checking\n      --quiet           suppress successful verification output\n      --status          suppress verification results and summaries\n      --strict          fail if a checksum line is malformed\n  -w, --warn            warn for each malformed checksum line\n      --help            display this help and exit\n      --version         display version and exit\n\nInput bytes are unchanged by -b or -t on every supported platform.\n",
       "expected_stderr_text": ""
     },
     {
@@ -646,6 +686,7 @@
       "id": "coverage-sha512sum-zero-record",
       "command": "sha512sum",
       "args": [
+        "-t",
         "-z",
         "payload"
       ],

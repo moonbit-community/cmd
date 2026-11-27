@@ -243,19 +243,27 @@ async fn run(args : ArrayView[String]) -> Int32 {
           }
       }
     }
-    let reject_name = parsed
-      .last_value("reject-file")
-      .unwrap_or(parsed.last_value("output").unwrap_or(label) + ".rej")
+    let explicit_reject = parsed.last_value("reject-file")
+    let reject_name = explicit_reject.unwrap_or(
+      parsed.last_value("output").unwrap_or(label) + ".rej",
+    )
     let reject_path = @fsops.join(directory, reject_name)
     if rejected > 0 {
       failed = true
       if !dry_run &&
         reject_name != "-" &&
         !reject_outputs.contains(reject_path) &&
-        @fsops.kind_if_exists(reject_path) is Some(_) {
-        raise @hunks.PatchError(
-          "replacing an existing reject file requires public file identity; choose a new --reject-file",
-        )
+        @fsops.kind_if_exists(reject_path) is Some(existing) {
+        if explicit_reject is Some(_) {
+          raise @hunks.PatchError(
+            "existing --reject-file requires no-follow truncation; choose a new --reject-file",
+          )
+        }
+        if existing != Regular && existing != SymLink {
+          raise @hunks.PatchError(
+            "unsupported reject file type: '\{reject_name}'",
+          )
+        }
       }
     }
     if !dry_run &&
@@ -315,9 +323,10 @@ async fn run(args : ArrayView[String]) -> Int32 {
         }
     }
     if rejected > 0 && reject_name != "-" {
-      let reject = match reject_outputs.get(reject_path) {
-        Some(file) => file
-        None => {
+      let data = @hunks.reject_bytes(patch, result.results, actual_reverse)
+      match reject_outputs.get(reject_path) {
+        Some(file) => file.write(data)
+        None if explicit_reject is Some(_) => {
           let file = @fs.open(
             reject_path,
             mode=WriteOnly,
@@ -325,10 +334,27 @@ async fn run(args : ArrayView[String]) -> Int32 {
             permission=0o666,
           )
           reject_outputs[reject_path] = file
-          file
+          file.write(data)
+        }
+        None => {
+          let temporary = @tempio.Directory::new(
+            prefix=".patch-",
+            parent=Some(@fsops.dirname(reject_path)),
+          )
+          defer temporary.close()
+          let staged = temporary.path() + "/reject"
+          let file = @fs.open(
+            staged,
+            mode=WriteOnly,
+            create_mode=CreateNew,
+            permission=0o666,
+          )
+          errdefer file.close()
+          file.write(data)
+          @fs.rename(staged, reject_path, replace=true)
+          reject_outputs[reject_path] = file
         }
       }
-      reject.write(@hunks.reject_bytes(patch, result.results, actual_reverse))
     }
   }
   if failed {

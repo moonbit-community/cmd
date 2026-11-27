@@ -30,7 +30,8 @@ Use `--help` for the complete option list.
 ## Notes
 
 - Windows permission changes and --reference are unsupported.
-- Symbolic modes reject incremental changes, omitted classes, X/s/t, permission copies, directories and symlinks. A command-line directory link changes only its target directory's mode.
+- Regular files accept symbolic expressions whose result is independent of their initial mode. For example, `a=rw,u+x` sets 0766 and `u=rw,g=u,o=` sets 0660. Explicit classes, permission copies, conditional execute and special bits are supported. A bare `u+x` still needs the existing bits.
+- Symbolic expressions require regular-file operands. Numeric modes can change directories.
 
 Build from source with the MoonBit 1.0 RC1 toolchain.
 

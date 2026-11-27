@@ -190,17 +190,14 @@ fn admission_has_process_authority(manifest : String) -> Bool raise {
 ///|
 async fn check_admission(root : String, failures : Array[String]) -> Unit {
   let expected_restricted = [
-    "chmod", "curl", "env", "find", "make", "rg", "sh", "split", "timeout", "typst",
-    "wget", "xargs",
+    "awk", "chmod", "curl", "env", "find", "install", "make", "rg", "serve", "sh",
+    "split", "timeout", "typst", "wget", "xargs",
   ]
   let catalog = @catalog.commands()
-  let mut default_count = 0
-  let mut restricted_count = 0
+  let restricted : Array[String] = []
   for contract in catalog {
     if contract.tier == Restricted {
-      restricted_count += 1
-    } else {
-      default_count += 1
+      restricted.push(contract.name)
     }
     let manifest_path = root_path(
       root,
@@ -256,26 +253,10 @@ async fn check_admission(root : String, failures : Array[String]) -> Unit {
     }
   }
   record(
-    default_count == 69,
-    "default allow tier must contain 69 commands",
+    Set(restricted) == Set(expected_restricted),
+    "unexpected restricted command set: " + restricted.join(", "),
     failures,
   )
-  record(
-    restricted_count == 13,
-    "restricted tier must contain 13 commands",
-    failures,
-  )
-  for name in expected_restricted {
-    match @catalog.find(name) {
-      Some(contract) =>
-        record(
-          contract.tier == Restricted,
-          "\{name}: must remain restricted",
-          failures,
-        )
-      None => failures.push("\{name}: missing from command catalog")
-    }
-  }
   for name in ["make", "sh", "xargs"] {
     match @catalog.find(name) {
       Some(contract) =>

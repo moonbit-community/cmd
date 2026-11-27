@@ -232,11 +232,25 @@ pub async fn prepare_fixture(
           permission?=file.mode,
         )
     }
-    for (flag, time) in [("-a", file.atime), ("-m", file.mtime)] {
-      if time is Some(time) {
-        guard !(@async.platform is Windows) else {
-          fail("fixed timestamp fixture requires POSIX observer")
-        }
+    if @async.platform is Windows &&
+      (file.atime is Some(_) || file.mtime is Some(_)) {
+      let setup = run(
+        "powershell.exe",
+        [
+          "-NoProfile", "-NonInteractive", "-Command", "$ErrorActionPreference='Stop'; function Utc($value) { [DateTime]::SpecifyKind([DateTime]::ParseExact($value,'yyyyMMddHHmm.ss',[Globalization.CultureInfo]::InvariantCulture),[DateTimeKind]::Utc) }; $p=$env:MOONCMD_TIME_PATH; if ($env:MOONCMD_ATIME) { [IO.File]::SetLastAccessTimeUtc($p,(Utc $env:MOONCMD_ATIME)) }; if ($env:MOONCMD_MTIME) { [IO.File]::SetLastWriteTimeUtc($p,(Utc $env:MOONCMD_MTIME)) }",
+        ],
+        extra_env=Map([
+          ("MOONCMD_TIME_PATH", destination),
+          ("MOONCMD_ATIME", file.atime.unwrap_or("")),
+          ("MOONCMD_MTIME", file.mtime.unwrap_or("")),
+        ]),
+      )
+      guard setup.status == 0 else {
+        fail("fixed timestamp fixture failed: " + @utf8.decode(setup.stderr))
+      }
+    } else {
+      for (flag, time) in [("-a", file.atime), ("-m", file.mtime)] {
+        guard time is Some(time) else { continue }
         let set = run(
           "touch",
           [flag, "-t", time, destination],
@@ -422,6 +436,7 @@ pub async fn snapshot(
   preserve_identity~ : Bool = false,
   stat_path~ : String = "stat",
   readlink_path~ : String = "readlink",
+  unreadable_inputs~ : ArrayView[String] = [],
 ) -> Array[SnapshotEntry] {
   let entries : Array[SnapshotEntry] = []
   snapshot_into(root, "", entries, observe, stat_path, readlink_path)
@@ -430,10 +445,21 @@ pub async fn snapshot(
   for index in 0..<entries.length() {
     let entry = entries[index]
     if content && entry.kind == "file" {
-      let content = @fs.read_file(
-        @path.Path(root).join(Path(entry.path)).to_string(),
-        sync_timestamp=baseline && observe.contains("atime"),
-      ).binary()
+      let path = @path.Path(root).join(Path(entry.path)).to_string()
+      let sync_timestamp = baseline && observe.contains("atime")
+      let content = @fs.read_file(path, sync_timestamp~).binary() catch {
+        @os_error.OSError(_) as err if err.is_EACCES() &&
+          unreadable_inputs.contains(entry.path) => {
+          guard entry.metadata.get("mode") is Some(octal) else {
+            fail("reading a locked fixture requires its observed POSIX mode")
+          }
+          let mode = @string.parse_int(octal, radix=8)
+          @fs.chmod(path, mode | 0o400)
+          defer @async.protect_from_cancel(() => @fs.chmod(path, mode))
+          @fs.read_file(path, sync_timestamp~).binary()
+        }
+        error => raise error
+      }
       entries[index] = { ..entry, content, }
     }
   }

@@ -2,9 +2,49 @@
   "schema": 2,
   "cases": [
     {
-      "id": "phase3-sha256sum-stdin",
+      "id": "sha256sum-posix-default-marker",
       "command": "sha256sum",
       "args": [],
+      "files": [],
+      "stdin_text": "",
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  -\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 on POSIX"
+    },
+    {
+      "id": "sha256sum-windows-checksum-modes",
+      "command": "sha256sum",
+      "isolated": true,
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "coverage": [
+        "-b",
+        "-t"
+      ],
+      "host_platforms": [
+        "windows"
+      ],
+      "timeout_ms": 120000,
+      "diagnostic_reason": "Compare raw output with MSYS2 GNU checksums for named files, redirected files and pipes.",
+      "source_version": "MSYS2 GNU coreutils on windows-2025; exact version retained with raw streams."
+    },
+    {
+      "id": "phase3-sha256sum-stdin",
+      "command": "sha256sum",
+      "args": ["-t"],
       "stdin_text": "hello\n",
       "files": [],
       "environment": {},
@@ -193,7 +233,7 @@
     {
       "id": "compat-stdin-sha256sum",
       "command": "sha256sum",
-      "args": [],
+      "args": ["-t"],
       "files": [],
       "environment": {},
       "expected_status": 0,
@@ -248,7 +288,7 @@
         "help"
       ],
       "source_version": "workspace cli/sha256sum@0.2.4 metadata contract",
-      "expected_stdout_text": "Usage: sha256sum [OPTION]... [FILE]...\nPrint or check checksums. With no FILE, or FILE -, read stdin.\n\n  -b, --binary          mark untagged output as binary\n  -t, --text            mark untagged output as text (default)\n      --tag             print BSD tagged records\n  -c, --check           read checksum records and verify files\n  -z, --zero            end output records with NUL; disable escaping\n      --ignore-missing  skip missing files when checking\n      --quiet           suppress successful verification output\n      --status          suppress verification results and summaries\n      --strict          fail if a checksum line is malformed\n  -w, --warn            warn for each malformed checksum line\n      --help            display this help and exit\n      --version         display version and exit\n\nInput bytes are unchanged by -b or -t on every supported platform.\n",
+      "expected_stdout_text": "Usage: sha256sum [OPTION]... [FILE]...\nPrint or check checksums. With no FILE, or FILE -, read stdin.\n\n  -b, --binary          mark untagged output as binary\n  -t, --text            mark untagged output as text (POSIX default)\n      --tag             print BSD tagged records\n  -c, --check           read checksum records and verify files\n  -z, --zero            end output records with NUL; disable escaping\n      --ignore-missing  skip missing files when checking\n      --quiet           suppress successful verification output\n      --status          suppress verification results and summaries\n      --strict          fail if a checksum line is malformed\n  -w, --warn            warn for each malformed checksum line\n      --help            display this help and exit\n      --version         display version and exit\n\nInput bytes are unchanged by -b or -t on every supported platform.\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-catalog-line-226"
@@ -272,7 +312,7 @@
         "version"
       ],
       "source_version": "workspace cli/sha256sum@0.2.4 metadata contract",
-      "expected_stdout_text": "sha256sum 0.2.7\n",
+      "expected_stdout_text": "sha256sum 0.2.8\n",
       "expected_stderr_text": ""
     },
     {
@@ -343,6 +383,7 @@
       "id": "coverage-sha256sum-zero-record",
       "command": "sha256sum",
       "args": [
+        "-t",
         "-z",
         "payload"
       ],

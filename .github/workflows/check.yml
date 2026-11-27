@@ -163,6 +163,29 @@ jobs:
           submodules: recursive
           fetch-depth: 0
       - uses: ./.github/actions/setup-moonbit
+
+      - name: Install pinned Windows diffutils and ripgrep references
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $diff = 'diffutils-3.12-1-x86_64.pkg.tar.zst'
+          $diffArchive = Join-Path $env:RUNNER_TEMP $diff
+          curl.exe --fail --location --retry 3 --output $diffArchive "https://repo.msys2.org/msys/x86_64/$diff"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          if ((Get-FileHash -Algorithm SHA256 $diffArchive).Hash.ToLowerInvariant() -ne '7902c8ce3d4dd69a0f5e98dc9d5c83c17b23314ba486169db57ef6e2835ce3b6') { throw 'Windows diffutils archive checksum mismatch' }
+          & C:/msys64/usr/bin/bash.exe -lc 'pacman -U --noconfirm "$(cygpath -u "$RUNNER_TEMP")/diffutils-3.12-1-x86_64.pkg.tar.zst"'
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & C:/msys64/usr/bin/diff.exe --version
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $version = '15.1.0'
+          $package = "ripgrep-$version-x86_64-pc-windows-msvc"
+          $archive = Join-Path $env:RUNNER_TEMP "$package.zip"
+          curl.exe --fail --location --retry 3 --output $archive "https://github.com/BurntSushi/ripgrep/releases/download/$version/$package.zip"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $digest = (Get-FileHash -Algorithm SHA256 $archive).Hash.ToLowerInvariant()
+          if ($digest -ne '124510b94b6baa3380d051fdf4650eaa80a302c876d611e9dba0b2e18d87493a') { throw 'Windows ripgrep archive checksum mismatch' }
+          Expand-Archive -Path $archive -DestinationPath $env:RUNNER_TEMP
+          "CMD_WINDOWS_RG=$(Join-Path $env:RUNNER_TEMP "$package/rg.exe")" >> $env:GITHUB_ENV
       - name: Toolchain and report directory
         run: |
           mkdir -p test-reports
