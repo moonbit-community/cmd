@@ -5,6 +5,7 @@ members = [
   "./tests",
   "./tools",
   "./commands/sed",
+  "./commands/awk",
   "./commands/expr",
   "./commands/md5sum",
   "./commands/sha1sum",

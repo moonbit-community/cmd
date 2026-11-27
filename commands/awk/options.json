@@ -1,0 +1,121 @@
+{
+  "schema": 1,
+  "command": "awk",
+  "help": "Usage: awk [-F SEP] [-v NAME=VALUE] [-f SCRIPT] [PROGRAM] [NAME=VALUE|FILE]...\nRun a pattern-action program over UTF-8 input. Use - for stdin.\n{{help:field-separator:0}}\n{{help:assign:0}}\n{{help:file:0}}\n{{help:source:0}}\n{{help:help:0}}\n{{help:version:0}}\n",
+  "catalog_options": [
+    "field-separator",
+    "assign",
+    "file",
+    "source"
+  ],
+  "readme_options": [
+    "field-separator",
+    "assign",
+    "file",
+    "source",
+    "help",
+    "version"
+  ],
+  "options": [
+    {
+      "name": "field-separator",
+      "aliases": [
+        "-F",
+        "--field-separator"
+      ],
+      "value": "required",
+      "description": "Set the field separator.",
+      "short": "F",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -F, --field-separator VALUE  Set the field separator."
+      ]
+    },
+    {
+      "name": "assign",
+      "aliases": [
+        "-v",
+        "--assign"
+      ],
+      "value": "required",
+      "description": "Assign a variable before BEGIN.",
+      "short": "v",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -v, --assign VALUE  Assign a variable before BEGIN."
+      ]
+    },
+    {
+      "name": "file",
+      "aliases": [
+        "-f",
+        "--file"
+      ],
+      "value": "required",
+      "description": "Read program text from a file.",
+      "short": "f",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -f, --file VALUE  Read program text from a file."
+      ]
+    },
+    {
+      "name": "source",
+      "aliases": [
+        "-e",
+        "--source"
+      ],
+      "value": "required",
+      "description": "Add a program fragment.",
+      "short": "e",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -e, --source VALUE  Add a program fragment."
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "  --help  Show help."
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show the version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "  --version  Show the version."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "field-separator",
+        "assign",
+        "file",
+        "source",
+        "help",
+        "version"
+      ]
+    }
+  ]
+}
