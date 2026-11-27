@@ -33,6 +33,6 @@ moonx cli/du --inodes -s src
 
 ## Notes
 
-Use -b for apparent bytes or --inodes for entry counts. Directories contribute zero apparent bytes. POSIX file identities suppress duplicate names. On Windows, multiple operands and directory trees require -l, and directory trees require physical traversal. Allocated blocks need additional metadata.
+Use -b for apparent bytes or --inodes for entry counts. Directories contribute zero apparent bytes. An unreadable directory is counted and reported before traversal continues. POSIX file identities suppress duplicate names. On Windows, multiple operands and directory trees require -l, and directory trees require physical traversal. Allocated blocks need additional metadata.
 
 See the [compatibility guide](../../docs/compatibility.md).
