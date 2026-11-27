@@ -63,7 +63,7 @@ directory operations supported on Wasm, plus race regressions.
 
 | Operation | Supported behavior and deliberate limit | Condition for expansion |
 | --- | --- | --- |
-| cp | New destinations with --no-preserve=mode follow umask. Default preservation and existing-file overwrite refuse; no-clobber/update skips remain. | Public mode, identity and handle operations; alias and partial-effect tests |
+| cp | New destinations with --no-preserve=mode follow umask. Explicit --remove-destination detaches a single POSIX regular file or link. Default preservation and ordinary existing-file overwrite refuse; no-clobber/update skips remain. | Public mode, identity and handle operations; alias and partial-effect tests |
 | mv | Rename entries with ordered backup/prompt/update effects. Do not delete a remaining source to manufacture success; EXDEV has no copy/delete fallback. Equal-time interactive/older-only cases require comparable entry identities. | Identity and metadata-preserving fallback; link, time, mode and race tests |
 | touch | Create missing files; -c skips missing files. Existing timestamp updates refuse without changing content. | Public timestamp setter and preserved-content observations |
 | patch | Offset/fuzz, mixed hunk results, new rejects, stdout/dry-run and selected create/delete. Existing target, named-output and reject replacement refuse. | Mode-preserving replacement and safe reject identity/truncation |
@@ -313,6 +313,15 @@ partially installed file. Truncate can open a path with truncation to zero.
 A positioned last-byte write extends a regular file when the caller controls
 concurrent writers. Arbitrary shrinking, or zeroing an already-checked handle
 after a relative-size calculation, needs a handle resize operation.
+GNU cp checks source metadata before removing the destination, then opens the
+source and creates the destination exclusively. Distinct hard links can be
+detached. When both names resolve to the same regular inode, the parent
+identity and directory entries distinguish a second name from alternative
+spellings of the same name. The latter refuse before removal. A symlink
+source followed to its own symlink destination can disappear between removal
+and open. A missing source before removal preserves the old destination.
+The caller must control the destination namespace throughout the operation.
+
 ## Archive members
 
 GNU tar and Info-ZIP zip/unzip provide the operation and byte references on Linux.

@@ -1023,7 +1023,8 @@
       "compare_profile": "gnu",
       "supported_options": [
         "help",
-        "version"
+        "version",
+        "remove-destination"
       ],
       "policy_sensitive": true,
       "releasable": true,
@@ -1050,7 +1051,23 @@
         "f17-cp-alias-dereference-command-line",
         "f17-cp-suffix-value-short",
         "f17-cp-suffix-value-long",
-        "f17-cp-literal-internal-looking-operand"
+        "f17-cp-literal-internal-looking-operand",
+        "cp-remove-detach-regular",
+        "cp-remove-source-hardlink",
+        "cp-remove-same-name",
+        "cp-remove-destination-link",
+        "cp-remove-dangling-link",
+        "cp-remove-source-link-to-target",
+        "cp-remove-source-link",
+        "cp-remove-link-self",
+        "cp-remove-missing-source",
+        "cp-remove-directory-link",
+        "cp-remove-literal-directory-link",
+        "cp-remove-no-clobber",
+        "cp-remove-windows",
+        "cp-remove-interactive",
+        "cp-remove-unreadable",
+        "cp-remove-parent-alias"
       ]
     },
     {

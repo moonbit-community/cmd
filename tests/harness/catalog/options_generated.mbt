@@ -33,6 +33,7 @@ fn command_options(name : String) -> Array[String] {
         "archive", "force", "no-clobber", "no-target-directory", "no-preserve", "preserve",
         "recursive", "verbose", "interactive", "update", "update-mode", "backup",
         "backup-control", "suffix", "dereference-command-line", "dereference", "no-dereference",
+        "remove-destination",
       ]
     "csplit" =>
       [

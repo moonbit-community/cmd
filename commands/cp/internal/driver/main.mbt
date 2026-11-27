@@ -1,5 +1,6 @@
 ///|
 priv struct CpOptions {
+  remove_destination : Bool
   recursive : Bool
   no_clobber : Bool
   no_target_directory : Bool
@@ -94,13 +95,31 @@ async fn copy_one(
   options : CpOptions,
 ) -> Bool {
   // A no-op selected by the command does not require copy capabilities.
-  if @fs.kind(source) == Regular {
+  let kind = @fs.kind(source) catch {
+    @os_error.OSError(_) as err if options.remove_destination && err.is_ENOENT() =>
+      raise RemoveDestinationError(
+        "cannot stat '\{source}': No such file or directory",
+      )
+    error => raise error
+  }
+  if kind == Regular {
     match replacement_decision(source, target, options) {
       SkipDestination => return false
       RejectDestination =>
         raise @fsops.FsOpError("destination exists under update=none-fail")
       ReplaceDestination => ()
     }
+  }
+  if options.remove_destination {
+    guard !options.preserve_permissions else {
+      raise @fsops.FsOpError("--remove-destination requires --no-preserve=mode")
+    }
+    return copy_removing_destination(
+      source,
+      target,
+      options.traversal,
+      verbose=options.verbose,
+    )
   }
   copy_path_with_links(
     source,
@@ -165,14 +184,28 @@ pub async fn run_main() -> Unit {
     Some("backup-control") => parsed.last_value("backup-control").unwrap()
     _ => "none"
   }
-  ignore(@fsops.parse_backup_control(backup_text)) catch {
+  let backup = @fsops.parse_backup_control(backup_text) catch {
     @fsops.FsOpError(message) => {
       @stdio.stderr.write("cp: \{message}\n")
       @env.exit(1)
       return
     }
   }
+  let remove_destination = parsed.contains("remove-destination")
   let recursive = parsed.contains("recursive")
+  if remove_destination &&
+    (
+      operands.length() != 2 ||
+      recursive ||
+      parsed.contains("interactive") ||
+      backup != NoBackup
+    ) {
+    @stdio.stderr.write(
+      "cp: --remove-destination supports one nonrecursive source without interaction or backups\n",
+    )
+    @env.exit(1)
+    return
+  }
   let traversal = match
     parsed.last_occurrence([
       "dereference-command-line", "dereference", "no-dereference",
@@ -183,6 +216,7 @@ pub async fn run_main() -> Unit {
     _ => if recursive { NeverFollowLinks } else { FollowCommandLineLinks }
   }
   let options : CpOptions = {
+    remove_destination,
     recursive,
     no_clobber: parsed.last_occurrence(["force", "interactive", "no-clobber"]) ==
     Some("no-clobber"),
@@ -199,7 +233,19 @@ pub async fn run_main() -> Unit {
     @env.exit(1)
     return
   }
-  let destination_kind = @fsops.kind_if_exists(destination) catch {
+  let destination_kind = try {
+    let kind = @fsops.kind_if_exists(destination)
+    if remove_destination &&
+      !options.no_target_directory &&
+      kind is Some(SymLink) {
+      Some(@fs.kind(destination)) catch {
+        @os_error.OSError(_) as err if err.is_ENOENT() => kind
+        error => raise error
+      }
+    } else {
+      kind
+    }
+  } catch {
     err => {
       @stdio.stderr.write("cp: cannot inspect '\{destination}': \{err}\n")
       @env.exit(1)
@@ -222,6 +268,11 @@ pub async fn run_main() -> Unit {
       destination
     }
     let copied = copy_one(source, target, options) catch {
+      RemoveDestinationError(message) => {
+        @stdio.stderr.write("cp: \{message}\n")
+        failed = true
+        false
+      }
       err => {
         let message = match err {
           @fsops.FsOpError(message) => message
@@ -234,7 +285,7 @@ pub async fn run_main() -> Unit {
         false
       }
     }
-    if copied && options.verbose {
+    if copied && options.verbose && !options.remove_destination {
       @stdio.stdout.write("'\{source}' -> '\{target}'\n")
     }
   }

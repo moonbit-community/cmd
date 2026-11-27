@@ -14,6 +14,8 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 ## 2026-11-28
 
+- Add POSIX single-file `cp --remove-destination --no-preserve=mode` with hard-link, symbolic-link and failure-side-effect checks.
+
 - Add Wasm tput, clear, redirected-input tty, signal-name lookup and the standalone test -t redirection predicate.
 - Add C.UTF-8 matching to grep and apply GNU uppercase byte order in join -i.
 - Extend the system-query profiles with the local identity report, GNU operating-system label and process table fields.

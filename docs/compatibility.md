@@ -98,7 +98,7 @@ identify the principal refusals and platform differences.
 | [cmp](../commands/cmp/README.md) | Byte comparison with skip/limit, quiet and list modes. | C-byte diagnostics. |
 | [column](../commands/column/README.md) | Grid/table layout, C.UTF-8 cell widths, ANSI-aware table fields and temporary spooling. | No automatic terminal width or full util-linux grammar. |
 | [comm](../commands/comm/README.md) | Three-column sorted comparison, order checks, custom delimiters and totals. | C and C.UTF-8 byte ordering. |
-| [cp](../commands/cp/README.md) | New file/tree copies with --no-preserve=mode; explicit skip policies. | No mode-preserving, archive or existing-file replacement copies. |
+| [cp](../commands/cp/README.md) | New file/tree copies and explicit skip policies. Single-source POSIX --remove-destination detaches a regular file or symlink with --no-preserve=mode. | Caller-controlled directory required. Ordinary in-place overwrite, metadata preservation, backups and recursive detachment are unavailable. |
 | [csplit](../commands/csplit/README.md) | Numeric/regex splits, repeats, suffixes and fragment cleanup. | No overwrite; Windows path-name and temporary-storage boundaries. |
 | [curl](../commands/curl/README.md) | HTTP(S), Basic auth, cookies, redirects, retry, upload and resume. | No other protocols/non-Basic auth; finite config/IRI/Cookie profile. |
 | [cut](../commands/cut/README.md) | Byte/field selection, complement, delimiters and NUL records. | No multibyte character selection. |
