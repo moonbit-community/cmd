@@ -5135,7 +5135,8 @@
         "archive-tar-existing-output",
         "archive-tar-existing-member",
         "archive-tar-invalid",
-        "archive-tar-help"
+        "archive-tar-help",
+        "archive-tar-linked-parent"
       ]
     },
     {
@@ -5175,7 +5176,8 @@
         "archive-zip-deflate-6",
         "archive-zip-deflate-7",
         "archive-zip-deflate-8",
-        "archive-zip-help"
+        "archive-zip-help",
+        "archive-zip-linked-operand"
       ]
     },
     {

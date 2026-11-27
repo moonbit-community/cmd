@@ -13,7 +13,9 @@ fn content(entry : @zip.Entry) -> @archivefs.Content {
   let dir = entry.name().has_suffix("/") ||
     (entry.external_attributes() & 16) != 0 ||
     (unix && kind == 4)
-  if unix && kind != 0 && kind != 4 && kind != 8 {
+  if (entry.external_attributes() & 0x408) != 0 ||
+    (unix && kind != 0 && kind != 4 && kind != 8) ||
+    (dir && !entry.data().is_empty()) {
     return Special
   }
   if dir {

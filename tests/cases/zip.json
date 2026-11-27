@@ -361,6 +361,49 @@
       ],
       "expected_stdout_text": "Usage: zip [-q0-9r] ARCHIVE FILE...\n  -r  Include directory contents recursively.\n  -q  Suppress progress messages.\n  -0  Store entries without compression.\n  -1  Use Deflate compression level 1.\n  -2  Use Deflate compression level 2.\n  -3  Use Deflate compression level 3.\n  -4  Use Deflate compression level 4.\n  -5  Use Deflate compression level 5.\n  -6  Use Deflate compression level 6.\n  -7  Use Deflate compression level 7.\n  -8  Use Deflate compression level 8.\n  -9  Use Deflate compression level 9.\n  -T  Verify an existing or newly created archive.\n  --help  Show command help.\n  --version  Show the package version.\n\nCreate new archives of regular files and directories, up to 64 MiB. Use -T to test an existing archive.\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "archive-zip-linked-operand",
+      "command": "zip",
+      "args": [
+        "-qr",
+        "new.zip",
+        "link/"
+      ],
+      "files": [
+        {
+          "path": "folder",
+          "kind": "directory"
+        },
+        {
+          "path": "folder/file",
+          "content_hex": "610062ff"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "folder"
+        }
+      ],
+      "environment": {},
+      "expected_status": 1,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "quiet",
+        "recursive"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "zip: not a directory: link\n",
+      "expected_files": [
+        {
+          "path": "new.zip",
+          "exists": false
+        }
+      ]
     }
   ]
 }

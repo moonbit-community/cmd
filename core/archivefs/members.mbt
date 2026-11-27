@@ -98,11 +98,34 @@ pub async fn collect(
   let members = []
   let mut remaining = MAX_BYTES
   let seen : Set[String] = Set([])
-  let pending = paths.to_owned()
-  pending.rev_in_place()
-  while pending.pop() is Some(path) {
+  let pending : Array[(String, Bool)] = []
+  for path in paths {
     let parts = components(path)
-    let name = if parts.is_empty() { "." } else { parts.join("/") }
+    let mut name = ""
+    for i, part in parts {
+      name = if name == "" { part } else { name + "/" + part }
+      if i + 1 != parts.length() &&
+        !(@fs.kind(name, follow_symlink=false) is Directory) {
+        raise ArchiveError("not a directory: " + name)
+      }
+    }
+    pending.push(
+      (
+        if name == "" {
+          "."
+        } else {
+          name
+        },
+        path.has_suffix("/") || path.has_suffix("/."),
+      ),
+    )
+  }
+  pending.rev_in_place()
+  while pending.pop() is Some((name, require_directory)) {
+    let kind = @fs.kind(name, follow_symlink=false)
+    if require_directory && !(kind is Directory) {
+      raise ArchiveError("not a directory: " + name)
+    }
     if seen.contains(name) {
       continue
     }
@@ -110,12 +133,12 @@ pub async fn collect(
       raise ArchiveError("too many archive members")
     }
     seen.insert(name)
-    match @fs.kind(path, follow_symlink=false) {
+    match kind {
       Regular => {
-        let file = @fs.open(path, mode=ReadOnly)
+        let file = @fs.open(name, mode=ReadOnly)
         defer file.close()
         guard file.kind() is Regular else {
-          raise ArchiveError("not a regular file: " + path)
+          raise ArchiveError("not a regular file: " + name)
         }
         let data = read_bounded(file, remaining)
         remaining -= data.length()
@@ -124,13 +147,17 @@ pub async fn collect(
       Directory => {
         members.push({ name: name + "/", content: Directory, })
         if recursive {
-          let children = @fs.readdir(path, include_hidden=true, sort=true)
+          let children = @fs.readdir(name, include_hidden=true, sort=true)
           for i = children.length() - 1; i >= 0; i = i - 1 {
-            pending.push(path + "/" + children[i])
+            let child = children[i]
+            ignore(components(child))
+            pending.push(
+              (if name == "." { child } else { name + "/" + child }, false),
+            )
           }
         }
       }
-      _ => raise ArchiveError("unsupported archive member type: " + path)
+      _ => raise ArchiveError("unsupported archive member type: " + name)
     }
   }
   members

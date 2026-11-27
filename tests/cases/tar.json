@@ -299,6 +299,48 @@
       ],
       "expected_stdout_text": "Usage: tar -c|-t|-x [-zO] -f ARCHIVE [FILE...]\n  -c  Create an archive.\n  -t  List member names.\n  -x  Extract selected members.\n  -f  Use this archive or - for a standard stream.\n  -z  Use gzip compression.\n  -O  Extract file contents to stdout.\n  -C DIRECTORY  Choose an existing extraction directory.\n  --help  Show command help.\n  --version  Show the package version.\n\nThe 64 MiB ustar profile creates and extracts new regular files and directories. Extraction requires a caller-controlled destination.\n",
       "expected_stderr_text": ""
+    },
+    {
+      "id": "archive-tar-linked-parent",
+      "command": "tar",
+      "args": [
+        "-cf",
+        "new.tar",
+        "link/file"
+      ],
+      "files": [
+        {
+          "path": "folder",
+          "kind": "directory"
+        },
+        {
+          "path": "folder/file",
+          "content_hex": "610062ff"
+        },
+        {
+          "path": "link",
+          "kind": "symlink",
+          "target": "folder"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "create"
+      ],
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "tar: not a directory: link\n",
+      "expected_files": [
+        {
+          "path": "new.tar",
+          "exists": false
+        }
+      ]
     }
   ]
 }

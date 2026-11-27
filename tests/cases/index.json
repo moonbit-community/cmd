@@ -48716,6 +48716,32 @@
       "source": "tests/cases/unzip.json",
       "case_id": "archive-unzip-help",
       "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-tar-linked-parent",
+      "command": "tar",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tar.json",
+      "case_id": "archive-tar-linked-parent",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-zip-linked-operand",
+      "command": "zip",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/zip.json",
+      "case_id": "archive-zip-linked-operand",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
     }
   ]
 }
