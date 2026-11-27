@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "scope": "All82 packages accounted for:56 timing commands,2 explicit correctness-only dispositions and24 explained not-timed commands. Finite source, generated-output and bounded-tree operations; ln/test measure startup-inclusive operation latency, not byte throughput. No application-frequency or massive-directory claim.",
+  "scope": "Each command has a timing, correctness-only or not-timed disposition. Finite source, generated-output and bounded-tree operations; ln/test measure startup-inclusive operation latency, not byte throughput. No application-frequency or massive-directory claim.",
   "source_catalog": "tests/fixtures/benchmark/real-sources.json",
   "facet_vocabulary": [
     "bytes",
@@ -1244,6 +1244,36 @@
       "local_case_ids": [
         "serve-static",
         "serve-policy"
+      ]
+    },
+    {
+      "command": "tar",
+      "disposition": "not-timed",
+      "reason": "The archive profile has byte and filesystem correctness fixtures. A timing baseline requires a reviewed archive corpus with member-count, compression and directory-layout distributions.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": [
+        "archive-tar-create-gzip"
+      ]
+    },
+    {
+      "command": "zip",
+      "disposition": "not-timed",
+      "reason": "The archive profile has byte and filesystem correctness fixtures. A timing baseline requires a reviewed archive corpus with member-count, compression and directory-layout distributions.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": [
+        "archive-zip-deflate"
+      ]
+    },
+    {
+      "command": "unzip",
+      "disposition": "not-timed",
+      "reason": "The archive profile has byte and filesystem correctness fixtures. A timing baseline requires a reviewed archive corpus with member-count, compression and directory-layout distributions.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": [
+        "archive-unzip-extract"
       ]
     }
   ],
