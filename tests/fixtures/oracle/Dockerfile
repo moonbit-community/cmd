@@ -62,7 +62,7 @@ RUN mkdir -p /oracle/bin
 
 FROM toolchain AS build-coreutils
 
-RUN curl --fail --location --retry 5 \
+RUN curl --fail --location --retry 5 --retry-all-errors \
       "https://mirrors.kernel.org/gnu/coreutils/coreutils-${COREUTILS_VERSION}.tar.xz" \
       --output coreutils.tar.xz \
   && echo "${COREUTILS_SHA256}  coreutils.tar.xz" | sha256sum --check --strict \
@@ -82,7 +82,7 @@ RUN mkdir -p /oracle/observations \
 
 FROM toolchain AS build-diffutils
 
-RUN curl --fail --location --retry 5 \
+RUN curl --fail --location --retry 5 --retry-all-errors \
       "https://mirrors.kernel.org/gnu/diffutils/diffutils-${DIFFUTILS_VERSION}.tar.xz" \
       --output diffutils.tar.xz \
   && echo "${DIFFUTILS_SHA256}  diffutils.tar.xz" | sha256sum --check --strict \
@@ -96,7 +96,7 @@ RUN curl --fail --location --retry 5 \
 
 FROM toolchain AS build-findutils
 
-RUN curl --fail --location --retry 5 \
+RUN curl --fail --location --retry 5 --retry-all-errors \
       "https://mirrors.kernel.org/gnu/findutils/findutils-${FINDUTILS_VERSION}.tar.xz" \
       --output findutils.tar.xz \
   && echo "${FINDUTILS_SHA256}  findutils.tar.xz" | sha256sum --check --strict \
@@ -110,7 +110,7 @@ RUN curl --fail --location --retry 5 \
 
 FROM toolchain AS build-gawk
 
-RUN curl --fail --location --retry 5 \
+RUN curl --fail --location --retry 5 --retry-all-errors \
       "https://mirrors.kernel.org/gnu/gawk/gawk-${GAWK_VERSION}.tar.xz" \
       --output gawk.tar.xz \
   && echo "${GAWK_SHA256}  gawk.tar.xz" | sha256sum --check --strict \
@@ -122,7 +122,7 @@ RUN curl --fail --location --retry 5 \
 
 FROM toolchain AS build-grep
 
-RUN curl --fail --location --retry 5 \
+RUN curl --fail --location --retry 5 --retry-all-errors \
       "https://mirrors.kernel.org/gnu/grep/grep-${GREP_VERSION}.tar.xz" \
       --output grep.tar.xz \
   && echo "${GREP_SHA256}  grep.tar.xz" | sha256sum --check --strict \
@@ -136,7 +136,7 @@ RUN curl --fail --location --retry 5 \
 
 FROM toolchain AS build-wget
 
-RUN curl --fail --location --retry 5 \
+RUN curl --fail --location --retry 5 --retry-all-errors \
       "https://mirrors.kernel.org/gnu/wget/wget-${WGET_VERSION}.tar.gz" \
       --output wget.tar.gz \
   && echo "${WGET_SHA256}  wget.tar.gz" | sha256sum --check --strict \
@@ -150,7 +150,7 @@ RUN curl --fail --location --retry 5 \
 
 FROM toolchain AS build-make
 
-RUN curl --fail --location --retry 5 \
+RUN curl --fail --location --retry 5 --retry-all-errors \
       "https://mirrors.kernel.org/gnu/make/make-${MAKE_VERSION}.tar.lz" \
       --output make.tar.lz \
   && echo "${MAKE_SHA256}  make.tar.lz" | sha256sum --check --strict \
@@ -164,7 +164,7 @@ RUN curl --fail --location --retry 5 \
 
 FROM toolchain AS build-curl
 
-RUN curl --fail --location --retry 5 \
+RUN curl --fail --location --retry 5 --retry-all-errors \
       "https://curl.se/download/curl-${CURL_VERSION}.tar.xz" \
       --output curl.tar.xz \
   && echo "${CURL_SHA256}  curl.tar.xz" | sha256sum --check --strict \
@@ -178,7 +178,7 @@ RUN curl --fail --location --retry 5 \
 
 FROM toolchain AS build-dash
 
-RUN curl --fail --location --retry 5 \
+RUN curl --fail --location --retry 5 --retry-all-errors \
       "https://git.kernel.org/pub/scm/utils/dash/dash.git/snapshot/dash-${DASH_VERSION}.tar.gz" \
       --output dash.tar.gz \
   && echo "${DASH_SHA256}  dash.tar.gz" | sha256sum --check --strict \
@@ -193,7 +193,7 @@ RUN curl --fail --location --retry 5 \
 
 FROM toolchain AS build-jq
 
-RUN curl --fail --location --retry 5 \
+RUN curl --fail --location --retry 5 --retry-all-errors \
       "https://github.com/jqlang/jq/releases/download/jq-${JQ_VERSION}/jq-linux-amd64" \
       --output /oracle/bin/jq \
   && echo "${JQ_SHA256}  /oracle/bin/jq" | sha256sum --check --strict \
@@ -201,7 +201,7 @@ RUN curl --fail --location --retry 5 \
 
 FROM toolchain AS build-vim
 
-RUN curl --fail --location --retry 5 \
+RUN curl --fail --location --retry 5 --retry-all-errors \
       "https://github.com/vim/vim/archive/refs/tags/v${VIM_VERSION}.tar.gz" \
       --output vim.tar.gz \
   && echo "${VIM_SHA256}  vim.tar.gz" | sha256sum --check --strict \
@@ -212,7 +212,7 @@ RUN curl --fail --location --retry 5 \
 
 FROM toolchain AS build-sed
 
-RUN curl --fail --location --retry 5 \
+RUN curl --fail --location --retry 5 --retry-all-errors \
       "https://mirrors.kernel.org/gnu/sed/sed-${SED_VERSION}.tar.xz" \
       --output sed.tar.xz \
   && echo "${SED_SHA256}  sed.tar.xz" | sha256sum --check --strict \
@@ -226,7 +226,7 @@ RUN curl --fail --location --retry 5 \
 
 FROM toolchain AS build-patch
 
-RUN curl --fail --location --retry 5 \
+RUN curl --fail --location --retry 5 --retry-all-errors \
       "https://mirrors.kernel.org/gnu/patch/patch-${PATCH_VERSION}.tar.xz" \
       --output patch.tar.xz \
   && echo "${PATCH_SHA256}  patch.tar.xz" | sha256sum --check --strict \
@@ -240,7 +240,7 @@ RUN curl --fail --location --retry 5 \
 
 FROM toolchain AS build-gzip
 
-RUN curl --fail --location --retry 5 \
+RUN curl --fail --location --retry 5 --retry-all-errors \
       "https://mirrors.kernel.org/gnu/gzip/gzip-${GZIP_VERSION}.tar.xz" \
       --output gzip.tar.xz \
   && echo "${GZIP_SHA256}  gzip.tar.xz" | sha256sum --check --strict \
@@ -254,7 +254,7 @@ RUN curl --fail --location --retry 5 \
 
 FROM toolchain AS build-util-linux
 
-RUN curl --fail --location --retry 5 \
+RUN curl --fail --location --retry 5 --retry-all-errors \
       "https://mirrors.edge.kernel.org/pub/linux/utils/util-linux/v${UTIL_LINUX_VERSION}/util-linux-${UTIL_LINUX_VERSION}.tar.xz" \
       --output util-linux.tar.xz \
   && echo "${UTIL_LINUX_SHA256}  util-linux.tar.xz" | sha256sum --check --strict \
@@ -273,7 +273,7 @@ FROM toolchain AS build-binutils
 ARG BINUTILS_VERSION=2.44
 ARG BINUTILS_SHA256=ce2017e059d63e67ddb9240e9d4ec49c2893605035cd60e92ad53177f4377237
 
-RUN curl --fail --location --retry 5 \
+RUN curl --fail --location --retry 5 --retry-all-errors \
       "https://mirrors.kernel.org/gnu/binutils/binutils-${BINUTILS_VERSION}.tar.xz" \
       --output binutils.tar.xz \
   && echo "${BINUTILS_SHA256}  binutils.tar.xz" | sha256sum --check --strict \
@@ -290,7 +290,7 @@ FROM toolchain AS build-tree
 ARG TREE_VERSION=2.2.1
 ARG TREE_SHA256=68ac45dc78c0c311ada06200ffc3c285e74223ba208061f8d15ffac25e44b2ec
 
-RUN curl --fail --location --retry 5 \
+RUN curl --fail --location --retry 5 --retry-all-errors \
       "https://oldmanprogrammer.net/tar/tree/tree-${TREE_VERSION}.tgz" \
       --output tree.tgz \
   && echo "${TREE_SHA256}  tree.tgz" | sha256sum --check --strict \
@@ -306,14 +306,14 @@ ARG RUST_SHA256=88f28fa9af20594179f85d6df67078dfd6fa93e2f6da5e1e9b0ac4997988ca4f
 ARG RIPGREP_VERSION=3fce3b5bb0236da2df6d99672afb8a719642eca7
 ARG RIPGREP_SHA256=e2c23831f1057a7e15575a72a64a900b317a86661561a786a36795717d602561
 
-RUN curl --fail --location --retry 5 \
+RUN curl --fail --location --retry 5 --retry-all-errors \
       "https://static.rust-lang.org/dist/rust-${RUST_VERSION}-x86_64-unknown-linux-gnu.tar.xz" \
       --output rust.tar.xz \
   && echo "${RUST_SHA256}  rust.tar.xz" | sha256sum --check --strict \
   && tar --extract --file rust.tar.xz \
   && "./rust-${RUST_VERSION}-x86_64-unknown-linux-gnu/install.sh" \
       --prefix=/opt/rust --components=rustc,cargo,rust-std-x86_64-unknown-linux-gnu --disable-ldconfig \
-  && curl --fail --location --retry 5 \
+  && curl --fail --location --retry 5 --retry-all-errors \
       "https://codeload.github.com/BurntSushi/ripgrep/tar.gz/${RIPGREP_VERSION}" \
       --output ripgrep.tar.gz \
   && echo "${RIPGREP_SHA256}  ripgrep.tar.gz" | sha256sum --check --strict \
@@ -327,7 +327,7 @@ FROM toolchain AS build-typst
 ARG TYPST_VERSION=0.15.1
 ARG TYPST_SHA256=a6d077d0a95eed5a2eba715b2dae06be954f624ccbf85758a03f389ded33118c
 
-RUN curl --fail --location --retry 5 \
+RUN curl --fail --location --retry 5 --retry-all-errors \
       "https://github.com/typst/typst/releases/download/v${TYPST_VERSION}/typst-x86_64-unknown-linux-musl.tar.xz" \
       --output typst.tar.xz \
   && echo "${TYPST_SHA256}  typst.tar.xz" | sha256sum --check --strict \
@@ -350,7 +350,7 @@ RUN for package in tar zip unzip; do \
         zip) version="$ZIP_VERSION"; digest="$ZIP_SHA256"; directory=z/zip ;; \
         unzip) version="$UNZIP_VERSION"; digest="$UNZIP_SHA256"; directory=u/unzip ;; \
       esac; \
-      curl --fail --location --retry 5 \
+      curl --fail --location --retry 5 --retry-all-errors \
         "https://archive.ubuntu.com/ubuntu/pool/main/$directory/${package}_${version}_amd64.deb" \
         --output archive.deb \
       && echo "$digest  archive.deb" | sha256sum --check --strict \

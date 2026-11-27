@@ -7,7 +7,7 @@
   "image_digest": "",
   "versions": "",
   "versions_sha256": "",
-  "dockerfile_sha256": "693b4fdd6e113ff6435060ed4eafde8bbe09313c407b62485e28b2385f458dc1",
+  "dockerfile_sha256": "b68e75c220f4e63fc075186824dbe85b7816acb094c066303404b09f51b87a2d",
   "versions_script_sha256": "ddf99487e5c47ace31bce21b8d462aa2d635353b8b5cf54768a0de4a94c5b4ed",
   "sources": [],
   "binding_status": "unsealed: verify recipe bytes inside the exact image and the complete executable inventory before sealing"
