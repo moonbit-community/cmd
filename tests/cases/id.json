@@ -1,0 +1,34 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "id-extra-operand",
+      "command": "id",
+      "args": [
+        "unexpected"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "id: unexpected operand: unexpected\n"
+    },
+    {
+      "id": "id-linux-reference",
+      "command": "id",
+      "args": [
+        "-G"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "linux"
+      ]
+    }
+  ]
+}

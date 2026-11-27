@@ -33,6 +33,29 @@ fn contract(
 // diagnostic contracts are recorded in docs/compatibility.md and CLI cases.
 pub fn commands() -> Array[CommandContract] {
   [
+    contract("uname", Extended, NoInput, LineStream, [FileRead], exit_codes=[
+      0, 1,
+    ]),
+    contract("hostname", Extended, NoInput, LineStream, [FileRead], exit_codes=[
+      0, 1,
+    ]),
+    contract("id", Extended, NoInput, LineStream, [FileRead], exit_codes=[0, 1]),
+    contract("whoami", Extended, NoInput, LineStream, [FileRead], exit_codes=[
+      0, 1,
+    ]),
+    contract("groups", Extended, NoInput, LineStream, [FileRead], exit_codes=[
+      0, 1,
+    ]),
+    contract("uptime", Extended, NoInput, LineStream, [FileRead], exit_codes=[
+      0, 1,
+    ]),
+    contract("free", Extended, NoInput, LineStream, [FileRead], exit_codes=[
+      0, 1,
+    ]),
+    contract("ps", Extended, NoInput, LineStream, [FileRead], exit_codes=[0, 1]),
+    contract("nproc", Extended, NoInput, LineStream, [FileRead], exit_codes=[
+      0, 1,
+    ]),
     contract("serve", Restricted, NoInput, LineStream, [FileRead, Network], exit_codes=[
       0, 1,
     ]),

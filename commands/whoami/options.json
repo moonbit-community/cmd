@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "command": "whoami",
+  "help": "Usage: whoami [OPTION]\nPrint the current effective user name on Linux.\n{{help:help:0}}\n{{help:version:0}}\n",
+  "catalog_options": [],
+  "options": [
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show the version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "help",
+        "version"
+      ]
+    }
+  ]
+}

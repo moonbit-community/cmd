@@ -49,6 +49,7 @@ fn real_sources(row : FunctionalWorkload) -> Array[NaturalSource] {
 ///|
 fn real_command_scope() -> Set[String] {
   Set([
+    "uname", "hostname", "id", "whoami", "groups", "uptime", "free", "ps", "nproc",
     "base32", "base64", "basename", "cat", "chmod", "cksum", "cmp", "column", "comm",
     "cp", "csplit", "curl", "cut", "date", "diff", "dirname", "echo", "env", "expand",
     "expr", "false", "find", "fmt", "fold", "grep", "gunzip", "gzip", "head", "hexdump",
@@ -64,6 +65,7 @@ fn real_command_scope() -> Set[String] {
 ///|
 fn real_untimed_scope() -> Set[String] {
   Set([
+    "uname", "hostname", "id", "whoami", "groups", "uptime", "free", "ps", "nproc",
     "basename", "date", "dirname", "echo", "env", "expr", "false", "jqlog", "mkdir",
     "mktemp", "printenv", "printf", "pwd", "realpath", "rmdir", "serve", "sleep",
     "timeout", "touch", "true", "typst", "unlink", "which", "yes",

@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "command": "uname",
+  "help": "Usage: uname [-snrv]\nPrint selected kernel information.\n  -s, --kernel-name  Print the kernel name.\n  -n, --nodename  Print the network node hostname on Linux.\n  -r, --kernel-release  Print the kernel release on Linux.\n  -v, --kernel-version  Print the kernel version on Linux.\n{{help:help:0}}\n{{help:version:0}}\n",
+  "catalog_options": [
+    "kernel-name",
+    "nodename",
+    "kernel-release",
+    "kernel-version"
+  ],
+  "options": [
+    {
+      "name": "kernel-name",
+      "aliases": [
+        "-s",
+        "--kernel-name"
+      ],
+      "value": "none",
+      "description": "Print the kernel name.",
+      "short": "s",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "nodename",
+      "aliases": [
+        "-n",
+        "--nodename"
+      ],
+      "value": "none",
+      "description": "Print the network node hostname on Linux.",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "kernel-release",
+      "aliases": [
+        "-r",
+        "--kernel-release"
+      ],
+      "value": "none",
+      "description": "Print the kernel release on Linux.",
+      "short": "r",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "kernel-version",
+      "aliases": [
+        "-v",
+        "--kernel-version"
+      ],
+      "value": "none",
+      "description": "Print the kernel version on Linux.",
+      "short": "v",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show the version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "kernel-name",
+        "nodename",
+        "kernel-release",
+        "kernel-version",
+        "help",
+        "version"
+      ]
+    }
+  ]
+}

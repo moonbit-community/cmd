@@ -23,6 +23,8 @@ implement a faithful kill command.
 
 ## Command contracts
 
+Linux system queries use the procfs/sysfs view of the running Wasm host. Account names require an authoritative local files source. CPU counts use affinity, cgroup v2 quotas and OpenMP settings. Memory and uptime are kernel-wide values. The Linux contracts compare against same-host GNU coreutils, hostname and procps-ng commands so the reference shares credentials and namespaces. Cross-platform identity, NSS, UTS fields, accounting records and process enumeration require additional public APIs. See the [system query profiles](../compatibility.md#system-information).
+
 | Command | Ownership and boundary |
 | --- | --- |
 | rg --pre | Backpressure child stdout while draining stderr concurrently. Normal EOF checks exit and finishes stderr; early close cancels owned tasks and reaps the direct child. Retained diagnostics may grow with child stderr. No process-tree guarantee. |

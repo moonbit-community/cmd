@@ -1,0 +1,57 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "ps-extra-operand",
+      "command": "ps",
+      "args": [
+        "unexpected"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "ps: unexpected operand: unexpected\n"
+    },
+    {
+      "id": "ps-no-such-process",
+      "command": "ps",
+      "args": [
+        "-p",
+        "2147483647",
+        "-o",
+        "comm="
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "host_platforms": [
+        "linux"
+      ]
+    },
+    {
+      "id": "ps-linux-reference",
+      "command": "ps",
+      "args": [
+        "-p",
+        "1",
+        "-o",
+        "comm="
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "linux"
+      ]
+    }
+  ]
+}

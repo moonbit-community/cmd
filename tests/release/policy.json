@@ -2,6 +2,175 @@
   "schema": 1,
   "commands": [
     {
+      "name": "uname",
+      "package_name": "cli/uname",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "help",
+        "kernel-name",
+        "kernel-release",
+        "kernel-version",
+        "nodename",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "uname-extra-operand",
+        "uname-linux-kernel",
+        "uname-darwin-kernel",
+        "uname-windows-kernel",
+        "uname-linux-reference"
+      ]
+    },
+    {
+      "name": "hostname",
+      "package_name": "cli/hostname",
+      "compare_profile": "contract",
+      "supported_options": [
+        "help",
+        "short",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "hostname-extra-operand",
+        "hostname-linux-reference"
+      ],
+      "oracle_boundary": "Host-dependent observations must share the process, account or kernel namespace. The Linux correctness scenario compares the Wasm command with the host executable."
+    },
+    {
+      "name": "id",
+      "package_name": "cli/id",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "group",
+        "groups",
+        "help",
+        "name",
+        "real",
+        "user",
+        "version",
+        "zero"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "id-extra-operand",
+        "id-linux-reference"
+      ],
+      "oracle_boundary": "Host-dependent observations must share the process, account or kernel namespace. The Linux correctness scenario compares the Wasm command with the host executable."
+    },
+    {
+      "name": "whoami",
+      "package_name": "cli/whoami",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "help",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "whoami-extra-operand",
+        "whoami-linux-reference"
+      ],
+      "oracle_boundary": "Host-dependent observations must share the process, account or kernel namespace. The Linux correctness scenario compares the Wasm command with the host executable."
+    },
+    {
+      "name": "groups",
+      "package_name": "cli/groups",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "help",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "groups-extra-operand",
+        "groups-linux-reference"
+      ],
+      "oracle_boundary": "Host-dependent observations must share the process, account or kernel namespace. The Linux correctness scenario compares the Wasm command with the host executable."
+    },
+    {
+      "name": "uptime",
+      "package_name": "cli/uptime",
+      "compare_profile": "contract",
+      "supported_options": [
+        "help",
+        "pretty",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "uptime-extra-operand",
+        "uptime-linux-reference"
+      ],
+      "oracle_boundary": "Host-dependent observations must share the process, account or kernel namespace. The Linux correctness scenario compares the Wasm command with the host executable."
+    },
+    {
+      "name": "free",
+      "package_name": "cli/free",
+      "compare_profile": "contract",
+      "supported_options": [
+        "bytes",
+        "gibi",
+        "help",
+        "kibi",
+        "mebi",
+        "total",
+        "version",
+        "wide"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "free-extra-operand",
+        "free-linux-reference"
+      ],
+      "oracle_boundary": "Host-dependent observations must share the process, account or kernel namespace. The Linux correctness scenario compares the Wasm command with the host executable."
+    },
+    {
+      "name": "ps",
+      "package_name": "cli/ps",
+      "compare_profile": "contract",
+      "supported_options": [
+        "format",
+        "help",
+        "pid",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "ps-extra-operand",
+        "ps-no-such-process",
+        "ps-linux-reference"
+      ],
+      "oracle_boundary": "Host-dependent observations must share the process, account or kernel namespace. The Linux correctness scenario compares the Wasm command with the host executable."
+    },
+    {
+      "name": "nproc",
+      "package_name": "cli/nproc",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "all",
+        "help",
+        "ignore",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "nproc-extra-operand",
+        "nproc-openmp-limit",
+        "nproc-linux-reference"
+      ]
+    },
+    {
       "name": "timeout",
       "package_name": "cli/timeout",
       "compare_profile": "gnu",

@@ -2,6 +2,33 @@
   "schema": 2,
   "commands": [
     {
+      "name": "uname"
+    },
+    {
+      "name": "hostname"
+    },
+    {
+      "name": "id"
+    },
+    {
+      "name": "whoami"
+    },
+    {
+      "name": "groups"
+    },
+    {
+      "name": "uptime"
+    },
+    {
+      "name": "free"
+    },
+    {
+      "name": "ps"
+    },
+    {
+      "name": "nproc"
+    },
+    {
       "name": "base32"
     },
     {
@@ -250,6 +277,15 @@
   ],
   "cases": [],
   "case_files": [
+    "uname.json",
+    "hostname.json",
+    "id.json",
+    "whoami.json",
+    "groups.json",
+    "uptime.json",
+    "free.json",
+    "ps.json",
+    "nproc.json",
     "base32.json",
     "cksum.json",
     "expand.json",

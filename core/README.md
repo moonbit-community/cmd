@@ -2,6 +2,7 @@
 
 Shared MoonBit libraries for command parsing, byte streams, filesystem access,
 HTTP transport and command-language execution.
+The `procfs` package reads Linux kernel fields for system queries.
 
 ## Usage
 

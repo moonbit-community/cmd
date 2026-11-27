@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "scope": "All82 packages accounted for:56 timing commands,2 explicit correctness-only dispositions and24 explained not-timed commands. Finite source, generated-output and bounded-tree operations; ln/test measure startup-inclusive operation latency, not byte throughput. No application-frequency or massive-directory claim.",
+  "scope": "All workspace commands have a reviewed timing, correctness-only or not-timed disposition. Finite source, generated-output and bounded-tree operations; ln/test measure startup-inclusive operation latency, not byte throughput. No application-frequency or massive-directory claim.",
   "source_catalog": "tests/fixtures/benchmark/real-sources.json",
   "facet_vocabulary": [
     "bytes",
@@ -26,6 +26,78 @@
   "timing_command_count": 56,
   "correctness_only_command_count": 2,
   "commands": [
+    {
+      "command": "uname",
+      "disposition": "not-timed",
+      "reason": "Small host query whose result depends on kernel state; validated against same-host observations.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "hostname",
+      "disposition": "not-timed",
+      "reason": "Small host query whose result depends on kernel state; validated against same-host observations.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "id",
+      "disposition": "not-timed",
+      "reason": "Small host query whose result depends on kernel state; validated against same-host observations.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "whoami",
+      "disposition": "not-timed",
+      "reason": "Small host query whose result depends on kernel state; validated against same-host observations.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "groups",
+      "disposition": "not-timed",
+      "reason": "Small host query whose result depends on kernel state; validated against same-host observations.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "uptime",
+      "disposition": "not-timed",
+      "reason": "Small host query whose result depends on kernel state; validated against same-host observations.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "free",
+      "disposition": "not-timed",
+      "reason": "Small host query whose result depends on kernel state; validated against same-host observations.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "ps",
+      "disposition": "not-timed",
+      "reason": "Small host query whose result depends on kernel state; validated against same-host observations.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "nproc",
+      "disposition": "not-timed",
+      "reason": "Small host query whose result depends on kernel state; validated against same-host observations.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
     {
       "command": "cp",
       "disposition": "timing",
@@ -3838,5 +3910,5 @@
       ]
     }
   ],
-  "not_timed_command_count": 24
+  "not_timed_command_count": 33
 }

@@ -1,0 +1,129 @@
+{
+  "schema": 1,
+  "command": "id",
+  "help": "Usage: id (-u|-g|-G) [-rnz]\nPrint the current process credentials on Linux.\n  -u, --user  Print only the user ID.\n  -g, --group  Print only the group ID.\n  -G, --groups  Print all group IDs.\n  -r, --real  Select the real user or group ID.\n  -n, --name  Print names from the local account database.\n  -z, --zero  Terminate entries with NUL.\n{{help:help:0}}\n{{help:version:0}}\n",
+  "catalog_options": [
+    "user",
+    "group",
+    "groups",
+    "real",
+    "name",
+    "zero"
+  ],
+  "options": [
+    {
+      "name": "user",
+      "aliases": [
+        "-u",
+        "--user"
+      ],
+      "value": "none",
+      "description": "Print only the user ID.",
+      "short": "u",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "group",
+      "aliases": [
+        "-g",
+        "--group"
+      ],
+      "value": "none",
+      "description": "Print only the group ID.",
+      "short": "g",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "groups",
+      "aliases": [
+        "-G",
+        "--groups"
+      ],
+      "value": "none",
+      "description": "Print all group IDs.",
+      "short": "G",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "real",
+      "aliases": [
+        "-r",
+        "--real"
+      ],
+      "value": "none",
+      "description": "Select the real user or group ID.",
+      "short": "r",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "name",
+      "aliases": [
+        "-n",
+        "--name"
+      ],
+      "value": "none",
+      "description": "Print names from the local account database.",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "zero",
+      "aliases": [
+        "-z",
+        "--zero"
+      ],
+      "value": "none",
+      "description": "Terminate entries with NUL.",
+      "short": "z",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show the version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "user",
+        "group",
+        "groups",
+        "real",
+        "name",
+        "zero",
+        "help",
+        "version"
+      ]
+    }
+  ]
+}
