@@ -1,0 +1,21 @@
+import {
+  "moonbitlang/core/compress/gzip",
+  "moonbitlang/core/async/stdio",
+  "moonbitlang/core/env",
+  "cli/core/cli",
+  "cli/core/archivefs",
+  "cli/tar/internal/ustar",
+}
+
+supported_targets = "wasm"
+
+options(
+  "allow-experimental-packages": [ "moonbitlang/core/compress/gzip" ],
+)
+
+rule(
+  name: "gen_version",
+  command: "moonx moonbit-community/gen_version@0.0.2 -o $output",
+)
+
+dev_build(rule: "gen_version", input: "../../moon.mod", output: "version.mbt")

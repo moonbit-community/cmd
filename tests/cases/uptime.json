@@ -1,0 +1,34 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "uptime-extra-operand",
+      "command": "uptime",
+      "args": [
+        "unexpected"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "uptime: unexpected operand: unexpected\n"
+    },
+    {
+      "id": "uptime-linux-reference",
+      "command": "uptime",
+      "args": [
+        "-p"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "linux"
+      ]
+    }
+  ]
+}

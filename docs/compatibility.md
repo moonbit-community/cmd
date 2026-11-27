@@ -1,12 +1,26 @@
 # Compatibility
 
 This guide describes the current workspace's supported command behavior.
-It covers 82 command modules implemented in pure MoonBit for MoonX/Wasm.
+The workspace command modules use pure MoonBit on MoonX/Wasm.
 Support means the documented profile, not complete GNU, POSIX or upstream parity.
 
 All command packages declare Wasm as their only build target. Core packages
 do the same except `platform` and `gzipops`, which retain Native support for
 test-tool consumers. The execution tools under `tests` and `tools` remain Native.
+
+## System information
+
+| Command | Supported host observations |
+| --- | --- |
+| [uname](../commands/uname/README.md) | Linux reads kernel fields from procfs. `-o` emits the GNU operating-system label on Linux and macOS. macOS also supports the Darwin kernel name. Windows, machine architecture and the full `-a` form are unavailable. |
+| [hostname](../commands/hostname/README.md) | Reads `/proc/sys/kernel/hostname` in the current namespace. Name changes, resolver-derived aliases and other operating systems are unsupported. |
+| [id](../commands/id/README.md) | Linux reads real and effective IDs and supplementary groups from procfs. The default report resolves local account names. It requires matching real/effective groups and either POSIXLY_CORRECT or a kernel without SELinux/SMACK filesystems. Named-user and external directory lookups remain unsupported. |
+| [whoami](../commands/whoami/README.md) | Reads process credentials from Linux procfs. Names must resolve from the first configured local files source in /etc/nsswitch.conf. External directory lookups and named operands are unsupported. |
+| [groups](../commands/groups/README.md) | Reads process credentials from Linux procfs. Names must resolve from the first configured local files source in /etc/nsswitch.conf. External directory lookups and named operands are unsupported. |
+| [uptime](../commands/uptime/README.md) | Reads the first value of /proc/uptime, including suspend time. Calendar boot time, load averages and logged-in user counts are outside this profile. |
+| [free](../commands/free/README.md) | Uses a single /proc/meminfo snapshot with MemAvailable and SReclaimable. Reports kernel-wide RAM, including reclaimable slab, and swap. Values are independent of cgroup memory limits. |
+| [ps](../commands/ps/README.md) | Reads one `/proc/PID/stat` record for each selection. No-heading fields include `comm`, `pid`, `ppid`, `pgid`, `sid`, `tpgid`, `state`, `nice` and `nlwp`. Repeat `-o FIELD=` or use comma-separated fields. Names must be printable ASCII. A missing process returns status 1 with empty output. |
+| [nproc](../commands/nproc/README.md) | The default follows the current process affinity, OpenMP thread settings and the CPU quota hierarchy on a standard cgroup v2 mount. Realtime scheduling policies ignore quotas. --all counts configured CPU directories from sysfs. Nonstandard cgroup v2 mounts are rejected. |
 
 ## Workspace and published packages
 
@@ -55,6 +69,9 @@ identify the principal refusals and platform differences.
 
 | Command | Supported behavior | Limits |
 | --- | --- | --- |
+| [tar](../commands/tar/README.md) | GNU tar create, list, extract and stdout profiles for ustar and gzip. | UTF-8 names, regular files and directories, fixed archive metadata, new files only. |
+| [zip](../commands/zip/README.md) | Info-ZIP recursive archive creation, stored entries and Deflate levels 1–9. | New archives, relative names, synthetic metadata. |
+| [unzip](../commands/unzip/README.md) | Info-ZIP name listing, verification, stdout and named-directory extraction. | Exact selections, regular files and directories, no overwrite or metadata restoration. |
 | [base32](../commands/base32/README.md) | RFC 4648 Base32 encoding and decoding; wrapping and garbage filtering. | Uppercase alphabet; decoding retains the whole input. |
 | [base64](../commands/base64/README.md) | Streaming Base64 encoding and decoding; wrapping and garbage filtering. | Standard alphabet and canonical tail bits; malformed padding fails. |
 | [basename](../commands/basename/README.md) | Lexical basename and literal suffix removal; multiple and NUL-separated output. | No filesystem lookup. |

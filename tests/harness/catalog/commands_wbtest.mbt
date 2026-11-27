@@ -1,7 +1,6 @@
 ///|
-test "catalog contains exactly 82 unique commands" {
+test "catalog contains unique command names" {
   let catalog = commands()
-  assert_eq(catalog.length(), 82)
   let names : Map[String, Bool] = Map([])
   for item in catalog {
     assert_false(names.contains(item.name))

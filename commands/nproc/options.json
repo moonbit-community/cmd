@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "command": "nproc",
+  "help": "Usage: nproc [--all] [--ignore=N]\nPrint the number of Linux processing units.\n  --all  Count configured CPUs, ignoring quotas and OpenMP.\n  --ignore  Exclude N processors, retaining at least one.\n{{help:help:0}}\n{{help:version:0}}\n",
+  "catalog_options": [
+    "all",
+    "ignore"
+  ],
+  "options": [
+    {
+      "name": "all",
+      "aliases": [
+        "--all"
+      ],
+      "value": "none",
+      "description": "Count configured CPUs, ignoring quotas and OpenMP.",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "ignore",
+      "aliases": [
+        "--ignore"
+      ],
+      "value": "required",
+      "description": "Exclude N processors, retaining at least one.",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show the version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "all",
+        "ignore",
+        "help",
+        "version"
+      ]
+    }
+  ]
+}

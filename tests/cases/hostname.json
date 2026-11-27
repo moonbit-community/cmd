@@ -1,0 +1,32 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "hostname-extra-operand",
+      "command": "hostname",
+      "args": [
+        "unexpected"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "hostname: setting the hostname is unsupported\n"
+    },
+    {
+      "id": "hostname-linux-reference",
+      "command": "hostname",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "linux"
+      ]
+    }
+  ]
+}
