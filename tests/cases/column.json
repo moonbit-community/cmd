@@ -2,6 +2,107 @@
   "schema": 2,
   "cases": [
     {
+      "id": "column-width-c-table",
+      "command": "column",
+      "args": [
+        "-t"
+      ],
+      "stdin_hex": "e4b8ad20310a65cc8120320ac2a120330a61ff20340a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "5c7865345c7862385c7861642020310a655c7863635c7838312020202020320a5c7863325c786131202020202020330a615c786666202020202020202020340a",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "util-linux 2.40"
+    },
+    {
+      "id": "column-width-utf8-table",
+      "command": "column",
+      "args": [
+        "-t"
+      ],
+      "stdin_hex": "e4b8ad20310a65cc8120320ac2a120330a61ff20340a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "e4b8ad2020202020310a65cc81202020202020320ac2a1202020202020330a615c7866662020340a",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "util-linux 2.40"
+    },
+    {
+      "id": "column-width-utf8-separator",
+      "command": "column",
+      "args": [
+        "-t",
+        "-s",
+        "界"
+      ],
+      "stdin_hex": "61e7958c620ae4b8ade7958c630a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "61202020620ae4b8ad2020630a",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "util-linux 2.40"
+    },
+    {
+      "id": "column-width-c-grid",
+      "command": "column",
+      "args": [
+        "-c",
+        "18",
+        "-x"
+      ],
+      "stdin_hex": "e4b8ad0a65cc810ac2a10a616263640a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "5c7865345c7862385c7861640a655c7863635c7838310a5c7863325c7861310a616263640a",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "util-linux 2.40"
+    },
+    {
+      "id": "column-width-utf8-grid",
+      "command": "column",
+      "args": [
+        "-c",
+        "18",
+        "-x"
+      ],
+      "stdin_hex": "e4b8ad0a65cc810ac2a10a616263640a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "e4b8ad0965cc810ac2a109616263640a",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "util-linux 2.40"
+    },
+    {
       "id": "p2-column-table",
       "command": "column",
       "args": [
@@ -72,7 +173,7 @@
       "files": [],
       "environment": {},
       "expected_status": 0,
-      "expected_stdout_text": "column 0.1.10\n",
+      "expected_stdout_text": "column 0.1.11\n",
       "expected_stderr_text": "",
       "comparison": "contract",
       "normalizations": [],
@@ -393,7 +494,7 @@
         "help"
       ],
       "source_version": "workspace cli/column@0.1.6 metadata contract",
-      "expected_stdout_text": "Usage: column [OPTION]... [FILE]...\nColumnate input in columns (default), or align a table with -t.\n  -t, --table                 create a table\n  -s, --separator=CHARS       table delimiters (default: space and TAB)\n  -o, --output-separator=SEP  table separator (default: two spaces)\n  -c, --output-width=WIDTH    output width (default: COLUMNS or 80)\n  -x, --fillrows              fill rows before columns\n      --help                 display this help and exit\n      --version              display version and exit\nLayout uses the C locale. Bytes above ASCII are printed as \\xHH.\nLayout uses temporary files and requires filesystem write access.\n",
+      "expected_stdout_text": "Usage: column [OPTION]... [FILE]...\nColumnate input in columns (default), or align a table with -t.\n  -t, --table                 create a table\n  -s, --separator=CHARS       table delimiters (default: space and TAB)\n  -o, --output-separator=SEP  table separator (default: two spaces)\n  -c, --output-width=WIDTH    output width (default: COLUMNS or 80)\n  -x, --fillrows              fill rows before columns\n      --help                 display this help and exit\n      --version              display version and exit\nC.UTF-8 measures Unicode cells. C escapes bytes above ASCII.\nLayout uses temporary files and requires filesystem write access.\n",
       "expected_stderr_text": ""
     }
   ]

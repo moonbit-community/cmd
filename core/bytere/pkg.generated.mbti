@@ -8,6 +8,8 @@ pub fn bytes(StringView) -> Bytes
 
 pub fn compile(String, extended? : Bool, emacs? : Bool, grep_syntax? : Bool, ignore_case? : Bool) -> Pattern raise
 
+pub fn compile_utf8(Array[String], fixed~ : Bool, extended~ : Bool, ignore_case~ : Bool) -> Utf8Pattern raise
+
 pub fn search_bytes(ArrayView[RecordMatcher], BytesView, whole? : Bool, word? : Bool) -> Array[RecordSearch]
 
 pub fn text(BytesView) -> String
@@ -48,6 +50,16 @@ pub fn RecordMatcher::search_bytes(Self, BytesView, whole? : Bool, word? : Bool)
 
 type RecordSearch
 pub fn RecordSearch::find_span(Self, start? : Int32) -> (Int32, Int32)?
+
+pub struct Utf8Pattern {
+  // private fields
+}
+pub fn Utf8Pattern::find_span(Self, Utf8Record, start? : Int32, whole? : Bool, word? : Bool) -> (Int32, Int32)?
+
+pub struct Utf8Record {
+  // private fields
+}
+pub fn Utf8Record::new(BytesView) -> Self
 
 // Type aliases
 

@@ -1,0 +1,7 @@
+import {
+  "cli/core/procfs",
+  "moonbitlang/core/env",
+  "moonbitlang/core/async/fs",
+}
+
+supported_targets = "wasm"

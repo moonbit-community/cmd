@@ -1,6 +1,6 @@
 name = "cli/id"
 
-version = "0.1.0"
+version = "0.1.1"
 
 readme = "README.md"
 
@@ -15,5 +15,5 @@ preferred_target = "wasm"
 description = "Print the current process credentials on Linux."
 
 import {
-  "cli/core@0.11.4",
+  "cli/core@0.11.6",
 }

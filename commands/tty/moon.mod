@@ -15,5 +15,5 @@ preferred_target = "wasm"
 description = "Check whether standard input is definitely redirected on POSIX."
 
 import {
-  "cli/core@0.11.5",
+  "cli/core@0.11.8",
 }

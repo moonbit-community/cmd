@@ -1,6 +1,6 @@
 name = "cli/wc"
 
-version = "0.2.9"
+version = "0.2.10"
 
 readme = "README.md"
 
@@ -15,5 +15,5 @@ preferred_target = "wasm"
 description = "wc command for MoonX."
 
 import {
-  "cli/core@0.11.3",
+  "cli/core@0.11.4",
 }

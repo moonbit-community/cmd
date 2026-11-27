@@ -252,9 +252,8 @@ async fn check_admission(root : String, failures : Array[String]) -> Unit {
       }
     }
   }
-  restricted.sort()
   record(
-    restricted == expected_restricted,
+    Set(restricted) == Set(expected_restricted),
     "unexpected restricted command set: " + restricted.join(", "),
     failures,
   )

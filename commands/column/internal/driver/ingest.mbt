@@ -42,7 +42,9 @@ fn Snapshot::stage_record(
   if self.table {
     self.observe_table_fields(bytes[:])
   } else {
-    self.longest = self.longest.max(@layout.display_width(line))
+    self.longest = self.longest.max(
+      @layout.display_width(line, profile=self.profile),
+    )
   }
   pending.deferred is None &&
   pending.data.length() < SPOOL_BATCH_BYTES &&
@@ -56,7 +58,7 @@ fn Snapshot::stage_records(
   pending : SpoolBatch,
 ) -> Bool raise {
   while records.next() is Some(record) {
-    if @layout.input_line(record.data) is Some(line) &&
+    if @layout.input_line(record.data, profile=self.profile) is Some(line) &&
       !self.stage_record(pending, line) {
       return false
     }

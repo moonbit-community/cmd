@@ -100,6 +100,7 @@
       "releasable": true,
       "case_ids": [
         "uname-extra-operand",
+        "uname-fields-linux-reference",
         "uname-linux-kernel",
         "uname-darwin-kernel",
         "uname-windows-kernel",
@@ -141,6 +142,7 @@
       "releasable": true,
       "case_ids": [
         "id-extra-operand",
+        "id-fields-linux-reference",
         "id-linux-reference"
       ],
       "oracle_boundary": "Host-dependent observations must share the process, account or kernel namespace. The Linux correctness scenario compares the Wasm command with the host executable."
@@ -230,6 +232,7 @@
       "releasable": true,
       "case_ids": [
         "ps-extra-operand",
+        "ps-fields-linux-reference",
         "ps-no-such-process",
         "ps-linux-reference"
       ],
@@ -384,6 +387,8 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
+        "expand-width-c-tab-stops",
+        "expand-width-utf8-tab-stops",
         "p0-expand-basic-tabs",
         "p0-expand-initial",
         "p0-expand-explicit-stops",
@@ -744,6 +749,8 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
+        "unexpand-width-c-tab-stops",
+        "unexpand-width-utf8-tab-stops",
         "p0-unexpand-leading",
         "p0-unexpand-all",
         "p0-unexpand-first-only",
@@ -979,6 +986,8 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
+        "comm-locale-c-ordered-bytes",
+        "comm-locale-utf8-ordered-bytes",
         "phase3-comm-columns",
         "compat-text-comm-nul-records",
         "compat-text-comm-check-order",
@@ -1599,6 +1608,36 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
+        "grep-locale-c-unicode-fixed",
+        "grep-locale-utf8-unicode-fixed",
+        "grep-locale-c-posix-classes",
+        "grep-locale-utf8-posix-classes",
+        "grep-locale-c-word-anchors",
+        "grep-locale-utf8-word-anchors",
+        "grep-locale-c-word-option",
+        "grep-locale-utf8-word-option",
+        "grep-locale-c-scalar-repetition",
+        "grep-locale-utf8-scalar-repetition",
+        "grep-locale-c-basic-backreference",
+        "grep-locale-utf8-basic-backreference",
+        "grep-locale-c-malformed-report",
+        "grep-locale-utf8-malformed-report",
+        "grep-locale-c-summarize-malformed",
+        "grep-locale-utf8-summarize-malformed",
+        "grep-locale-c-leftmost-longest",
+        "grep-locale-utf8-leftmost-longest",
+        "grep-locale-utf8-utf8-ctype-priority",
+        "grep-locale-utf8-reject-collation-range",
+        "grep-locale-c-literal-fold-width-and-greek",
+        "grep-locale-utf8-literal-fold-width-and-greek",
+        "grep-locale-c-malformed-precedence",
+        "grep-locale-utf8-malformed-precedence",
+        "grep-locale-c-nullable-capture",
+        "grep-locale-utf8-nullable-capture",
+        "grep-locale-c-independent-captures",
+        "grep-locale-utf8-independent-captures",
+        "grep-locale-c-class-boundaries",
+        "grep-locale-utf8-class-boundaries",
         "phase3-grep-stdin",
         "compat-text-line-209",
         "compat-text-line-218",
@@ -1689,6 +1728,8 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
+        "join-locale-c-folded-sort-order",
+        "join-locale-utf8-folded-sort-order",
         "compat-text-join-output-list",
         "compat-text-join-nul-records",
         "p9-join-check-order",
@@ -3080,6 +3121,10 @@
       "policy_sensitive": true,
       "releasable": true,
       "case_ids": [
+        "sort-locale-c-byte-collation",
+        "sort-locale-utf8-byte-collation",
+        "sort-locale-c-fold-dictionary",
+        "sort-locale-utf8-fold-dictionary",
         "phase3-sort-basic",
         "sort-exact-integer-unique",
         "sort-exact-integer-stable",
@@ -3749,6 +3794,8 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
+        "tr-locale-c-byte-case-classes",
+        "tr-locale-utf8-byte-case-classes",
         "phase3-tr-range",
         "p9-tr-octal-escape",
         "p9-tr-middle-repeat",
@@ -3862,6 +3909,10 @@
       "policy_sensitive": true,
       "releasable": true,
       "case_ids": [
+        "wc-width-c-counts",
+        "wc-width-utf8-counts",
+        "wc-width-c-max-width",
+        "wc-width-utf8-max-width",
         "phase3-wc-lines",
         "compat-text-line-495",
         "p3-wc-files0-alignment",
@@ -4139,6 +4190,14 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
+        "fold-width-c-columns",
+        "fold-width-utf8-columns",
+        "fold-width-c-characters",
+        "fold-width-utf8-characters",
+        "fold-width-c-bytes",
+        "fold-width-utf8-bytes",
+        "fold-width-c-blank-wrap",
+        "fold-width-utf8-blank-wrap",
         "fold-tab-column",
         "fold-space-break",
         "fold-invalid-width",
@@ -5019,6 +5078,11 @@
       "policy_sensitive": true,
       "releasable": true,
       "case_ids": [
+        "column-width-c-table",
+        "column-width-utf8-table",
+        "column-width-utf8-separator",
+        "column-width-c-grid",
+        "column-width-utf8-grid",
         "p2-column-copy",
         "p2-column-table",
         "p2-column-version",
@@ -5360,6 +5424,106 @@
         "serve-failure-diagnostic-source-name"
       ],
       "oracle_boundary": "Project-specific server; the pinned oracle has no corresponding executable or upstream contract."
+    },
+    {
+      "name": "tar",
+      "package_name": "cli/tar",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "create",
+        "list",
+        "extract",
+        "file",
+        "gzip",
+        "to-stdout",
+        "help",
+        "version",
+        "directory"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "archive-tar-version",
+        "archive-tar-gzip-list",
+        "archive-tar-pipe-selected",
+        "archive-tar-extract-directory",
+        "archive-tar-create-gzip",
+        "archive-tar-stdout",
+        "archive-tar-stdin",
+        "archive-tar-existing-output",
+        "archive-tar-existing-member",
+        "archive-tar-invalid",
+        "archive-tar-help",
+        "archive-tar-linked-parent"
+      ]
+    },
+    {
+      "name": "zip",
+      "package_name": "cli/zip",
+      "compare_profile": "info-zip",
+      "supported_options": [
+        "recursive",
+        "quiet",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "help",
+        "version",
+        "test"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "archive-zip-version",
+        "archive-zip-verify-system",
+        "archive-zip-deflate",
+        "archive-zip-directory",
+        "archive-zip-refuse-update",
+        "archive-zip-deflate-1",
+        "archive-zip-deflate-2",
+        "archive-zip-deflate-3",
+        "archive-zip-deflate-4",
+        "archive-zip-deflate-5",
+        "archive-zip-deflate-6",
+        "archive-zip-deflate-7",
+        "archive-zip-deflate-8",
+        "archive-zip-help",
+        "archive-zip-linked-operand"
+      ]
+    },
+    {
+      "name": "unzip",
+      "package_name": "cli/unzip",
+      "compare_profile": "info-zip",
+      "supported_options": [
+        "names",
+        "pipe",
+        "test",
+        "quiet",
+        "never-overwrite",
+        "directory",
+        "help",
+        "version"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "archive-unzip-version",
+        "archive-unzip-names",
+        "archive-unzip-binary-pipe",
+        "archive-unzip-extract",
+        "archive-unzip-skip-existing",
+        "archive-unzip-crc",
+        "archive-unzip-invalid",
+        "archive-unzip-help"
+      ]
     }
   ]
 }

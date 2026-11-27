@@ -24,7 +24,7 @@ Use basic regular expressions by default, -E for extended expressions or -F for 
 | `-F`, `--fixed-strings` | Match literal strings. |
 | `-E`, `--extended-regexp` | Use extended regular expressions. |
 | `-o`, `--only-matching` | Print each nonempty matched part separately. |
-| `-i`, `--ignore-case` | Ignore ASCII case differences. |
+| `-i`, `--ignore-case` | Ignore case in the selected character profile. |
 | `-n`, `--line-number` | Print record numbers. |
 | `-r`, `--recursive` | Recurse without following links. |
 | `-C VALUE`, `--context VALUE` | Print this many records before and after a match. |
@@ -40,6 +40,7 @@ Pattern files and `-f -` both require UTF-8. Input records and matched output pr
 
 Build from source with the MoonBit 1.0 RC1 toolchain.
 
-- Matching uses C-locale byte classes and ASCII case folding, not Unicode locale rules. Backreferences may require additional work and memory.
+- In C.UTF-8 and C.utf8, patterns consume Unicode scalars and -i uses simple uppercase equivalence. Byte offsets and -o output refer to the original input. C retains byte matching and ASCII case folding.
+- -a preserves malformed bytes in selected records. With the default output policy a malformed output line triggers the binary-match diagnostic. -I suppresses that line. Backreferences may require additional time and memory.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

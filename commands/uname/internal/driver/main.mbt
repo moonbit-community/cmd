@@ -33,6 +33,9 @@ async fn run() -> Unit {
       )
     }
   }
+  if parsed.contains("operating-system") {
+    fields.push(if @async.platform is Linux { "GNU/Linux" } else { "Darwin" })
+  }
   @stdio.stdout.text.write(fields.join(" ") + "\n")
 }
 

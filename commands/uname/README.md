@@ -20,12 +20,13 @@ moonx cli/uname -snrv
 | `-n`, `--nodename` | Print the network node hostname on Linux. |
 | `-r`, `--kernel-release` | Print the kernel release on Linux. |
 | `-v`, `--kernel-version` | Print the kernel version on Linux. |
+| `-o`, `--operating-system` | Print the GNU operating-system label. |
 | `--help` | Show help. |
 | `--version` | Show the version. |
 <!-- END GENERATED OPTIONS -->
 
 ## Notes
 
-Linux reads the selected kernel fields from procfs. macOS supports the kernel name `Darwin`. Windows kernel fields, machine architecture and the full `-a` form are unavailable.
+Linux reads kernel fields from procfs. `-o` emits the GNU operating-system label on Linux and macOS. macOS also supports the Darwin kernel name. Windows, machine architecture and the full `-a` form are unavailable.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

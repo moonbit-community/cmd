@@ -97,4 +97,7 @@ members = [
   "./commands/id",
   "./commands/hostname",
   "./commands/uname",
+  "./commands/tar",
+  "./commands/zip",
+  "./commands/unzip",
 ]

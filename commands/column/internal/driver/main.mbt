@@ -26,8 +26,11 @@ pub async fn run_main() -> Unit {
     @stdio.stdout.text.write("column \{MODULE_VERSION}\n")
     return
   }
+  let profile = @textwidth.current()
   let separator = parsed.last_value("separator")
-  if separator is Some(value) && value.iter().any(c => c.to_int() >= 128) {
+  if profile == CBytes &&
+    separator is Some(value) &&
+    value.iter().any(c => c.to_int() >= 128) {
     @stdio.stderr.text.write("column: unsupported non-ASCII input separator\n")
     @env.exit(2)
     return
@@ -49,6 +52,7 @@ pub async fn run_main() -> Unit {
   }
   let failed = run_layout(
     parsed.operands,
+    profile~,
     table=parsed.contains("table"),
     separator~,
     output_separator=parsed

@@ -15,5 +15,5 @@ preferred_target = "wasm"
 description = "Translate the portable HUP, INT and TERM signals."
 
 import {
-  "cli/core@0.11.5",
+  "cli/core@0.11.8",
 }

@@ -285,6 +285,15 @@
     },
     {
       "name": "serve"
+    },
+    {
+      "name": "tar"
+    },
+    {
+      "name": "zip"
+    },
+    {
+      "name": "unzip"
     }
   ],
   "cases": [],
@@ -383,6 +392,9 @@
     "date.json",
     "rg.json",
     "typst.json",
-    "serve.json"
+    "serve.json",
+    "tar.json",
+    "zip.json",
+    "unzip.json"
   ]
 }

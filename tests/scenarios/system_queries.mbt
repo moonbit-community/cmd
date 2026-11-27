@@ -5,7 +5,7 @@ async fn system_reference(
   name : String,
   args : Array[String],
 ) -> Unit {
-  let locale = { "LC_ALL": "C" }
+  let locale = { "LC_ALL": "C", "POSIXLY_CORRECT": "1" }
   let reference = @harness.run(name, args, stdin=b"", extra_env=locale)
   let candidate = scenario_run(work, root, name, args, extra_env=locale)
   assert_eq(reference.status, 0)

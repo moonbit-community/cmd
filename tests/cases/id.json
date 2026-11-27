@@ -2,6 +2,19 @@
   "schema": 2,
   "cases": [
     {
+      "id": "id-fields-linux-reference",
+      "command": "id",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "linux"
+      ]
+    },
+    {
       "id": "id-extra-operand",
       "command": "id",
       "args": [

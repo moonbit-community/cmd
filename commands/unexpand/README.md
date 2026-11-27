@@ -28,7 +28,7 @@ Convert leading blanks by default; -a also converts later blanks. The default ta
 
 ## Notes
 
-- Column tracking uses C-locale byte/control-character rules, not Unicode display width.
+- C.UTF-8 uses Unicode display cells to locate tab stops. C uses byte-oriented column positions.
 
 Build from source with the MoonBit 1.0 RC1 toolchain.
 

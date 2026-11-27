@@ -2,7 +2,7 @@
 
 ///|
 fn metadata_help() -> String {
-  "Usage: uname [-snrv]\nPrint selected kernel information.\n  -s, --kernel-name  Print the kernel name.\n  -n, --nodename  Print the network node hostname on Linux.\n  -r, --kernel-release  Print the kernel release on Linux.\n  -v, --kernel-version  Print the kernel version on Linux.\n      --help      display this help and exit\n      --version   display version and exit\n"
+  "Usage: uname [-snrvo]\nPrint selected kernel information.\n  -s, --kernel-name  Print the kernel name.\n  -n, --nodename  Print the network node hostname on Linux.\n  -r, --kernel-release  Print the kernel release on Linux.\n  -v, --kernel-version  Print the kernel version on Linux.\n  -o, --operating-system  Print the GNU operating-system label.\n      --help      display this help and exit\n      --version   display version and exit\n"
 }
 
 ///|
@@ -12,6 +12,7 @@ fn option_specs() -> Array[@cli.OptionSpec] {
     @cli.flag("nodename", short='n'),
     @cli.flag("kernel-release", short='r'),
     @cli.flag("kernel-version", short='v'),
+    @cli.flag("operating-system", short='o'),
     @cli.flag("help"),
     @cli.flag("version", repeatable=false),
   ]

@@ -37,6 +37,7 @@ Use `--help` for the complete option list.
 
 ## Notes
 
+C and C.UTF-8 order records by unsigned bytes. -f folds ASCII and -d uses the GNU byte dictionary classes in both locales.
 Temporary runs use binary I/O and are closed before cleanup.
 
 Build from source with the MoonBit 1.0 RC1 toolchain.

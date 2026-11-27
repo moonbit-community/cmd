@@ -2,6 +2,44 @@
   "schema": 2,
   "cases": [
     {
+      "id": "expand-width-c-tab-stops",
+      "command": "expand",
+      "args": [
+        "-t4"
+      ],
+      "stdin_hex": "e4b8ad09650a65cc8109c2a109780a61ff097a0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "e4b8ad20650a65cc8120c2a12020780a61ff20207a0a",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
+      "id": "expand-width-utf8-tab-stops",
+      "command": "expand",
+      "args": [
+        "-t4"
+      ],
+      "stdin_hex": "e4b8ad09650a65cc8109c2a109780a61ff097a0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "e4b8ad2020650a65cc81202020c2a1202020780a61ff20207a0a",
+      "expected_stderr_text": "",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11"
+    },
+    {
       "id": "p0-expand-basic-tabs",
       "command": "expand",
       "args": [],
@@ -114,7 +152,7 @@
         "version"
       ],
       "source_version": "workspace cli/expand@0.1.5 metadata contract",
-      "expected_stdout_text": "expand 0.1.8\n",
+      "expected_stdout_text": "expand 0.1.9\n",
       "expected_stderr_text": ""
     },
     {
