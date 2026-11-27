@@ -233,7 +233,7 @@ match/no-match/error, and false normally exits 1.
 
 | Commands | Deliberate extensions or differences |
 | --- | --- |
-| cat | Combined long display aliases, --unbuffered and -h; -u has no effect. |
+| cat | `-E` renders CRLF as `^M| cat and preserves a bare CR. Combined long display aliases, --unbuffered and -h; -u has no effect. |
 | comm, join | Named long aliases for existing short options, including comm --suppress-1/2/3 and join --field1/2. |
 | od, strings | Additional long format names; strings --octal/-o. |
 | ls, tree | Additional long layout/filter aliases; ls -P/--no-dereference. |

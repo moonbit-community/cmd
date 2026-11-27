@@ -2,6 +2,17 @@
   "schema": 3,
   "entries": [
     {
+      "behavior_id": "case:cat-show-ends-split-crlf",
+      "command": "cat",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cat.json",
+      "case_id": "cat-show-ends-split-crlf",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
       "behavior_id": "case:awk-rules-fields-and-counters",
       "command": "awk",
       "status": "supported",

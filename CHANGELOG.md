@@ -24,6 +24,8 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 - Add C.UTF-8 character counting and display widths to wc, fold, expand, unexpand and column.
 - Add regular-file name following and rotation recovery to POSIX `tail -F`
   in the development version.
+- Correct cat -E rendering of CRLF across input boundaries.
+
 - Add POSIX file identity comparisons to the development version of `test`.
 - Match GNU patch when replacing a default reject file in the development version.
 - Expand regular-file symbolic permission expressions in the development version of `chmod`.
