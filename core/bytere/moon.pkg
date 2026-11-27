@@ -1,5 +1,7 @@
 import {
   "cli/core/bytesearch",
+  "cli/core/textwidth",
+  "moonbit-community/unicode-data" @unicode,
   "moonbitlang/core/encoding/utf8",
   "moonbitlang/core/simd",
 }

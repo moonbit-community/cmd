@@ -27,6 +27,7 @@ priv enum Tree {
 
 ///|
 priv struct Parser {
+  scalar_sets : Array[ScalarSet]?
   source : String
   extended : Bool
   emacs : Bool
@@ -187,11 +188,10 @@ fn Parser::atom(self : Parser, first : Bool) -> Tree raise PatternError {
     self.closed[group] = true
     return Capture(group, inner)
   }
-  let c = self.code(self.index)
-  self.index += 1
+  let c = self.next_code()
   match c {
     46 => if self.emacs { Class(Array::makei(256, c => c != 10)) } else { Any }
-    91 => Class(self.bracket())
+    91 => self.bracket()
     94 if self.extended || first =>
       Assert(if self.emacs { LineBegin } else { Begin })
     36 if self.extended ||
@@ -202,8 +202,7 @@ fn Parser::atom(self : Parser, first : Bool) -> Tree raise PatternError {
       guard self.index < self.source.length() else {
         raise PatternError("trailing backslash in regular expression")
       }
-      let escaped = self.code(self.index)
-      self.index += 1
+      let escaped = self.next_code()
       match escaped {
         49..<=57 => {
           let group = escaped - 49
@@ -219,22 +218,22 @@ fn Parser::atom(self : Parser, first : Bool) -> Tree raise PatternError {
         66 => Assert(NotWordBoundary)
         96 => Assert(Begin)
         39 => Assert(End)
-        119 => Class(byte_class("word"))
-        87 => Class(byte_class("word").map(v => !v))
-        115 => Class(byte_class("space"))
-        83 => Class(byte_class("space").map(v => !v))
+        119 => self.make_class([Named("word")], false)
+        87 => self.make_class([Named("word")], true)
+        115 => self.make_class([Named("space")], false)
+        83 => self.make_class([Named("space")], true)
         43 | 63 | 123 if !self.extended && !self.emacs =>
           raise PatternError("repetition operator has no preceding expression")
         _ => self.literal(escaped)
       }
     }
-    42 if !self.extended && first => Literal(c)
+    42 if !self.extended && first => self.literal(c)
     42 | 43 | 63 if self.extended =>
       raise PatternError("repetition operator has no preceding expression")
     123 if self.extended && !self.grep_syntax =>
       raise PatternError("repetition operator has no preceding expression")
     _ => {
-      guard c <= 255 else {
+      guard self.scalar_sets is Some(_) || c <= 255 else {
         raise PatternError("regular expression requires a byte string")
       }
       self.literal(c)
@@ -244,6 +243,11 @@ fn Parser::atom(self : Parser, first : Bool) -> Tree raise PatternError {
 
 ///|
 fn Parser::literal(self : Parser, code : Int32) -> Tree {
+  if self.scalar_sets is Some(sets) {
+    let c = code.unsafe_to_char()
+    sets.push(ScalarSet::new([Range(c, c)], self.ignore_case, false))
+    return Literal(sets.length() - 1)
+  }
   if self.ignore_case &&
     ((code >= 65 && code <= 90) || (code >= 97 && code <= 122)) {
     let lower = ascii_fold(code)
@@ -302,84 +306,130 @@ fn byte_class(name : String) -> Array[Bool] raise PatternError {
 }
 
 ///|
-/// Bracket expressions use C byte ordering. A backslash in a list is an
-/// ordinary byte; command-specific escape preprocessing happens before here.
-fn Parser::bracket_item(
-  self : Parser,
-) -> (Array[Bool], Int32?) raise PatternError {
-  let c = self.code(self.index)
-  if !self.emacs &&
-    c == 91 &&
-    self.index + 1 < self.source.length() &&
-    self.code(self.index + 1) is (58 | 46 | 61) {
-    let marker = self.code(self.index + 1)
-    let begin = self.index + 2
-    let mut end = begin
-    while end + 1 < self.source.length() &&
-          !(self.code(end) == marker && self.code(end + 1) == 93) {
-      end += 1
-    }
-    guard end + 1 < self.source.length() else {
-      raise PatternError("unterminated bracket element")
-    }
-    self.index = end + 2
-    let name = self.source[begin:end].to_owned()
-    if marker == 58 {
-      return (byte_class(name), None)
-    }
-    guard end == begin + 1 && self.code(begin) <= 255 else {
-      raise PatternError("invalid C-locale collating element")
-    }
-    let byte = self.code(begin)
-    return (Array::makei(256, i => i == byte), Some(byte))
-  }
-  self.index += 1
-  guard c <= 255 else {
-    raise PatternError("regular expression requires a byte string")
-  }
-  (Array::makei(256, i => i == c), Some(c))
+fn Parser::next_code(self : Parser) -> Int32 {
+  let c = self.source.get_char(self.index).unwrap()
+  self.index += c.utf16_len()
+  c.to_int()
 }
 
 ///|
-fn Parser::bracket(self : Parser) -> Array[Bool] raise PatternError {
+fn Parser::bracket_item(self : Parser) -> ScalarTerm raise PatternError {
+  let c = self.next_code()
+  if !self.emacs &&
+    c == 91 &&
+    self.index < self.source.length() &&
+    self.code(self.index) is (58 | 46 | 61) {
+    let marker = self.next_code()
+    let begin = self.index
+    while self.index + 1 < self.source.length() &&
+          !(self.code(self.index) == marker && self.code(self.index + 1) == 93) {
+      self.index += 1
+    }
+    guard self.index + 1 < self.source.length() else {
+      raise PatternError("unterminated bracket element")
+    }
+    let name = self.source[begin:self.index]
+    self.index += 2
+    if marker == 58 {
+      guard name
+        is ("alnum"
+        | "alpha"
+        | "blank"
+        | "cntrl"
+        | "digit"
+        | "graph"
+        | "lower"
+        | "print"
+        | "punct"
+        | "space"
+        | "upper"
+        | "xdigit"
+        | "word") else {
+        raise PatternError("invalid character class name")
+      }
+      return Named(name.to_owned())
+    }
+    guard name.iter().next() is Some(ch) &&
+      name.length() == ch.utf16_len() &&
+      (self.scalar_sets is Some(_) || ch.to_int() <= 255) else {
+      raise PatternError("invalid C-locale collating element")
+    }
+    if self.scalar_sets is Some(_) && !ch.is_ascii() {
+      raise PatternError("Invalid collation character")
+    }
+    return Range(ch, ch)
+  }
+  guard self.scalar_sets is Some(_) || c <= 255 else {
+    raise PatternError("regular expression requires a byte string")
+  }
+  let ch = c.unsafe_to_char()
+  Range(ch, ch)
+}
+
+///|
+fn Parser::make_class(
+  self : Parser,
+  terms : Array[ScalarTerm],
+  negated : Bool,
+) -> Tree raise PatternError {
+  if self.scalar_sets is Some(sets) {
+    sets.push(ScalarSet::new(terms, self.ignore_case, negated))
+    return Literal(sets.length() - 1)
+  }
+  let members = Array::make(256, false)
+  for term in terms {
+    match term {
+      Range(a, b) =>
+        for c in a.to_int()..<=b.to_int() {
+          members[c] = true
+        }
+      Named(name) => {
+        let class = byte_class(name)
+        for i in 0..<256 {
+          members[i] = members[i] || class[i]
+        }
+      }
+    }
+  }
+  if self.ignore_case {
+    for upper in 65..<=90 {
+      let present = members[upper] || members[upper + 32]
+      members[upper] = present
+      members[upper + 32] = present
+    }
+  }
+  Class(if negated { members.map(x => !x) } else { members })
+}
+
+///|
+fn Parser::bracket(self : Parser) -> Tree raise PatternError {
   let negated = self.index < self.source.length() && self.code(self.index) == 94
   if negated {
     self.index += 1
   }
-  let members = Array::make(256, false)
-  let mut first = true
+  let terms = []
   while self.index < self.source.length() {
-    if self.code(self.index) == 93 && !first {
+    if self.code(self.index) == 93 && !terms.is_empty() {
       self.index += 1
-      if self.ignore_case {
-        for upper in 65..<=90 {
-          let present = members[upper] || members[upper + 32]
-          members[upper] = present
-          members[upper + 32] = present
-        }
-      }
-      return if negated { members.map(v => !v) } else { members }
+      return self.make_class(terms, negated)
     }
-    first = false
-    let (item, single) = self.bracket_item()
+    let item = self.bracket_item()
     if self.index + 1 < self.source.length() &&
       self.code(self.index) == 45 &&
       self.code(self.index + 1) != 93 {
       self.index += 1
-      let (_, last) = self.bracket_item()
-      guard single is Some(left) && last is Some(right) else {
+      let right = self.bracket_item()
+      guard item is Range(a, _) &&
+        right is Range(b, _) &&
+        (a <= b || self.emacs) else {
         raise PatternError("invalid bracket range")
       }
-      if left > right && !self.emacs {
-        raise PatternError("invalid bracket range")
+      if self.scalar_sets is Some(_) && (!a.is_ascii() || !b.is_ascii()) {
+        raise PatternError("Invalid collation character")
       }
-      for c in left..<=right {
-        members[c] = true
-      }
+      terms.push(Range(a, b))
     } else {
-      for c in 0..<256 {
-        members[c] = members[c] || item[c]
-      }
+      terms.push(item)
     }
   }
   raise PatternError("unterminated bracket expression")

@@ -14,6 +14,7 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 ## 2026-11-28
 
+- Add C.UTF-8 matching to grep and apply GNU uppercase byte order in join -i.
 - Extend the system-query profiles with the local identity report, GNU operating-system label and process table fields.
 
 - Add Wasm development profiles for uname, hostname, id, whoami, groups, nproc, ps, uptime and free.

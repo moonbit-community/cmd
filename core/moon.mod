@@ -1,6 +1,6 @@
 name = "cli/core"
 
-version = "0.11.6"
+version = "0.11.7"
 
 readme = "README.md"
 
@@ -18,6 +18,8 @@ import {
   "moonbitlang/async@0.22.9",
   "moonbitlang/x@0.5.9",
   "cc06b/mooncry@0.95.0",
+  "moonbit-community/unicode-data@0.8.1",
+
   "moonbit-community/unicodewidth@0.2.1",
   "moonbit-community/normalization@0.5.2",
   "moonbit-community/punycode@0.7.1",

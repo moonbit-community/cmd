@@ -80,7 +80,7 @@ identify the principal refusals and platform differences.
 | [cksum](../commands/cksum/README.md) | POSIX CRC and selected digest families; modern digest manifests. | No legacy-algorithm manifest checks; raw output is single-input. |
 | [cmp](../commands/cmp/README.md) | Byte comparison with skip/limit, quiet and list modes. | C-byte diagnostics. |
 | [column](../commands/column/README.md) | Grid/table layout, C.UTF-8 cell widths, ANSI-aware table fields and temporary spooling. | No automatic terminal width or full util-linux grammar. |
-| [comm](../commands/comm/README.md) | Three-column sorted comparison, order checks, custom delimiters and totals. | C-locale byte ordering. |
+| [comm](../commands/comm/README.md) | Three-column sorted comparison, order checks, custom delimiters and totals. | C and C.UTF-8 byte ordering. |
 | [cp](../commands/cp/README.md) | New file/tree copies with --no-preserve=mode; explicit skip policies. | No mode-preserving, archive or existing-file replacement copies. |
 | [csplit](../commands/csplit/README.md) | Numeric/regex splits, repeats, suffixes and fragment cleanup. | No overwrite; Windows path-name and temporary-storage boundaries. |
 | [curl](../commands/curl/README.md) | HTTP(S), Basic auth, cookies, redirects, retry, upload and resume. | No other protocols/non-Basic auth; finite config/IRI/Cookie profile. |
@@ -96,12 +96,12 @@ identify the principal refusals and platform differences.
 | [find](../commands/find/README.md) | Traversal, name/path/type/size/time/access predicates and selected actions. | Limited action grammar and filesystem identity/owner metadata. |
 | [fmt](../commands/fmt/README.md) | Paragraph reflow, goal/width, indentation, prefixes and spacing modes. | C-locale bytes. |
 | [fold](../commands/fold/README.md) | Byte/control-column wrapping and whitespace breaks. | C-byte and C.UTF-8 scalar widths. |
-| [grep](../commands/grep/README.md) | BRE/ERE/literal search, context, recursion and binary policies. | C-byte matching and ASCII case folding. |
+| [grep](../commands/grep/README.md) | BRE/ERE/literal search, context, recursion and binary policies. | C-byte and C.UTF-8 scalar matching with original byte offsets. |
 | [gunzip](../commands/gunzip/README.md) | Streaming multi-member gzip decompression and integrity checks. | Partial output on corruption; named-file metadata/replacement limits. |
 | [gzip](../commands/gzip/README.md) | Streaming gzip levels 1–9 and checked multi-member decompression. | Named compression requires -nc; no saved metadata or file replacement. |
 | [head](../commands/head/README.md) | Line/byte prefixes, negative counts, headers and NUL records. | Finite Int64 counts. |
 | [hexdump](../commands/hexdump/README.md) | Canonical/custom dumps, offsets, duplicate suppression and colors. | Fixed numeric profile; forward stdin discard is an extension. |
-| [join](../commands/join/README.md) | Field joins, unpaired rows, headers, output selection and order checks. | Sorted C-byte input; no locale collation. |
+| [join](../commands/join/README.md) | Field joins, unpaired rows, headers, output selection and order checks. | C and C.UTF-8 byte ordering, with ASCII uppercase keys for -i. |
 | [jq](../commands/jq/README.md) | JSON filters, lexical functions, modules, shared input cursor and stream events. | Subset language; exact numeric ordering at or above 2^53 is not claimed. |
 | [jqlog](../commands/jqlog/README.md) | JSONL filtering with compact results and per-line evaluation. | Skips invalid JSON; no module/input effects. |
 | [ln](../commands/ln/README.md) | POSIX symbolic links, relative targets, replacement and backups. | No hard links or Windows creation. |
@@ -131,7 +131,7 @@ identify the principal refusals and platform differences.
 | [sha256sum](../commands/sha256sum/README.md) | Streaming SHA-256 and checksum manifest verification. | Binary/text modes do not translate bytes. |
 | [sha512sum](../commands/sha512sum/README.md) | Streaming SHA-512 and checksum manifest verification. | Binary/text modes do not translate bytes. |
 | [sleep](../commands/sleep/README.md) | Summed fractional second/minute/hour/day delays. | Host signal parity is outside the supported profile. |
-| [sort](../commands/sort/README.md) | Keyed sort, exact numeric order, stable ties, merge/check and external runs. | C locale; accounted buffer is not an RSS bound; output-identity limits. |
+| [sort](../commands/sort/README.md) | Keyed sort, exact numeric order, stable ties, merge/check and external runs. | C/C.UTF-8 byte order, accounted buffer and output-identity limits. |
 | [split](../commands/split/README.md) | Line/byte/record/chunk splitting, suffixes and shell filters. | No existing-output replacement; spooling and child permissions may apply. |
 | [strings](../commands/strings/README.md) | Printable 7-bit/8-bit runs, minimum lengths, offsets and names. | No wide encodings, Unicode classes or object-section parsing. |
 | [tac](../commands/tac/README.md) | Reverse records with fixed or regex separators. | Regex mode uses whole-input memory; stdin may need temporary storage. |
@@ -140,7 +140,7 @@ identify the principal refusals and platform differences.
 | [test](../commands/test/README.md) | String/integer/file predicates, Boolean forms and POSIX `-ef` identity comparison. | Windows `-ef` and unavailable terminal, owner and mode predicates reject. |
 | [timeout](../commands/timeout/README.md) | Local-only child deadline and exit-status mapping. | Unpublished; no process-group or signal-option profile. |
 | [touch](../commands/touch/README.md) | Create missing files or skip them with -c. | No timestamp updates; existing files fail. |
-| [tr](../commands/tr/README.md) | Byte translation, deletion, squeezing, complement and truncation. | C-locale byte semantics. |
+| [tr](../commands/tr/README.md) | Byte translation, deletion, squeezing, complement and truncation. | C/C.UTF-8 byte classes. |
 | [tree](../commands/tree/README.md) | Text/JSON/HTML trees, filtering, pruning, limits and supported sizes. | Link leaves; no target display/mode colors; platform size boundaries. |
 | [true](../commands/true/README.md) | Silent status 0. | Standalone metadata options are handled separately. |
 | [typst](../commands/typst/README.md) | Compilation/export, watch, eval/query, fonts, config and local templates. | Local packages, one thread, lexical paths; no network/self-update/HTML server. |
@@ -165,9 +165,12 @@ prefixes and queries. CLI arguments and single-directory serving are unchanged.
 ## Shared boundaries
 
 - **Text and numbers:** most traditional text commands use C-locale byte
-  semantics. This includes cut, tr, grep and sort. For wc, fold, expand, unexpand and
+  semantics. This includes cut, tr and sort. For wc, fold, expand, unexpand and
   column, C.UTF-8 or C.utf8 in the first nonempty LC_ALL, LC_CTYPE or LANG
   selects Unicode 16.0 scalar widths with narrow ambiguous characters.
+  Grep uses the same locale precedence and Unicode 18.0 character properties
+  for C.UTF-8 matching. Sort, comm and join use byte collation in C and
+  C.UTF-8. Regional language collations require additional locale data.
   The Unicode regex profile in rg and JSON string handling in jq are separate.
   Numeric tools with extended-precision formatting use the documented fixed
   Linux amd64 profile, not an arbitrary host ABI.

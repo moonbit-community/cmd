@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "command": "grep",
-  "help": "Usage: grep [-EFGivnclLqHhxwrRbszo] [-A NUM] [-B NUM] [-C NUM] [--include=GLOB] [--exclude=GLOB] [--binary-files=TYPE] [-e PATTERN] [-f FILE] [PATTERN] [FILE...]\n{{help:help:0}}\n{{help:version:0}}\n{{help:recursive:0}}\n",
+  "help": "Usage: grep [-EFGIaivnclLqHhxwrRbszo] [-A NUM] [-B NUM] [-C NUM] [--include=GLOB] [--exclude=GLOB] [--binary-files=TYPE] [-e PATTERN] [-f FILE] [PATTERN] [FILE...]\n{{help:help:0}}\n{{help:version:0}}\n{{help:recursive:0}}\nC.UTF-8 matches UTF-8 characters, Unicode classes and simple case equivalents.\n",
   "catalog_options": [
     "after-context",
     "before-context",
@@ -30,6 +30,7 @@
     "regexp",
     "text",
     "with-filename",
+    "without-match",
     "word-regexp"
   ],
   "readme_options": ["extended-regexp","fixed-strings","ignore-case","line-number","recursive","only-matching","context","help","version"],
@@ -89,7 +90,7 @@
         "--ignore-case"
       ],
       "value": "none",
-      "description": "Ignore ASCII case differences.",
+      "description": "Ignore case in the selected character profile.",
       "short": "i",
       "repeatable": true,
       "allow_attached": false
@@ -101,7 +102,7 @@
         "--invert-match"
       ],
       "value": "none",
-      "description": "Ignore ASCII case / invert / whole record / whole word.",
+      "description": "Select case-insensitive, inverted, whole-record or whole-word matches.",
       "short": "v",
       "repeatable": true,
       "allow_attached": false
@@ -209,7 +210,7 @@
         "--line-regexp"
       ],
       "value": "none",
-      "description": "Ignore ASCII case / invert / whole record / whole word.",
+      "description": "Select case-insensitive, inverted, whole-record or whole-word matches.",
       "short": "x",
       "repeatable": true,
       "allow_attached": false
@@ -262,6 +263,15 @@
       "value": "none",
       "description": "Use NUL-delimited input records.",
       "short": "z",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "without-match",
+      "aliases": ["-I"],
+      "value": "none",
+      "description": "Suppress binary input as for --binary-files=without-match.",
+      "short": "I",
       "repeatable": true,
       "allow_attached": false
     },
@@ -441,6 +451,7 @@
         "recursive-short-R",
         "no-messages",
         "null-data",
+        "without-match",
         "text",
         "after-context",
         "before-context",
