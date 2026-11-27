@@ -57,6 +57,8 @@ pub async fn execute_scenario(
     ),
     () => {
       match fixture.id {
+        "clear-linux-reference" | "tput-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
         "uname-linux-reference" =>
           system_reference(work, root, fixture.command, fixture.args)
         "hostname-linux-reference" =>

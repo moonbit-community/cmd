@@ -2,6 +2,44 @@
   "schema": 2,
   "cases": [
     {
+      "id": "test-redirected-stdin",
+      "command": "test",
+      "args": [
+        "-t",
+        "0"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "stdin_text": "from pipe",
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "test-windows-terminal-refusal",
+      "command": "test",
+      "args": [
+        "-t",
+        "0"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "test: unsupported capability: terminal detection for descriptor '0'\n",
+      "host_platforms": [
+        "windows"
+      ]
+    },
+    {
       "id": "test-ef-hardlink",
       "command": "test",
       "args": [

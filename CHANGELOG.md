@@ -14,6 +14,8 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 ## 2026-11-28
 
+- Add Wasm tput, clear, redirected-input tty, signal-name lookup and the standalone test -t redirection predicate.
+
 - Add Wasm development profiles for uname, hostname, id, whoami, groups, nproc, ps, uptime and free.
 - Add POSIX file identity comparisons to the development version of `test`.
 

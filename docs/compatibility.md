@@ -8,6 +8,17 @@ All command packages declare Wasm as their only build target. Core packages
 do the same except `platform` and `gzipops`, which retain Native support for
 test-tool consumers. The execution tools under `tests` and `tools` remain Native.
 
+## Terminal and signal queries
+
+| Command | Supported behavior |
+| --- | --- |
+| [clear](../commands/clear/README.md) | Reads the directory-format ncurses database selected by TERM, TERMINFO or TERMINFO_DIRS. Redirected stdout receives the same bytes. Padding-dependent commands are rejected. Windows requires an explicitly installed directory database. |
+| [tput](../commands/tput/README.md) | Supports boolean, numeric and byte-string capabilities, longname, clear and up to nine numeric parameters. Missing standard values retain ncurses status and output. Use -T for database dimensions. Live size, string parameters, terminal reinitialization and padding require additional terminal support. |
+| [tty](../commands/tty/README.md) | A regular file, directory, pipe, socket or block device produces not a tty and status 1. Character devices require a terminal ioctl, and Windows descriptor queries require a public console API; these cases return status 2. |
+| [kill](../commands/kill/README.md) | Uses the released async signal API for host signal numbers on Linux and macOS. Arbitrary PID signal delivery and other signal names are unsupported. |
+
+The standalone `test -t` reports false for redirected POSIX standard descriptors. `stty` and interactive `watch` require Wasm terminal attribute, resize and lifecycle APIs.
+
 ## System information
 
 | Command | Supported host observations |

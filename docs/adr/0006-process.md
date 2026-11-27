@@ -23,6 +23,8 @@ implement a faithful kill command.
 
 ## Command contracts
 
+`tput` and `clear` emit compiled ncurses bytes even on redirected stdout. The directory database supports portable profiles with explicitly installed entries. ncurses defines extended capability-name offsets relative to the end of string values, which the adapter converts for cstoooo/terminfo 0.1.0. POSIX files, pipes and sockets prove negative tty results. Character-device identity, termios, PTY resize, full-screen watch and arbitrary PID signal delivery still require public Wasm primitives. Shell redirections are evaluated against the shell session streams, so an OS standard descriptor cannot classify them.
+
 Linux system queries use the procfs/sysfs view of the running Wasm host. Account names require an authoritative local files source. CPU counts use affinity, cgroup v2 quotas and OpenMP settings. Memory and uptime are kernel-wide values. The Linux contracts compare against same-host GNU coreutils, hostname and procps-ng commands so the reference shares credentials and namespaces. Cross-platform identity, NSS, UTS fields, accounting records and process enumeration require additional public APIs. See the [system query profiles](../compatibility.md#system-information).
 
 | Command | Ownership and boundary |

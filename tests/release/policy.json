@@ -2,6 +2,86 @@
   "schema": 1,
   "commands": [
     {
+      "name": "clear",
+      "package_name": "cli/clear",
+      "compare_profile": "contract",
+      "supported_options": [
+        "help",
+        "keep-scrollback",
+        "terminal",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "clear-scrollback",
+        "clear-preserve-scrollback",
+        "clear-reject-operand",
+        "clear-linux-reference"
+      ],
+      "oracle_boundary": "Directory terminfo contents depend on the host. Linux correctness runs a same-host ncurses reference; portable cases use a compiled tic fixture."
+    },
+    {
+      "name": "tput",
+      "package_name": "cli/tput",
+      "compare_profile": "contract",
+      "supported_options": [
+        "help",
+        "terminal",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "tput-position",
+        "tput-numeric",
+        "tput-absent-number",
+        "tput-boolean",
+        "tput-absent-boolean",
+        "tput-absent-string",
+        "tput-unknown",
+        "tput-longname",
+        "tput-termcap-spelling",
+        "tput-live-size",
+        "tput-linux-reference"
+      ],
+      "oracle_boundary": "Directory terminfo contents depend on the host. Linux correctness runs a same-host ncurses reference; portable cases use a compiled tic fixture."
+    },
+    {
+      "name": "tty",
+      "package_name": "cli/tty",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "help",
+        "silent",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "tty-pipe",
+        "tty-silent-pipe",
+        "tty-windows-refusal"
+      ]
+    },
+    {
+      "name": "kill",
+      "package_name": "cli/kill",
+      "compare_profile": "contract",
+      "supported_options": [
+        "help",
+        "list",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "kill-int-name",
+        "kill-term-number",
+        "kill-delivery-refusal"
+      ]
+    },
+    {
       "name": "uname",
       "package_name": "cli/uname",
       "compare_profile": "gnu",
@@ -3190,6 +3270,8 @@
       "releasable": true,
       "case_ids": [
         "phase3-test-string",
+        "test-redirected-stdin",
+        "test-windows-terminal-refusal",
         "test-ef-hardlink",
         "test-ef-symlink",
         "test-ef-equal-content",

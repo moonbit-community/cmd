@@ -1,0 +1,56 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "kill-int-name",
+      "command": "kill",
+      "args": [
+        "-l",
+        "2"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "INT\n",
+      "expected_stderr_text": "",
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "kill-term-number",
+      "command": "kill",
+      "args": [
+        "-l",
+        "SIGTERM"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "15\n",
+      "expected_stderr_text": "",
+      "host_platforms": [
+        "posix"
+      ]
+    },
+    {
+      "id": "kill-delivery-refusal",
+      "command": "kill",
+      "args": [
+        "123"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "kill: signal delivery is unavailable; use -l SIGNAL\n"
+    }
+  ]
+}

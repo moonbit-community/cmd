@@ -2,6 +2,347 @@
   "schema": 3,
   "entries": [
     {
+      "behavior_id": "scenario:clear-linux-reference",
+      "command": "clear",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::clear-linux-reference",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:clear-scrollback",
+      "command": "clear",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/clear.json",
+      "case_id": "clear-scrollback",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:clear-preserve-scrollback",
+      "command": "clear",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/clear.json",
+      "case_id": "clear-preserve-scrollback",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:clear-reject-operand",
+      "command": "clear",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/clear.json",
+      "case_id": "clear-reject-operand",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:clear-linux-reference",
+      "command": "clear",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/clear.json",
+      "case_id": "clear-linux-reference",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "metadata:clear",
+      "command": "clear",
+      "status": "supported",
+      "implementation": "metadata-probe",
+      "source": "tests/harness/driver/metadata.mbt",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:tput-linux-reference",
+      "command": "tput",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::tput-linux-reference",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tput-position",
+      "command": "tput",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tput.json",
+      "case_id": "tput-position",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tput-numeric",
+      "command": "tput",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tput.json",
+      "case_id": "tput-numeric",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tput-absent-number",
+      "command": "tput",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tput.json",
+      "case_id": "tput-absent-number",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tput-boolean",
+      "command": "tput",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tput.json",
+      "case_id": "tput-boolean",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tput-absent-boolean",
+      "command": "tput",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tput.json",
+      "case_id": "tput-absent-boolean",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tput-absent-string",
+      "command": "tput",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tput.json",
+      "case_id": "tput-absent-string",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tput-unknown",
+      "command": "tput",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tput.json",
+      "case_id": "tput-unknown",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tput-longname",
+      "command": "tput",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tput.json",
+      "case_id": "tput-longname",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tput-termcap-spelling",
+      "command": "tput",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tput.json",
+      "case_id": "tput-termcap-spelling",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tput-live-size",
+      "command": "tput",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tput.json",
+      "case_id": "tput-live-size",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tput-linux-reference",
+      "command": "tput",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tput.json",
+      "case_id": "tput-linux-reference",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "metadata:tput",
+      "command": "tput",
+      "status": "supported",
+      "implementation": "metadata-probe",
+      "source": "tests/harness/driver/metadata.mbt",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:tty-pipe",
+      "command": "tty",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tty.json",
+      "case_id": "tty-pipe",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:tty-silent-pipe",
+      "command": "tty",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tty.json",
+      "case_id": "tty-silent-pipe",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:tty-windows-refusal",
+      "command": "tty",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tty.json",
+      "case_id": "tty-windows-refusal",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "metadata:tty",
+      "command": "tty",
+      "status": "supported",
+      "implementation": "metadata-probe",
+      "source": "tests/harness/driver/metadata.mbt",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:kill-int-name",
+      "command": "kill",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/kill.json",
+      "case_id": "kill-int-name",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:kill-term-number",
+      "command": "kill",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/kill.json",
+      "case_id": "kill-term-number",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:kill-delivery-refusal",
+      "command": "kill",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/kill.json",
+      "case_id": "kill-delivery-refusal",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "metadata:kill",
+      "command": "kill",
+      "status": "supported",
+      "implementation": "metadata-probe",
+      "source": "tests/harness/driver/metadata.mbt",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:test-redirected-stdin",
+      "command": "test",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/test.json",
+      "case_id": "test-redirected-stdin",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:test-windows-terminal-refusal",
+      "command": "test",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/test.json",
+      "case_id": "test-windows-terminal-refusal",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
       "behavior_id": "case:uname-linux-reference",
       "command": "uname",
       "status": "supported",

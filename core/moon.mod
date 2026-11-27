@@ -1,6 +1,6 @@
 name = "cli/core"
 
-version = "0.11.4"
+version = "0.11.5"
 
 readme = "README.md"
 
@@ -15,6 +15,7 @@ preferred_target = "wasm"
 description = "Shared runtime core for cli command modules."
 
 import {
+  "cstoooo/terminfo@0.1.0",
   "moonbitlang/async@0.22.9",
   "moonbitlang/x@0.5.9",
   "cc06b/mooncry@0.95.0",

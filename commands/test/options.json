@@ -1,16 +1,41 @@
 {
   "schema": 1,
   "command": "test",
-  "help": "Usage: test EXPRESSION\n{{help:help:0}}\n{{help:version:0}}\nSupports string, integer, portable file-kind, access, size, and timestamp expressions.\nOne through four arguments have standalone test precedence; a lone nonempty operator-looking string is true.\nInteger operands are signed 64-bit decimal with optional sign and surrounding ASCII whitespace.\n{{help:ef:0}}\n{{help:s:0}}\nUnary -a is a project alias for -e. Exit 0 for true, 1 for false, and 2 for errors.\n",
+  "help": "Usage: test EXPRESSION\n{{help:help:0}}\n{{help:version:0}}\nSupports string, integer, portable file-kind, access, size, and timestamp expressions.\nOne through four arguments have standalone test precedence; a lone nonempty operator-looking string is true.\nInteger operands are signed 64-bit decimal with optional sign and surrounding ASCII whitespace.\n{{help:t:0}}\n{{help:ef:0}}\n{{help:s:0}}\nUnary -a is a project alias for -e. Exit 0 for true, 1 for false, and 2 for errors.\n",
   "catalog_options": [
     "expression-language",
     "file-kinds",
     "access-checks",
     "size",
-    "timestamps"
+    "timestamps",
+    "t"
   ],
-  "readme_options": ["n","z","e","f","d","eq","lt","help","version"],
+  "readme_options": [
+    "n",
+    "z",
+    "e",
+    "f",
+    "d",
+    "eq",
+    "lt",
+    "help",
+    "version"
+  ],
   "options": [
+    {
+      "name": "t",
+      "aliases": [
+        "-t"
+      ],
+      "value": "required",
+      "description": "Test a standard descriptor. POSIX files, pipes and sockets are false; terminal devices are unavailable.",
+      "short": "t",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "-t FD recognizes redirected POSIX standard descriptors; an unclassified device exits 2."
+      ]
+    },
     {
       "name": "n",
       "aliases": [
@@ -203,12 +228,16 @@
     },
     {
       "name": "ef",
-      "aliases": ["-ef"],
+      "aliases": [
+        "-ef"
+      ],
       "value": "adapter",
       "description": "Compare followed file identities on Linux and macOS.",
       "repeatable": true,
       "allow_attached": false,
-      "help_lines": ["  FILE1 -ef FILE2  compare file identities on Linux and macOS"]
+      "help_lines": [
+        "  FILE1 -ef FILE2  compare file identities on Linux and macOS"
+      ]
     },
     {
       "name": "ot",

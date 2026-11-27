@@ -17,6 +17,7 @@ fn command_options(name : String) -> Array[String] {
         "algorithm", "length", "base64", "raw", "untagged", "tag", "binary", "text",
         "zero", "check", "ignore-missing", "quiet", "status", "strict", "warn",
       ]
+    "clear" => ["terminal", "keep-scrollback"]
     "cmp" => ["bytes", "ignore-initial", "silent", "verbose", "print-bytes"]
     "column" =>
       [
@@ -124,6 +125,7 @@ fn command_options(name : String) -> Array[String] {
         "library-path",
       ]
     "jqlog" => ["file", "help"]
+    "kill" => ["list"]
     "ln" =>
       [
         "force", "no-target-directory", "symbolic", "verbose", "interactive", "relative",
@@ -249,6 +251,7 @@ fn command_options(name : String) -> Array[String] {
     "test" =>
       [
         "expression-language", "file-kinds", "access-checks", "size", "timestamps",
+        "t",
       ]
     "timeout" => ["duration"]
     "touch" =>
@@ -256,6 +259,7 @@ fn command_options(name : String) -> Array[String] {
         "access-time", "date", "modification-time", "no-create", "reference", "stamp",
         "time",
       ]
+    "tput" => ["terminal"]
     "tr" => ["complement", "delete", "squeeze-repeats", "truncate-set1"]
     "tree" =>
       [
@@ -264,6 +268,7 @@ fn command_options(name : String) -> Array[String] {
         "human-readable", "si", "du", "color", "no-color",
       ]
     "true" => ["help", "version"]
+    "tty" => ["silent"]
     "typst" =>
       [
         "input", "format", "root", "creation-timestamp", "pretty", "jobs", "in",
