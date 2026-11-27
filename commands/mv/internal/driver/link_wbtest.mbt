@@ -1,4 +1,34 @@
 ///|
+async test "Windows equal-time updates reject aliases before rename" {
+  guard @async.platform is Windows else { return }
+  let root = @fs.tmpdir(prefix="cmd-mv-hardlink-")
+  defer @fs.rmdir(root, recursive=true)
+  let source = @fsops.join(root, "source")
+  let alias_path = @fsops.join(root, "alias")
+  @fs.write_file(source, b"original")
+  assert_eq(
+    @process.run("fsutil.exe", ["hardlink", "create", alias_path, source]),
+    0,
+  )
+  try
+    move_one(source, alias_path, {
+      ..link_move_options(),
+      update: @fsops.UpdateOlder,
+    })
+  catch {
+    @fsops.FsOpError(message) =>
+      assert_eq(
+        message, "unsupported capability: file identity for equal-time interactive/update targets",
+      )
+    error => raise error
+  } noraise {
+    _ => fail("expected the Windows file identity boundary")
+  }
+  assert_eq(@fs.read_file(source).binary(), b"original")
+  assert_eq(@fs.read_file(alias_path).binary(), b"original")
+}
+
+///|
 fn link_move_options() -> MvOptions {
   {
     no_clobber: false,

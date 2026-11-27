@@ -172,9 +172,17 @@ async fn move_one(
         options.update == @fsops.UpdateOlder ||
         (options.interactive && options.update == @fsops.UpdateAll)
       ) {
-      raise @fsops.FsOpError(
-        "unsupported capability: file identity for equal-time interactive/update targets",
-      )
+      // x exposes comparable Windows IDs only on NTFS and cannot identify the volume type.
+      guard !(@async.platform is Windows) &&
+        @identity.identity(source, follow_symlink=false) is Some(source_id) &&
+        @identity.identity(target, follow_symlink=false) is Some(target_id) else {
+        raise @fsops.FsOpError(
+          "unsupported capability: file identity for equal-time interactive/update targets",
+        )
+      }
+      if source_id == target_id && options.backup == @fsops.NoBackup {
+        raise @fsops.FsOpError("source and destination are the same file")
+      }
     }
     match
       @fsops.overwrite_decision(options.update, source_time, Some(target_time)) {
