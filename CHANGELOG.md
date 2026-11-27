@@ -20,6 +20,8 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 - Add Wasm development profiles for uname, hostname, id, whoami, groups, nproc, ps, uptime and free.
 - Add C.UTF-8 character counting and display widths to wc, fold, expand, unexpand and column.
+- Correct cat -E rendering of CRLF across input boundaries.
+
 - Add POSIX file identity comparisons to the development version of `test`.
 - Use the Windows GNU default binary marker for untagged checksum records.
 

@@ -898,6 +898,7 @@
       "case_ids": [
         "compat-stdin-cat",
         "cat-windows-text-modes",
+        "cat-show-ends-split-crlf",
         "compat-text-line-33",
         "compat-text-line-675",
         "compat-catalog-line-22",
