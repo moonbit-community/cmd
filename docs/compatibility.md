@@ -97,7 +97,7 @@ identify the principal refusals and platform differences.
 | [nl](../commands/nl/README.md) | Page/section numbering, regex selection, width and separators. | Byte-oriented matching and delimiters. |
 | [od](../commands/od/README.md) | Typed byte dumps, offsets, widths and limits. | Fixed Linux numeric profile; C locale. |
 | [paste](../commands/paste/README.md) | Parallel/serial joining, delimiter cycles and NUL records. | Byte delimiters. |
-| [patch](../commands/patch/README.md) | Unified/context hunks, offsets, fuzz, reverse, dry runs and rejects. | No existing-file rewriting or named --output; no extended binary formats. |
+| [patch](../commands/patch/README.md) | Unified/context hunks, offsets, fuzz, reverse, dry runs and replacement of default reject files. | Explicit reject output requires a new file. No existing-file rewriting, named --output or extended binary formats. |
 | [printenv](../commands/printenv/README.md) | All or selected environment values; NUL output. | Launcher-visible environment only. |
 | [printf](../commands/printf/README.md) | Format reuse, numeric conversions, byte escapes and shell quoting. | Fixed numeric/C-locale profile. |
 | [pwd](../commands/pwd/README.md) | Physical or validated logical working-directory paths. | Invalid logical PWD falls back to the runtime directory. |

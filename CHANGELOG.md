@@ -15,6 +15,7 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 ## 2026-11-28
 
 - Add POSIX file identity comparisons to the development version of `test`.
+- Match GNU patch when replacing a default reject file in the development version.
 
 ## 2026-11-27
 
