@@ -89,6 +89,7 @@ identify the principal refusals and platform differences.
 | [tar](../commands/tar/README.md) | GNU tar create, list, extract and stdout profiles for ustar and gzip. | UTF-8 names, regular files and directories, fixed archive metadata, new files only. |
 | [zip](../commands/zip/README.md) | Info-ZIP recursive archive creation, stored entries and Deflate levels 1–9. | New archives, relative names, synthetic metadata. |
 | [unzip](../commands/unzip/README.md) | Info-ZIP name listing, verification, stdout and named-directory extraction. | Exact selections, regular files and directories, no overwrite or metadata restoration. |
+| [awk](../commands/awk/README.md) | GNU Awk 5.4.1 profile for UTF-8 records, fields, EREs, functions, arrays, printf, local getline and file redirection. | Ordinary LF input streams. Custom record separators and main-input getline buffer standard input. Process pipes and system() report status 2. |
 | [base32](../commands/base32/README.md) | RFC 4648 Base32 encoding and decoding; wrapping and garbage filtering. | Uppercase alphabet; decoding retains the whole input. |
 | [base64](../commands/base64/README.md) | Streaming Base64 encoding and decoding; wrapping and garbage filtering. | Standard alphabet and canonical tail bits; malformed padding fails. |
 | [basename](../commands/basename/README.md) | Lexical basename and literal suffix removal; multiple and NUL-separated output. | No filesystem lookup. |

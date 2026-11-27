@@ -1,0 +1,26 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/awk/internal/streams"
+
+import {
+  "zhengming2004/awk",
+}
+
+// Values
+
+// Errors
+
+// Types and methods
+pub struct Host {
+  // private fields
+}
+pub fn Host::diagnostic(Self, Error) -> String
+pub async fn Host::flush(Self) -> Unit
+pub fn Host::input(Self, @awk.InputRequest) -> @awk.InputReply
+pub fn Host::io(Self, @awk.IORequest) -> @awk.IOReply
+pub fn Host::new() -> Self
+pub fn Host::output(Self, String) -> String?
+pub fn Host::stage_stdin(Self, Bytes) -> Unit
+
+// Type aliases
+
+// Traits

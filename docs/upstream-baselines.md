@@ -19,6 +19,7 @@ code remains pure MoonBit.
 | GNU Binutils | Binutils 2.44 | `strings` selected byte encodings, offsets and separators; no object-section compatibility claim |
 | tree | tree 2.2.1 | `tree` selected traversal/text/JSON and safe HTML body comparisons; project page metadata is a separate contract |
 | GNU findutils | GNU findutils 4.10.0 | `find`, `xargs` |
+| GNU Awk | GNU Awk 5.4.1 | `awk` UTF-8 pattern-action and local file I/O profile |
 | GNU grep | GNU grep 3.12 | `grep`, with locale fixed to `LC_ALL=C` in the first conformance pass |
 | ripgrep | Commit `3fce3b5bb0236da2df6d99672afb8a719642eca7` | `rg` explicit-path contracts; default Cargo features, locked dependencies, no `--features pcre2` build flag |
 | GNU Wget | GNU Wget 1.25.0 | `wget`; the complete documented command is the target, with protocol families implemented in measured stages |
@@ -60,6 +61,7 @@ Every downloaded source or official binary is verified before use:
 | `gzip-1.14.tar.xz` | `01a7b881bd220bfdf615f97b8718f80bdfd3f6add385b993dcf6efd14e8c0ac6` |
 | `util-linux-2.40.tar.xz` | `d57a626081f9ead02fa44c63a6af162ec19c58f53e993f206ab7c3a6641c2cd7` |
 | `findutils-4.10.0.tar.xz` | `1387e0b67ff247d2abde998f90dfbf70c1491391a59ddfecb8ae698789f0a4f5` |
+| `gawk-5.4.1.tar.xz` | `07f6f7342b7febe4313fc2c2542ad93d64fe20ad8717200109f105a826f5fd37` |
 | `grep-3.12.tar.xz` | `2649b27c0e90e632eadcd757be06c6e9a4f48d941de51e7c0f83ff76408a07b9` |
 | `wget-1.25.0.tar.gz` | `766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784` |
 | `make-4.4.1.tar.lz` | `8814ba072182b605d156d7589c19a43b89fc58ea479b9355146160946f8cf6e9` |

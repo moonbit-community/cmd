@@ -3,6 +3,7 @@
 ///|
 fn command_options(name : String) -> Array[String] {
   match name {
+    "awk" => ["field-separator", "assign", "file", "source", "csv"]
     "base32" => ["decode", "ignore-garbage", "wrap"]
     "base64" => ["decode", "ignore-garbage", "wrap"]
     "basename" => ["multiple", "suffix", "zero"]

@@ -1,0 +1,23 @@
+import {
+  "zhengming2004/awk",
+}
+
+import {
+  "cli/core/cli",
+  "moonbitlang/core/async/io",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/async/fs",
+  "cli/core/stream",
+  "cli/awk/internal/streams",
+  "moonbitlang/core/async/stdio",
+  "moonbitlang/core/env",
+}
+
+supported_targets = "wasm"
+
+rule(
+  name: "gen_version",
+  command: "moonx moonbit-community/gen_version@0.0.2 -o $output",
+)
+
+dev_build(rule: "gen_version", input: "../../moon.mod", output: "version.mbt")
