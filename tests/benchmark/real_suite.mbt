@@ -389,7 +389,7 @@ fn real_suite_errors(
   }
   if commands != real_command_scope() {
     errors.push(
-      "real coverage must account for every command in the reviewed82-command scope",
+      "real coverage must account for every command in the reviewed command scope",
     )
   }
   errors
