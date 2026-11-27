@@ -49,8 +49,8 @@ fn dependency_manifest_imports(text : String) -> Array[String] raise {
       imports.push(coordinate)
     }
   }
-  guard blocks == 1 && !in_imports else {
-    fail("dependency inventory requires one complete import block")
+  guard blocks <= 1 && !in_imports else {
+    fail("dependency inventory accepts at most one complete import block")
   }
   imports
 }
@@ -77,7 +77,8 @@ async test "workspace dependency manifests keep one async baseline and the selec
   let commands = command_names(root + "commands")
   assert_eq(commands.length(), 82)
   let independent = [
-    "echo", "false", "jqlog", "serve", "sleep", "true", "typst",
+    "dirname", "echo", "false", "jqlog", "printenv", "serve", "sleep", "touch", "true",
+    "typst", "unlink", "yes",
   ]
   let modules = ["core", "tests", "tools"]
   for command in commands {
@@ -103,9 +104,11 @@ async test "workspace dependency manifests keep one async baseline and the selec
         [jq_coordinate],
       )
     }
-    assert_eq(
-      imports.filter(coordinate => coordinate.has_prefix("moonbitlang/async@")),
-      ["moonbitlang/async@0.22.9"],
+    let legacy_async = imports.filter(coordinate => {
+      coordinate.has_prefix("moonbitlang/async@")
+    })
+    assert_true(
+      legacy_async.is_empty() || legacy_async == ["moonbitlang/async@0.22.9"],
     )
     let needs_core = directory == "tests" ||
       (

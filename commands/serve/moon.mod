@@ -13,6 +13,3 @@ keywords = [ "command-line", "moonx", "wasm" ]
 preferred_target = "wasm"
 
 description = "Minimal static HTTP file server for MoonX."
-
-import {
-}

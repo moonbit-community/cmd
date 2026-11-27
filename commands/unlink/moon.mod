@@ -15,6 +15,5 @@ preferred_target = "wasm"
 description = "unlink command for MoonX."
 
 import {
-  "cli/core@0.11.1",
   "moonbitlang/async@0.22.9",
 }
