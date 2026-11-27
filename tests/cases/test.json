@@ -2,6 +2,44 @@
   "schema": 2,
   "cases": [
     {
+      "id": "test-redirected-stdin",
+      "command": "test",
+      "args": [
+        "-t",
+        "0"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "stdin_text": "from pipe",
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "test-windows-terminal-refusal",
+      "command": "test",
+      "args": [
+        "-t",
+        "0"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "test: unsupported capability: terminal detection for descriptor '0'\n",
+      "host_platforms": [
+        "windows"
+      ]
+    },
+    {
       "id": "test-ef-hardlink",
       "command": "test",
       "args": [
@@ -345,7 +383,7 @@
         "help"
       ],
       "source_version": "workspace cli/test@0.2.4 metadata contract",
-      "expected_stdout_text": "Usage: test EXPRESSION\n      --help      display this help and exit\n      --version   display version and exit\nSupports string, integer, portable file-kind, access, size, and timestamp expressions.\nOne through four arguments have standalone test precedence; a lone nonempty operator-looking string is true.\nInteger operands are signed 64-bit decimal with optional sign and surrounding ASCII whitespace.\n  FILE1 -ef FILE2  compare file identities on Linux and macOS\n-s reads followed target metadata without opening the file; unavailable metadata exits 2.\nUnary -a is a project alias for -e. Exit 0 for true, 1 for false, and 2 for errors.\n",
+      "expected_stdout_text": "Usage: test EXPRESSION\n      --help      display this help and exit\n      --version   display version and exit\nSupports string, integer, portable file-kind, access, size, and timestamp expressions.\nOne through four arguments have standalone test precedence; a lone nonempty operator-looking string is true.\nInteger operands are signed 64-bit decimal with optional sign and surrounding ASCII whitespace.\n-t FD recognizes redirected POSIX standard descriptors; an unclassified device exits 2.\n  FILE1 -ef FILE2  compare file identities on Linux and macOS\n-s reads followed target metadata without opening the file; unavailable metadata exits 2.\nUnary -a is a project alias for -e. Exit 0 for true, 1 for false, and 2 for errors.\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-catalog-line-269"
@@ -369,7 +407,7 @@
         "version"
       ],
       "source_version": "workspace cli/test@0.2.4 metadata contract",
-      "expected_stdout_text": "test 0.2.8\n",
+      "expected_stdout_text": "test 0.2.9\n",
       "expected_stderr_text": ""
     },
     {

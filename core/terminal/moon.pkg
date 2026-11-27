@@ -1,0 +1,12 @@
+import {
+  "moonbitlang/x/fs" @file,
+  "cstoooo/terminfo",
+  "moonbitlang/core/async",
+  "moonbitlang/core/async/fs",
+  "moonbitlang/core/async/os_error",
+  "moonbitlang/core/env",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/string",
+}
+
+supported_targets = "wasm"

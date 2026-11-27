@@ -2,12 +2,13 @@
 
 ///|
 fn metadata_help() -> String {
-  "Usage: test EXPRESSION\n      --help      display this help and exit\n      --version   display version and exit\nSupports string, integer, portable file-kind, access, size, and timestamp expressions.\nOne through four arguments have standalone test precedence; a lone nonempty operator-looking string is true.\nInteger operands are signed 64-bit decimal with optional sign and surrounding ASCII whitespace.\n  FILE1 -ef FILE2  compare file identities on Linux and macOS\n-s reads followed target metadata without opening the file; unavailable metadata exits 2.\nUnary -a is a project alias for -e. Exit 0 for true, 1 for false, and 2 for errors.\n"
+  "Usage: test EXPRESSION\n      --help      display this help and exit\n      --version   display version and exit\nSupports string, integer, portable file-kind, access, size, and timestamp expressions.\nOne through four arguments have standalone test precedence; a lone nonempty operator-looking string is true.\nInteger operands are signed 64-bit decimal with optional sign and surrounding ASCII whitespace.\n-t FD recognizes redirected POSIX standard descriptors; an unclassified device exits 2.\n  FILE1 -ef FILE2  compare file identities on Linux and macOS\n-s reads followed target metadata without opening the file; unavailable metadata exits 2.\nUnary -a is a project alias for -e. Exit 0 for true, 1 for false, and 2 for errors.\n"
 }
 
 ///|
 fn metadata_option_matches(name : String, spelling : String) -> Bool {
   match name {
+    "t" => ["-t"].contains(spelling)
     "n" => ["-n"].contains(spelling)
     "z" => ["-z"].contains(spelling)
     "e" => ["-e", "-a"].contains(spelling)

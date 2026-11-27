@@ -1,0 +1,58 @@
+{
+  "schema": 1,
+  "command": "tput",
+  "help": "Usage: tput [-T TYPE] CAPABILITY [NUMBER ...]\nQuery or expand a compiled terminal capability.\n  -T  Use the specified terminal description.\n{{help:help:0}}\n{{help:version:0}}\n",
+  "catalog_options": [
+    "terminal"
+  ],
+  "options": [
+    {
+      "name": "terminal",
+      "aliases": [
+        "-T"
+      ],
+      "value": "required",
+      "description": "Use the specified terminal description.",
+      "short": "T",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show the version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "terminal",
+        "help",
+        "version"
+      ]
+    }
+  ]
+}

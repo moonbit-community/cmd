@@ -27,6 +27,38 @@
   "correctness_only_command_count": 2,
   "commands": [
     {
+      "command": "clear",
+      "disposition": "not-timed",
+      "reason": "Short capability or descriptor query with byte-exact correctness checks.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "tput",
+      "disposition": "not-timed",
+      "reason": "Short capability or descriptor query with byte-exact correctness checks.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "tty",
+      "disposition": "not-timed",
+      "reason": "Short capability or descriptor query with byte-exact correctness checks.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
+      "command": "kill",
+      "disposition": "not-timed",
+      "reason": "Short capability or descriptor query with byte-exact correctness checks.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
       "command": "uname",
       "disposition": "not-timed",
       "reason": "Small host query whose result depends on kernel state; validated against same-host observations.",
@@ -3940,5 +3972,5 @@
       ]
     }
   ],
-  "not_timed_command_count": 36
+  "not_timed_command_count": 40
 }

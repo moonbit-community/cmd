@@ -3,6 +3,7 @@
 Shared MoonBit libraries for command parsing, byte streams, filesystem access,
 HTTP transport and command-language execution.
 The `procfs` package reads Linux kernel fields for system queries.
+The `terminal` package reads compiled ncurses directory entries and classifies POSIX standard descriptors redirected to files, pipes or sockets.
 
 ## Usage
 

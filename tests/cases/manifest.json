@@ -2,6 +2,18 @@
   "schema": 2,
   "commands": [
     {
+      "name": "clear"
+    },
+    {
+      "name": "tput"
+    },
+    {
+      "name": "tty"
+    },
+    {
+      "name": "kill"
+    },
+    {
       "name": "uname"
     },
     {
@@ -286,6 +298,10 @@
   ],
   "cases": [],
   "case_files": [
+    "clear.json",
+    "tput.json",
+    "tty.json",
+    "kill.json",
     "uname.json",
     "hostname.json",
     "id.json",

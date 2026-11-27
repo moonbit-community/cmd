@@ -60,6 +60,11 @@ pub async fn execute_scenario(
     () => {
       match fixture.id {
         "mv-no-copy-cross-device" => mv_cross_device_scenario(root, work)
+        "tty-linux-pty" => tty_pty(work, root)
+        "kill-linux-reference"
+        | "tput-linux-reference"
+        | "clear-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
         "uname-fields-linux-reference" =>
           system_reference(work, root, fixture.command, fixture.args)
         "id-fields-linux-reference" =>
