@@ -69,6 +69,10 @@ async fn run_driver() -> Unit {
       @filesystem.check_tee_modes(program, [], work)
       return
     }
+    if raw[1:] is ["tail-rotation", program, work] {
+      @filesystem.check_tail_rotation(program, [], work)
+      return
+    }
     let status = @harness.run_option_child(raw[1:])
     if status != 0 {
       @env.exit(status)

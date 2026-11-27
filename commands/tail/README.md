@@ -24,6 +24,7 @@ Print ten lines by default. A leading + starts at the specified one-based line o
 | `-q`, `--quiet` | Suppress file headers. |
 | `-v`, `--verbose` | Always print file headers. |
 | `-f`, `--follow` | Follow an open regular file. |
+| `-F`, `--follow-name` | Follow regular files by name and retry on Linux and macOS. |
 | `-z`, `--zero-terminated` | Use NUL-delimited records. |
 | `-n VALUE`, `--lines VALUE` | Select records; +K starts at record K. Default: `10`. |
 | `-c VALUE`, `--bytes VALUE` | Select bytes; +K starts at byte K. |
@@ -34,7 +35,7 @@ Print ten lines by default. A leading + starts at the specified one-based line o
 
 ## Notes
 
-- Follow mode tracks the open descriptor, not a replaced pathname. Rotation-aware -F is unsupported; following stdin ends at EOF.
+- `-f` follows an open descriptor; following stdin ends at EOF. On Linux and macOS, `-F` polls regular files by name, retries missing names and reads replacements from the beginning. Grant read access to the files being followed. Windows rejects `-F` because volume identity comparability is unavailable.
 
 Build from source with the MoonBit 1.0 RC1 toolchain.
 

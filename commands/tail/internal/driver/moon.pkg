@@ -8,6 +8,9 @@ import {
   "moonbitlang/async/stdio",
   "moonbitlang/core/env",
   "moonbitlang/core/string",
+  "moonbitlang/core/async/fs" @std_fs,
+  "moonbitlang/core/async/os_error",
+  "moonbitlang/x/fs" @xfs,
 }
 
 supported_targets = "wasm"

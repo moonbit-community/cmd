@@ -2,7 +2,7 @@
 
 ///|
 fn metadata_help() -> String {
-  "Usage: tail [-fz] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]\n  -z, --zero-terminated  use NUL as the record delimiter\nStreamed last-N selection retains selected records, including an unfinished final record.\n      --help      display this help and exit\n      --version   display version and exit\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n"
+  "Usage: tail [-fFz] [-qv] [-s SEC] [-n NUM|-c NUM] [FILE...]\n  -F  follow regular files by name and retry on Linux and macOS\n  -z, --zero-terminated  use NUL as the record delimiter\nStreamed last-N selection retains selected records, including an unfinished final record.\n      --help      display this help and exit\n      --version   display version and exit\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n"
 }
 
 ///|
@@ -11,6 +11,7 @@ fn option_specs() -> Array[@cli.OptionSpec] {
     @cli.flag("quiet", short='q'),
     @cli.flag("verbose", short='v'),
     @cli.flag("follow", short='f'),
+    @cli.flag("follow-name", short='F'),
     @cli.flag("zero-terminated", short='z'),
     @cli.option("lines", short='n'),
     @cli.option("bytes", short='c'),

@@ -2946,6 +2946,8 @@
       "case_ids": [
         "compat-catalog-line-260",
         "compat-tail-follow-name-boundary",
+        "tail-name-rotation",
+        "tail-name-windows",
         "compat-tail-follow-stdin",
         "compat-tail-infinite-interval",
         "compat-tail-interval-without-follow",

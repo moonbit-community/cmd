@@ -12,6 +12,11 @@ async fn tee_modes_scenario(
     default_only~,
   )
   if oracle_image is Some(image) {
-    @filesystem.check_tee_oracle(work + "/oracle", image)
+    @filesystem.check_helper_oracle(
+      work + "/oracle",
+      image,
+      mode="tee-modes",
+      command="tee",
+    )
   }
 }

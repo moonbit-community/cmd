@@ -1,6 +1,6 @@
 name = "cli/tail"
 
-version = "0.2.8"
+version = "0.2.9"
 
 readme = "README.md"
 
@@ -17,4 +17,5 @@ description = "tail command for MoonX."
 import {
   "cli/core@0.11.3",
   "moonbitlang/async@0.22.9",
+  "moonbitlang/x@0.5.9",
 }
