@@ -897,6 +897,7 @@
       "releasable": true,
       "case_ids": [
         "compat-stdin-cat",
+        "cat-windows-text-modes",
         "compat-text-line-33",
         "compat-text-line-675",
         "compat-catalog-line-22",
@@ -1645,6 +1646,7 @@
         "grep-locale-c-class-boundaries",
         "grep-locale-utf8-class-boundaries",
         "phase3-grep-stdin",
+        "grep-windows-text-modes",
         "compat-text-line-209",
         "compat-text-line-218",
         "compat-text-line-227",
@@ -4633,6 +4635,7 @@
       "releasable": true,
       "case_ids": [
         "p1-diff-normal",
+        "diff-windows-text-modes",
         "p1-diff-unified",
         "p1-diff-context",
         "p1-diff-empty-add",
@@ -5262,6 +5265,7 @@
       "releasable": true,
       "case_ids": [
         "rg-boundary-dfa-budget",
+        "rg-windows-text-modes",
         "rg-boundary-dfa-zero",
         "rg-noop-worker-mmap-options",
         "rg-noop-worker-mmap-reverse",

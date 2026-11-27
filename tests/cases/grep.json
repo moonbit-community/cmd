@@ -2,6 +2,24 @@
   "schema": 2,
   "cases": [
     {
+      "id": "grep-windows-text-modes",
+      "command": "grep",
+      "isolated": true,
+      "args": [],
+      "stdin_text": "",
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "windows"
+      ],
+      "timeout_ms": 120000,
+      "source_version": "MSYS2 GNU grep on windows-2025; executable version retained with raw stream receipts.",
+      "diagnostic_reason": "Compare raw streams and status for named files, redirected files and pipes with mixed line endings, NUL, invalid UTF-8 and Ctrl-Z."
+    },
+    {
       "id": "grep-locale-c-unicode-fixed",
       "command": "grep",
       "args": [

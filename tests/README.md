@@ -141,6 +141,8 @@ isolated scenario queue. Fixture-owner UID/GID is prepared once per runner proce
 
 ## Oracle and delivery boundaries
 
+Windows byte-stream scenarios compare GNU grep, diff and cat from `C:/msys64/usr/bin` and the SHA-256-pinned ripgrep 15.1.0 MSVC release. `CMD_WINDOWS_RG` selects that executable when running locally. Each scenario retains the version string, exit status and raw stdout/stderr for a named input file, direct file redirection and a pipe.
+
 `functional` always runs complete applicable correctness. Linux upstream execution
 is a separate required job. `ci select BASE HEAD` uses both names of a rename,
 command source/test/dependency changes, command case files and the `inputs` paths

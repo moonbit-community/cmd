@@ -7,6 +7,9 @@ The `terminal` package reads compiled ncurses directory entries and classifies P
 
 ## Usage
 
+The checksum command adapter selects the default untagged record marker for
+the host and hashes the original input bytes.
+
 Declare a released cli/core dependency in your module and import the packages
 you need. For example, import cli/core/cli as cli:
 

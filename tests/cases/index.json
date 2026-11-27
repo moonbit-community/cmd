@@ -2,6 +2,305 @@
   "schema": 3,
   "entries": [
     {
+      "behavior_id": "case:cat-windows-text-modes",
+      "command": "cat",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cat.json",
+      "case_id": "cat-windows-text-modes",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:cat-windows-text-modes",
+      "command": "cat",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::cat-windows-text-modes",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:grep-windows-text-modes",
+      "command": "grep",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/grep.json",
+      "case_id": "grep-windows-text-modes",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:grep-windows-text-modes",
+      "command": "grep",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::grep-windows-text-modes",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:diff-windows-text-modes",
+      "command": "diff",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/diff.json",
+      "case_id": "diff-windows-text-modes",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:diff-windows-text-modes",
+      "command": "diff",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::diff-windows-text-modes",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:rg-windows-text-modes",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/rg.json",
+      "case_id": "rg-windows-text-modes",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:rg-windows-text-modes",
+      "command": "rg",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::rg-windows-text-modes",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:md5sum-posix-default-marker",
+      "command": "md5sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/md5sum.json",
+      "case_id": "md5sum-posix-default-marker",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:sha1sum-posix-default-marker",
+      "command": "sha1sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha1sum.json",
+      "case_id": "sha1sum-posix-default-marker",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:sha256sum-posix-default-marker",
+      "command": "sha256sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha256sum.json",
+      "case_id": "sha256sum-posix-default-marker",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:sha512sum-posix-default-marker",
+      "command": "sha512sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha512sum.json",
+      "case_id": "sha512sum-posix-default-marker",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:cksum-posix-default-marker",
+      "command": "cksum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cksum.json",
+      "case_id": "cksum-posix-default-marker",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:cksum-windows-checksum-modes",
+      "command": "cksum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cksum.json",
+      "case_id": "cksum-windows-checksum-modes",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:cksum-windows-checksum-modes",
+      "command": "cksum",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::cksum-windows-checksum-modes",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:md5sum-windows-checksum-modes",
+      "command": "md5sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/md5sum.json",
+      "case_id": "md5sum-windows-checksum-modes",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:md5sum-windows-checksum-modes",
+      "command": "md5sum",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::md5sum-windows-checksum-modes",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:sha1sum-windows-checksum-modes",
+      "command": "sha1sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha1sum.json",
+      "case_id": "sha1sum-windows-checksum-modes",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:sha1sum-windows-checksum-modes",
+      "command": "sha1sum",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::sha1sum-windows-checksum-modes",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:sha256sum-windows-checksum-modes",
+      "command": "sha256sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha256sum.json",
+      "case_id": "sha256sum-windows-checksum-modes",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:sha256sum-windows-checksum-modes",
+      "command": "sha256sum",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::sha256sum-windows-checksum-modes",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:sha512sum-windows-checksum-modes",
+      "command": "sha512sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha512sum.json",
+      "case_id": "sha512sum-windows-checksum-modes",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:sha512sum-windows-checksum-modes",
+      "command": "sha512sum",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::sha512sum-windows-checksum-modes",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
       "behavior_id": "metadata:df",
       "command": "df",
       "status": "supported",

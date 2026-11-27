@@ -26,6 +26,7 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 - Match GNU patch when replacing a default reject file in the development version.
 - Expand regular-file symbolic permission expressions in the development version of `chmod`.
 - Support explicit rename-only moves with `mv --no-copy` in development.
+- Use the Windows GNU default binary marker for untagged checksum records.
 
 ## 2026-11-27
 
