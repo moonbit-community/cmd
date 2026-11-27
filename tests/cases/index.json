@@ -5571,6 +5571,52 @@
       "oracle_profile": ""
     },
     {
+      "behavior_id": "case:patch-default-reject-hardlink",
+      "command": "patch",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/patch.json",
+      "case_id": "patch-default-reject-hardlink",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:patch-default-reject-symlink",
+      "command": "patch",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/patch.json",
+      "case_id": "patch-default-reject-symlink",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:patch-default-reject-file",
+      "command": "patch",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/patch.json",
+      "case_id": "patch-default-reject-file",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:patch-default-reject-directory",
+      "command": "patch",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/patch.json",
+      "case_id": "patch-default-reject-directory",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": ""
+    },
+    {
       "behavior_id": "case:patch-unified-dry-run",
       "command": "patch",
       "status": "supported",

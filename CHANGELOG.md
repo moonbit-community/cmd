@@ -18,6 +18,7 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 - Add regular-file name following and rotation recovery to POSIX `tail -F`
   in the development version.
 - Add POSIX file identity comparisons to the development version of `test`.
+- Match GNU patch when replacing a default reject file in the development version.
 
 ## 2026-11-27
 

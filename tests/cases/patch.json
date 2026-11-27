@@ -2,6 +2,270 @@
   "schema": 2,
   "cases": [
     {
+      "id": "patch-default-reject-hardlink",
+      "command": "patch",
+      "args": [
+        "-s",
+        "-F0",
+        "-o",
+        "-",
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "ONE\ntwo\nthree\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        },
+        {
+          "path": "old",
+          "content_text": "preserved\n",
+          "mode": 489
+        },
+        {
+          "path": "-.rej",
+          "kind": "hardlink",
+          "target": "old"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_status": 1,
+      "expected_stdout_text": "ONE\ntwo\nthree\n",
+      "expected_stderr_text": "1 out of 1 hunk FAILED -- saving rejects to file -.rej\n",
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "ONE\ntwo\nthree\n"
+        },
+        {
+          "path": "old",
+          "content_text": "preserved\n",
+          "mode": 489
+        },
+        {
+          "path": "-.rej",
+          "kind": "file",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n",
+          "different_identity_as": "old",
+          "mode": 420
+        }
+      ],
+      "coverage": [
+        "output",
+        "fuzz",
+        "input",
+        "quiet"
+      ],
+      "source_version": "GNU patch 2.8",
+      "host_platforms": [
+        "posix"
+      ],
+      "observe": [
+        "identity",
+        "mode"
+      ]
+    },
+    {
+      "id": "patch-default-reject-symlink",
+      "command": "patch",
+      "args": [
+        "-s",
+        "-F0",
+        "-o",
+        "-",
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "ONE\ntwo\nthree\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        },
+        {
+          "path": "old",
+          "content_text": "preserved\n"
+        },
+        {
+          "path": "-.rej",
+          "kind": "symlink",
+          "target": "old"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_status": 1,
+      "expected_stdout_text": "ONE\ntwo\nthree\n",
+      "expected_stderr_text": "1 out of 1 hunk FAILED -- saving rejects to file -.rej\n",
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "ONE\ntwo\nthree\n"
+        },
+        {
+          "path": "old",
+          "content_text": "preserved\n"
+        },
+        {
+          "path": "-.rej",
+          "kind": "file",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        }
+      ],
+      "coverage": [
+        "output",
+        "fuzz",
+        "input",
+        "quiet"
+      ],
+      "source_version": "GNU patch 2.8"
+    },
+    {
+      "id": "patch-default-reject-file",
+      "command": "patch",
+      "args": [
+        "-s",
+        "-F0",
+        "-o",
+        "-",
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "ONE\ntwo\nthree\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        },
+        {
+          "path": "old",
+          "content_text": "preserved\n"
+        },
+        {
+          "path": "-.rej",
+          "content_text": "stale"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_status": 1,
+      "expected_stdout_text": "ONE\ntwo\nthree\n",
+      "expected_stderr_text": "1 out of 1 hunk FAILED -- saving rejects to file -.rej\n",
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "ONE\ntwo\nthree\n"
+        },
+        {
+          "path": "old",
+          "content_text": "preserved\n"
+        },
+        {
+          "path": "-.rej",
+          "kind": "file",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        }
+      ],
+      "coverage": [
+        "output",
+        "fuzz",
+        "input",
+        "quiet"
+      ],
+      "source_version": "GNU patch 2.8"
+    },
+    {
+      "id": "patch-default-reject-directory",
+      "command": "patch",
+      "args": [
+        "-s",
+        "-F0",
+        "-o",
+        "-",
+        "-i",
+        "change.diff",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "ONE\ntwo\nthree\n"
+        },
+        {
+          "path": "change.diff",
+          "content_text": "--- input\n+++ output\n@@ -1,3 +1,3 @@\n one\n-two\n+TWO\n three\n"
+        },
+        {
+          "path": "old",
+          "content_text": "preserved\n"
+        },
+        {
+          "path": "-.rej",
+          "kind": "directory"
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_status": 2,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "patch: unsupported reject file type: '-.rej'\n",
+      "expected_files": [
+        {
+          "path": "input",
+          "content_text": "ONE\ntwo\nthree\n"
+        },
+        {
+          "path": "old",
+          "content_text": "preserved\n"
+        },
+        {
+          "path": "-.rej",
+          "kind": "directory"
+        }
+      ],
+      "coverage": [
+        "output",
+        "fuzz",
+        "input",
+        "quiet"
+      ],
+      "source_version": "Project rejection of a directory reject target"
+    },
+    {
       "id": "patch-unified-dry-run",
       "command": "patch",
       "args": [
@@ -498,7 +762,7 @@
         "version"
       ],
       "source_version": "workspace cli/patch@0.2.3 metadata contract",
-      "expected_stdout_text": "patch 0.2.7\n",
+      "expected_stdout_text": "patch 0.2.8\n",
       "expected_stderr_text": ""
     },
     {
@@ -1461,8 +1725,8 @@
       "comparison": "contract",
       "expected_status": 2,
       "expected_stdout_text": "",
-      "expected_stderr_text": "patch: replacing an existing reject file requires public file identity; choose a new --reject-file\n",
-      "expected_rejection": "replacing an existing reject file requires public file identity",
+      "expected_stderr_text": "patch: existing --reject-file requires no-follow truncation; choose a new --reject-file\n",
+      "expected_rejection": "existing --reject-file requires no-follow truncation",
       "oracle": false,
       "expected_files": [
         {

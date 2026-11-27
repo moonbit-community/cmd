@@ -154,6 +154,13 @@ an unrelated core publication. Revisit the adapter when a deliberate release
 updates this command's dependency coordinate. Mode tests retain the numeric
 boundaries and symbolic interpretation, while filesystem scenarios own effects.
 
+GNU patch 2.8 replaces the default reject directory entry by rename. Stage
+its bytes in the destination directory's filesystem, install the completed
+file, and keep its handle for later hunks with the same reject name. This
+preserves other hard links and symbolic-link referents. An explicit reject
+name has different semantics. GNU truncates the existing file with no-follow
+and preserves its inode and mode. That case still requires a public operation.
+
 | Area | Current choice and limitation |
 | --- | --- |
 | realpath | Public physical resolution; lexical -m/-s and relative-to/base rules. Windows physical modes expand existing 8.3 aliases; lexical modes preserve spelling. Unresolved link targets need readlink. |
