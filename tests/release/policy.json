@@ -5177,7 +5177,8 @@
         "fs-install-existing",
         "fs-install-windows-mode",
         "fs-install-help",
-        "fs-install-version"
+        "fs-install-version",
+        "fs-install-same-identity"
       ]
     },
     {
@@ -5239,7 +5240,8 @@
         "size",
         "no-create",
         "help",
-        "version"
+        "version",
+        "reference"
       ],
       "policy_sensitive": true,
       "releasable": true,
@@ -5251,7 +5253,10 @@
         "fs-truncate-hardlink",
         "fs-truncate-reject-shrink",
         "fs-truncate-help",
-        "fs-truncate-version"
+        "fs-truncate-version",
+        "fs-truncate-reference",
+        "fs-truncate-relative-reference",
+        "fs-truncate-absolute-reference"
       ]
     }
   ]

@@ -107,3 +107,16 @@ pub async fn apply(request : Size, path : String, no_create~ : Bool) -> Unit {
     file.at(length - 1L).write(b"\x00")
   }
 }
+
+///|
+pub async fn from_reference(path : String, adjustment : Size?) -> Size {
+  guard @fs.kind(path) is Regular else {
+    raise Failure("expected a regular reference file")
+  }
+  let size = @fs.file_size(@fs.realpath(path))
+  match adjustment {
+    None => Exact(size)
+    Some(Exact(_)) => raise Failure("--reference requires a relative --size")
+    Some(change) => Exact(target(change, size))
+  }
+}

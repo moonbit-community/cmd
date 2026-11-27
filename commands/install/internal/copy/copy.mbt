@@ -47,7 +47,7 @@ pub async fn file(
   guard @fs.kind(source) is Regular else {
     raise Failure("expected a regular source file: " + source)
   }
-  let input = @fs.open(source, mode=ReadOnly)
+  let input = @xfs.open(source, mode=ReadOnly)
   defer input.close()
   guard input.kind() is Regular else {
     raise Failure("expected a regular source file: " + source)
@@ -61,12 +61,29 @@ pub async fn file(
     create_mode=CreateNew,
     permission=0o600,
   ) catch {
-    @os_error.OsError(AlreadyExists, ..) =>
-      raise Failure("destination already exists: " + dest)
+    @os_error.OsError(AlreadyExists, ..) => {
+      guard @xfs.kind(dest, follow_symlink=false) is Regular else {
+        raise Failure("unsupported existing destination: " + dest)
+      }
+      guard input.identity() is Some(source_id) &&
+        @xfs.identity(dest, follow_symlink=false) is Some(dest_id) else {
+        raise Failure("file identity unavailable for replacement: " + dest)
+      }
+      guard source_id != dest_id else {
+        raise Failure("source and destination share a file identity: " + dest)
+      }
+      // GNU install detaches the destination name from its old hard links.
+      @xfs.remove_file(dest)
+      @fs.open(dest, mode=WriteOnly, create_mode=CreateNew, permission=0o600)
+    }
     error => raise error
   }
   defer out.close()
-  out.write_reader(input)
+  let buffer = FixedArray::make(65536, b'\x00')
+  let bytes = buffer.unsafe_reinterpret_as_bytes()
+  while input.read_into(buffer.mut_view()) is count && count > 0 {
+    out.write(bytes[:count])
+  }
   @fs.chmod(dest, permission)
 }
 

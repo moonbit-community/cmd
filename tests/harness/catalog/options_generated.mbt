@@ -271,7 +271,7 @@ fn command_options(name : String) -> Array[String] {
         "human-readable", "si", "du", "color", "no-color",
       ]
     "true" => ["help", "version"]
-    "truncate" => ["size", "no-create", "help", "version"]
+    "truncate" => ["size", "no-create", "help", "version", "reference"]
     "typst" =>
       [
         "input", "format", "root", "creation-timestamp", "pretty", "jobs", "in",

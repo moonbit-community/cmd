@@ -20,6 +20,7 @@ moonx cli/truncate -c -s 1M data.bin
 | `-c`, `--no-create` | Skip a missing file. |
 | `--help` | Show help. |
 | `--version` | Show the version. |
+| `-r VALUE`, `--reference VALUE` | Use the length of a regular reference file. |
 <!-- END GENERATED OPTIONS -->
 
 ## Notes

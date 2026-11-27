@@ -22,10 +22,12 @@ async fn run(args : ArrayView[String]) -> Int32 {
     return 0
   }
   guard !parsed.operands.is_empty() else { raise Failure("missing operand") }
-  guard parsed.last_value("size") is Some(text) else {
-    raise Failure("missing --size")
+  let requested = parsed.last_value("size").map(@resize.parse)
+  let size = match (parsed.last_value("reference"), requested) {
+    (Some(path), change) => @resize.from_reference(path, change)
+    (None, Some(change)) => change
+    (None, None) => raise Failure("missing --size or --reference")
   }
-  let size = @resize.parse(text)
   let mut status = 0
   for path in parsed.operands {
     @resize.apply(size, path, no_create=parsed.contains("no-create")) catch {

@@ -25,6 +25,6 @@ moonx cli/install -d -m 700 private
 
 ## Notes
 
-Linux and macOS support new destination files, existing target directories, -D leading directories and -d directories with numeric modes. Existing file replacement and Windows permission application require additional APIs.
+Linux and macOS support regular file installation, existing target directories, -D leading directories and -d directories with numeric modes. A distinct regular destination is unlinked and recreated. Equal or unavailable file identities and existing symbolic links are refused. The destination tree must remain under caller control. Windows permission application requires additional APIs.
 
 See the [compatibility guide](../../docs/compatibility.md).

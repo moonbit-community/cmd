@@ -302,7 +302,7 @@ Preview 2 filesystem interfaces require a different host import namespace.
 Hard-link creation and changing owners or groups also lack released callable
 operations on the supported MoonX host.
 
-Install creates regular files exclusively and sets POSIX modes in a
+Install uses exclusive file creation after unlinking any distinct regular destination. The opened source and target identities must be available and different. It sets POSIX modes in a
 caller-controlled destination tree. Input or metadata failures may leave a
 partially installed file. Truncate can open a path with truncation to zero.
 A positioned last-byte write extends a regular file when the caller controls

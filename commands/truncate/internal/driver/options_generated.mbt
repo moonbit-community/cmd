@@ -2,7 +2,7 @@
 
 ///|
 fn metadata_help() -> String {
-  "Usage: truncate -s SIZE [-c] FILE...\n  -s, --size VALUE  Set a size or apply a signed adjustment.\n  -c, --no-create  Skip a missing file.\n  --help  Show command help.\n  --version  Show the package version.\n\nZeroing and creation use filesystem open modes. Positive sizes can create or extend a regular file by writing its last byte. Shrinking an existing file to a nonzero size requires handle truncation. Growth requires exclusive access to the file while adjusting its length.\n"
+  "Usage: truncate -s SIZE|-r REFERENCE [-c] FILE...\n  -s, --size VALUE  Set a size or apply a signed adjustment.\n  -c, --no-create  Skip a missing file.\n  -r, --reference FILE  Use the length of a regular reference file.\n  --help  Show command help.\n  --version  Show the package version.\n\nZeroing and creation use filesystem open modes. Positive sizes can create or extend a regular file by writing its last byte. Shrinking an existing file to a nonzero size requires handle truncation. Growth requires exclusive access to the file while adjusting its length.\n"
 }
 
 ///|
@@ -12,5 +12,6 @@ fn option_specs() -> Array[@cli.OptionSpec] {
     @cli.flag("no-create", short='c'),
     @cli.flag("help"),
     @cli.flag("version"),
+    @cli.option("reference", short='r'),
   ]
 }

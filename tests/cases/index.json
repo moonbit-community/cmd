@@ -48578,7 +48578,7 @@
       "implementation": "json-case",
       "source": "tests/cases/install.json",
       "case_id": "fs-install-existing",
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:fs-install-windows-mode",
@@ -48931,6 +48931,52 @@
       "implementation": "json-case",
       "source": "tests/cases/truncate.json",
       "case_id": "fs-truncate-version",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fs-install-same-identity",
+      "command": "install",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/install.json",
+      "case_id": "fs-install-same-identity",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:fs-truncate-reference",
+      "command": "truncate",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/truncate.json",
+      "case_id": "fs-truncate-reference",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-truncate-relative-reference",
+      "command": "truncate",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/truncate.json",
+      "case_id": "fs-truncate-relative-reference",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:fs-truncate-absolute-reference",
+      "command": "truncate",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/truncate.json",
+      "case_id": "fs-truncate-absolute-reference",
+      "aliases": [],
+      "platforms": [],
       "oracle_profile": ""
     }
   ]

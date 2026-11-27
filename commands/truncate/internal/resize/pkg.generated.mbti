@@ -4,6 +4,8 @@ package "cli/truncate/internal/resize"
 // Values
 pub async fn apply(Size, String, no_create~ : Bool) -> Unit
 
+pub async fn from_reference(String, Size?) -> Size
+
 pub fn parse(String) -> Size raise
 
 pub fn target(Size, Int64) -> Int64 raise

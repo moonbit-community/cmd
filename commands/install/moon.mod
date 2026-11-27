@@ -15,5 +15,6 @@ preferred_target = "wasm"
 description = "Copy regular files and create directories with a requested POSIX mode."
 
 import {
+  "moonbitlang/x@0.5.9",
   "cli/core@0.11.3",
 }

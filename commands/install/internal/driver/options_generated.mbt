@@ -2,7 +2,7 @@
 
 ///|
 fn metadata_help() -> String {
-  "Usage: install [-D] [-m MODE] SOURCE DEST\n       install -d [-m MODE] DIRECTORY...\n  -d, --directory  Create directories.\n  -D  Create missing leading directories for the destination.\n  -m, --mode VALUE  Set the destination permission bits in octal.\n  --help  Show command help.\n  --version  Show the package version.\n\nLinux and macOS support new destination files, existing target directories, -D leading directories and -d directories with numeric modes. Existing file replacement and Windows permission application require additional APIs.\n"
+  "Usage: install [-D] [-m MODE] SOURCE DEST\n       install -d [-m MODE] DIRECTORY...\n  -d, --directory  Create directories.\n  -D  Create missing leading directories for the destination.\n  -m, --mode VALUE  Set the destination permission bits in octal.\n  --help  Show command help.\n  --version  Show the package version.\n\nLinux and macOS support regular file installation, existing target directories, -D leading directories and -d directories with numeric modes. A distinct regular destination is unlinked and recreated. Equal or unavailable file identities and existing symbolic links are refused. The destination tree must remain under caller control. Windows permission application requires additional APIs.\n"
 }
 
 ///|

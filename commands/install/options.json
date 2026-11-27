@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "command": "install",
-  "help": "Usage: install [-D] [-m MODE] SOURCE DEST\n       install -d [-m MODE] DIRECTORY...\n{{help:directory:0}}\n{{help:leading:0}}\n{{help:mode:0}}\n{{help:help:0}}\n{{help:version:0}}\n\nLinux and macOS support new destination files, existing target directories, -D leading directories and -d directories with numeric modes. Existing file replacement and Windows permission application require additional APIs.\n",
+  "help": "Usage: install [-D] [-m MODE] SOURCE DEST\n       install -d [-m MODE] DIRECTORY...\n{{help:directory:0}}\n{{help:leading:0}}\n{{help:mode:0}}\n{{help:help:0}}\n{{help:version:0}}\n\nLinux and macOS support regular file installation, existing target directories, -D leading directories and -d directories with numeric modes. A distinct regular destination is unlinked and recreated. Equal or unavailable file identities and existing symbolic links are refused. The destination tree must remain under caller control. Windows permission application requires additional APIs.\n",
   "catalog_options": [
     "directory",
     "leading",
