@@ -24,7 +24,7 @@ priv enum WireBody {
 ///|
 priv struct HttpWire {
   client : Connection
-  read_limit : Int32
+  chunks : @stream.ChunkReader
   mut pending : Bytes
   mut position : Int32
   mut body : WireBody
@@ -38,7 +38,7 @@ priv struct HttpWire {
 fn HttpWire::new(client : Connection, read_limit~ : Int32 = 65536) -> HttpWire {
   {
     client,
-    read_limit,
+    chunks: @stream.ChunkReader::new(client.reader(), size=read_limit),
     pending: b"",
     position: 0,
     body: Finished,
@@ -59,7 +59,7 @@ async fn HttpWire::fill(self : HttpWire) -> Bool {
   if self.position < self.pending.length() {
     return true
   }
-  match self.client.read_some(max_len=self.read_limit) {
+  match self.chunks.read() {
     Some(bytes) => {
       self.pending = bytes
       self.position = 0
@@ -81,7 +81,7 @@ async fn HttpWire::line_bytes(
       if raw && header {
         return Bytes::from_array(bytes)
       }
-      raise @io.ReaderClosed
+      raise @io.ReaderError::UnexpectedEof
     }
     let byte = self.pending[self.position]
     self.position += 1
@@ -196,7 +196,7 @@ async fn HttpWire::response(
       header=true,
       raw=receive_header is Some(_),
     )
-    guard !status_bytes.is_empty() else { raise @io.ReaderClosed }
+    guard !status_bytes.is_empty() else { raise @io.ReaderError::UnexpectedEof }
     let status = @utf8.decode_lossy(status_bytes)
       .trim_end(chars="\r\n")
       .to_owned()
@@ -219,7 +219,7 @@ async fn HttpWire::response(
     let mut complete = true
     for fields = 0; ; fields = fields + 1 {
       let bytes = self.line_bytes(header=true, raw=receive_header is Some(_)) catch {
-        @io.ReaderClosed if capture_header_eof => {
+        @io.ReaderError::UnexpectedEof if capture_header_eof => {
           complete = false
           b""
         }
@@ -227,7 +227,7 @@ async fn HttpWire::response(
       }
       if receive_header is Some(_) && bytes.is_empty() {
         if !capture_header_eof {
-          raise @io.ReaderClosed
+          raise @io.ReaderError::UnexpectedEof
         }
         complete = false
       }
@@ -317,7 +317,7 @@ async fn HttpWire::read_some(self : HttpWire, max_len~ : Int32) -> Bytes? {
     match self.body {
       Finished | Fixed(0L) => return None
       Fixed(remaining) | ChunkData(remaining) => {
-        guard self.fill() else { raise @io.ReaderClosed }
+        guard self.fill() else { raise @io.ReaderError::UnexpectedEof }
         let length = remaining
           .min(max_len.to_int64())
           .to_int()
@@ -368,7 +368,7 @@ async fn HttpWire::read_some(self : HttpWire, max_len~ : Int32) -> Bytes? {
       }
       ChunkSeparator => {
         for expected in [b'\r', b'\n'] {
-          guard self.fill() else { raise @io.ReaderClosed }
+          guard self.fill() else { raise @io.ReaderError::UnexpectedEof }
           let actual = self.pending[self.position]
           self.position += 1
           guard actual == expected else {

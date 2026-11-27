@@ -7,7 +7,7 @@ priv enum InputMode {
 
 ///|
 priv struct ItemReader {
-  reader : &@io.Reader
+  reader : @stream.ChunkReader
   mode : InputMode
   limit : Int32
   mut buffer : Bytes
@@ -17,11 +17,18 @@ priv struct ItemReader {
 
 ///|
 fn ItemReader::new(
-  reader : &@io.Reader,
+  reader : &@io.BinaryReader,
   mode : InputMode,
   limit : Int32,
 ) -> ItemReader {
-  { reader, mode, limit, buffer: b"", position: 0, ended: false, }
+  {
+    reader: @stream.ChunkReader::new(reader),
+    mode,
+    limit,
+    buffer: b"",
+    position: 0,
+    ended: false,
+  }
 }
 
 ///|
@@ -38,7 +45,7 @@ async fn ItemReader::next(self : ItemReader) -> BytesView? {
   }
   for ;; {
     if self.position == self.buffer.length() {
-      match self.reader.read_some(max_len=65536) {
+      match self.reader.read() {
         Some(chunk) => {
           self.buffer = chunk
           self.position = 0

@@ -98,8 +98,8 @@ fn input_item(data : BytesView) -> InputItem raise ArgvBytesBoundary {
 async fn delimiter_or_exit(value : String) -> Int32? {
   try delimiter_byte(value) catch {
     XargsError(message) => {
-      @stdio.stderr.write("xargs: \{message}\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("xargs: \{message}\n")
+      @env.exit(1)
       None
     }
   } noraise {
@@ -109,15 +109,16 @@ async fn delimiter_or_exit(value : String) -> Int32? {
 
 ///|
 async fn confirm_batch(
-  channel : &@io.Reader,
+  channel : &@io.BinaryReader,
   program : String,
   arguments : Array[String],
-  diagnose~ : async (String) -> Unit = text => @stdio.stderr.write(text),
+  diagnose~ : async (String) -> Unit = text => @stdio.stderr.text.write(text),
 ) -> Bool {
   diagnose([program, ..arguments].map(shell_word).join(" ") + "?...")
   let mut first = true
   let mut accepted = false
-  while channel.read_some(max_len=1) is Some(bytes) {
+  let bytes : FixedArray[Byte] = [0]
+  while channel.read_into(bytes.mut_view()) == 1 {
     if first {
       accepted = bytes[0] is (b'y' | b'Y')
       first = false

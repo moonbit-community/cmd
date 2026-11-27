@@ -5,11 +5,10 @@ import {
 import {
   "cli/core/cli",
   "cli/core/bytere",
-  "moonbitlang/async/fs",
-  "moonbitlang/async/stdio",
+  "moonbitlang/core/async/fs",
+  "moonbitlang/core/async/stdio",
   "moonbitlang/core/env",
   "moonbitlang/core/string",
-  "moonbitlang/x/sys",
 }
 
 supported_targets = "wasm"

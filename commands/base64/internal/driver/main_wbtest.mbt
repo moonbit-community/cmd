@@ -4,7 +4,7 @@ async fn encoded_output(input : Bytes, wrap : Int32) -> Bytes {
   defer source.close()
   let encoded = @io.MemoryReader(writer => encode_stream(source, wrap, writer~))
   defer encoded.close()
-  encoded.read_all().binary()
+  encoded.read_all()
 }
 
 ///|
@@ -72,13 +72,32 @@ test "base64 byte encoding preserves every byte across fragmented quanta and wra
 
 ///|
 priv struct EncodingOutput {
+  controller : @io.BinaryWriterController
   bytes : Array[Byte]
   mut calls : Int32
   fail_after : Int32
 }
 
 ///|
-impl @io.Writer for EncodingOutput with fn write_once(
+impl @io.BinaryWriter for EncodingOutput
+
+///|
+impl @io.BinaryWriterImpl for EncodingOutput with fn name(_) {
+  "EncodingOutput"
+}
+
+///|
+impl @io.BinaryWriterImpl for EncodingOutput with fn get_controller(self) {
+  self.controller
+}
+
+///|
+impl @io.BinaryWriterImpl for EncodingOutput with fn flush_partial_data(_) {
+  ()
+}
+
+///|
+impl @io.BinaryWriterImpl for EncodingOutput with fn raw_write_impl(
   self,
   bytes,
   offset~,
@@ -100,7 +119,12 @@ async test "base64 emits complete quanta before later read errors and never repl
     fail("encoding read failed")
   })
   defer reader.close()
-  let output : EncodingOutput = { bytes: [], calls: 0, fail_after: 100, }
+  let output : EncodingOutput = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+    calls: 0,
+    fail_after: 100,
+  }
   assert_true(
     try {
       encode_stream(reader, 0, writer=output)
@@ -112,7 +136,12 @@ async test "base64 emits complete quanta before later read errors and never repl
   assert_eq(Bytes::from_array(output.bytes), b"Zm9v")
   let reader2 = @io.MemoryReader(writer => writer.write(b"foobar"))
   defer reader2.close()
-  let failed : EncodingOutput = { bytes: [], calls: 0, fail_after: 1, }
+  let failed : EncodingOutput = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+    calls: 0,
+    fail_after: 1,
+  }
   assert_true(
     try {
       encode_stream(reader2, 0, writer=failed)

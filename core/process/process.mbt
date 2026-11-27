@@ -52,9 +52,9 @@ pub fn child(
 ///|
 pub async fn run(
   spec : ChildSpec,
-  stdin? : &@async_process.ProcessInput,
-  stdout? : &@async_process.ProcessOutput,
-  stderr? : &@async_process.ProcessOutput,
+  stdin? : @async_process.ProcessInput,
+  stdout? : @async_process.ProcessOutput,
+  stderr? : @async_process.ProcessOutput,
 ) -> Int32 {
   @async_process.run(
     spec.program,
@@ -67,7 +67,7 @@ pub async fn run(
     cwd=spec.context.cwd,
     no_console_window=true,
     cancel_handler=@async_process.hard_cancel(),
-  )
+  ).exit_code
 }
 
 ///|

@@ -109,7 +109,7 @@ fn reverse_byte_ranges(
   let mut end = last + (if before { 0 } else { 1 })
   while data[:search_end].rev_find(separator) is Some(index) {
     let boundary = index + (if before { 0 } else { 1 })
-    output.write_bytes(data[boundary:end])
+    output.write_bytesview(data[boundary:end])
     end = boundary
     search_end = index
   }

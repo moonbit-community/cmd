@@ -1,5 +1,6 @@
 ///|
 priv struct CapturedBytes {
+  controller : @io.BinaryWriterController
   data : @buffer.Buffer
 }
 
@@ -11,7 +12,7 @@ async test "cut single range preserves clipping byte offsets and final delimiter
       let expected = @buffer.Buffer()
       for length in 0..<32 {
         let line = Bytes::makei(length, index => (32 + index * 3).to_byte())
-        input.write_bytes(line)
+        input.write_bytesview(line)
         input.write_byte(record_delimiter)
         for index in 0..<line.length() {
           if index + 1 >= lo && index + 1 <= hi {
@@ -20,7 +21,7 @@ async test "cut single range preserves clipping byte offsets and final delimiter
         }
         expected.write_byte(record_delimiter)
       }
-      input.write_bytes(b"tail")
+      input.write_bytesview(b"tail")
       for index in 0..<4 {
         if index + 1 >= lo && index + 1 <= hi {
           expected.write_byte(b"tail"[index])
@@ -29,7 +30,10 @@ async test "cut single range preserves clipping byte offsets and final delimiter
       expected.write_byte(record_delimiter)
       let reader = @io.MemoryReader(writer => writer.write(input.to_bytes()))
       defer reader.close()
-      let output = CapturedBytes::{ data: @buffer.Buffer(), }
+      let output = CapturedBytes::{
+        controller: @io.BinaryWriterController(),
+        data: @buffer.Buffer(),
+      }
       process_reader(
         reader,
         None,
@@ -46,8 +50,31 @@ async test "cut single range preserves clipping byte offsets and final delimiter
 }
 
 ///|
-impl @io.Writer for CapturedBytes with fn write_once(self, bytes, offset~, len~) {
-  self.data.write_bytes(bytes[offset:offset + len])
+impl @io.BinaryWriter for CapturedBytes
+
+///|
+impl @io.BinaryWriterImpl for CapturedBytes with fn name(_) {
+  "CapturedBytes"
+}
+
+///|
+impl @io.BinaryWriterImpl for CapturedBytes with fn get_controller(self) {
+  self.controller
+}
+
+///|
+impl @io.BinaryWriterImpl for CapturedBytes with fn flush_partial_data(_) {
+  ()
+}
+
+///|
+impl @io.BinaryWriterImpl for CapturedBytes with fn raw_write_impl(
+  self,
+  bytes,
+  offset~,
+  len~,
+) {
+  self.data.write_bytesview(bytes[offset:offset + len])
   len
 }
 
@@ -58,7 +85,10 @@ async test "cut flushes completed records and drops the fragment on a read error
     fail("injected input failure")
   })
   defer reader.close()
-  let output = CapturedBytes::{ data: @buffer.Buffer(), }
+  let output = CapturedBytes::{
+    controller: @io.BinaryWriterController(),
+    data: @buffer.Buffer(),
+  }
   let failed = try {
     process_reader(
       reader,

@@ -1,23 +1,23 @@
 import {
   "cli/core/bytesearch",
+  "cli/core/stream",
   "moonbitlang/core/argparse",
-  "moonbitlang/async/fs" @async_fs,
-  "moonbitlang/async/io",
-  "moonbitlang/async/os_error",
-  "moonbitlang/async/stdio",
+  "moonbitlang/core/async/fs" @async_fs,
+  "moonbitlang/core/async/io",
+  "moonbitlang/core/async/os_error",
+  "moonbitlang/core/async/stdio",
   "moonbitlang/core/env",
   "moonbitlang/core/encoding/utf8",
-  "moonbitlang/core/v128",
-  "moonbitlang/x/sys",
+  "moonbitlang/core/simd",
 }
 
 warnings = "-alert_experimental"
 
 supported_targets = "wasm"
 
-import {
-  "cli/core/stream",
-} for "wbtest"
+options(
+  "allow-experimental-packages": [ "moonbitlang/core/simd" ],
+)
 
 rule(
   name: "gen_version",
@@ -27,5 +27,5 @@ rule(
 dev_build(rule: "gen_version", input: "../../moon.mod", output: "version.mbt")
 
 import {
-  "moonbitlang/async",
+  "moonbitlang/core/async",
 } for "wbtest"

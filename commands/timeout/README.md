@@ -26,4 +26,6 @@ Return the child's status on normal completion, 124 on timeout, 125 on setup fai
 - This command is local-only and is not available as moonx cli/timeout. Run the example from the repository root.
 - Process-group termination, signal selection, --kill-after, --foreground and --preserve-status are unsupported. Durations round up to milliseconds and must fit 0 through 2147483647 ms.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

@@ -1,11 +1,12 @@
 import {
   "cc06b/mooncry/lib" @mooncry,
-  "moonbitlang/async/io",
+  "moonbitlang/core/async/io",
+  "cli/core/stream",
   "moonbitlang/x/crypto",
 }
 
 import {
-  "moonbitlang/async",
+  "moonbitlang/core/async",
   "moonbitlang/core/encoding/hex",
 } for "wbtest"
 

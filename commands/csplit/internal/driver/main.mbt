@@ -1,9 +1,11 @@
 ///|
 fn diagnostic(error : Error) -> String {
-  let text = error.to_string()
-  match text.strip_prefix("Failure(internal/driver/") {
-    Some(location) => "Failure(" + location.to_owned()
-    None => text
+  match error {
+    Failure(message) =>
+      "Failure(" +
+      message.strip_prefix("internal/driver/").unwrap_or(message[:]).to_owned() +
+      ")"
+    _ => error.to_string()
   }
 }
 
@@ -199,7 +201,7 @@ pub async fn run_main() -> Unit {
   let parsed = @cli.parse(@env.args()[1:], option_specs()) catch {
     @cli.CliError(message~, option~, ..) => {
       @stdio.stderr.write("csplit: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -226,17 +228,17 @@ pub async fn run_main() -> Unit {
   } catch {
     SuffixError(message) => {
       @stdio.stderr.write("csplit: " + message + "\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
     @bytere.PatternError(message) => {
       @stdio.stderr.write("csplit: \{message}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
     err => {
       @stdio.stderr.write("csplit: " + diagnostic(err) + "\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -285,7 +287,7 @@ pub async fn run_main() -> Unit {
           }
         }
       }
-      @sys.exit(if name_boundary { 2 } else { 1 })
+      @env.exit(if name_boundary { 2 } else { 1 })
     }
   }
 }

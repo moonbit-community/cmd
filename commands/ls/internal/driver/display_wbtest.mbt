@@ -41,7 +41,7 @@ async test "column and comma layouts use strict per column width and GNU tab sto
   let render = async fn(options : Options) {
     let out = @buffer.Buffer()
     write_layout(names, options, None, Ref(false), bytes => {
-      out.write_bytes(bytes[:])
+      out.write_bytesview(bytes[:])
     })
     out.to_bytes()
   }

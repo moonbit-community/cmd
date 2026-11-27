@@ -107,7 +107,7 @@ async fn network_wget_authentication_scenario(
   let fixtures : Array[AuthenticationCase] = @json.from_json(Json(cases))
   for fixture in fixtures {
     assert_true(fixture.label != "" && !seen.contains(fixture.label))
-    seen.add(fixture.label)
+    seen.insert(fixture.label)
   }
   if labels is Some(labels) {
     assert_true(!labels.is_empty())

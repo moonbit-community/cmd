@@ -8,23 +8,23 @@ fn help_message() -> String {
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("hexdump \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("hexdump \{MODULE_VERSION}\n")
     return
   }
   let args = normalized_args(@env.args()[1:])
   let parsed = @cli.parse(args[:], option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
-      @stdio.stderr.write("hexdump: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("hexdump: \{message}: '\{option}'\n")
+      @env.exit(1)
       return
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write(help_message() + "\n")
+    @stdio.stdout.text.write(help_message() + "\n")
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("hexdump \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("hexdump \{MODULE_VERSION}\n")
     return
   }
   let (skip, remaining) = try {
@@ -36,20 +36,20 @@ pub async fn run_main() -> Unit {
     (skip, remaining)
   } catch {
     HexdumpError(message) => {
-      @stdio.stderr.write("hexdump: \{message}\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("hexdump: \{message}\n")
+      @env.exit(1)
       return
     }
   }
   let program = program(parsed) catch {
     HexdumpError(message) | @format.FormatError(message) => {
-      @stdio.stderr.write("hexdump: \{message}\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("hexdump: \{message}\n")
+      @env.exit(1)
       return
     }
     err => {
-      @stdio.stderr.write("hexdump: \{err}\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("hexdump: \{err}\n")
+      @env.exit(1)
       return
     }
   }
@@ -82,7 +82,7 @@ pub async fn run_main() -> Unit {
       }
     } catch {
       err => {
-        @stdio.stderr.write("hexdump: \{path}: \{err}\n")
+        @stdio.stderr.text.write("hexdump: \{path}: \{err}\n")
         failed = true
       }
     }
@@ -94,6 +94,6 @@ pub async fn run_main() -> Unit {
     @stdio.stdout.write(@format.render_final(unit, state.offset))
   }
   if failed {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

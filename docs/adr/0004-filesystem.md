@@ -2,7 +2,7 @@
 
 Status: Accepted
 Date: 2026-09-05
-Updated: 2026-11-17
+Updated: 2026-11-27
 
 ## Decision
 
@@ -12,6 +12,12 @@ inode-preserving overwrite, or rewrite content to simulate touch. Public async
 0.22.9 lacks the identity, raw mode, handle truncation, timestamp-setting,
 hard-link and readlink operations required by the boundaries below. Host
 observers, private APIs and FFI do not expand the product's capabilities.
+
+`x/fs` 0.5.9 supplies optional file identities on POSIX and NTFS. `mv` uses
+no-follow identities to decide equal-time `-i` and `-u` on POSIX. Windows
+retains the refusal because the public API cannot verify that the volume uses
+NTFS. These path observations do not make a subsequent rename atomic with
+respect to the identity check.
 
 ## Mutation and identity boundaries
 
@@ -33,6 +39,12 @@ require concurrent symlink/ancestor replacement regressions before expanding the
 claim. [Serve scenarios](../../tests/scenarios/serve.mbt) test exact file/MIME
 responses, encoded traversal, POSIX outside-root links, and restrictive policy.
 
+Rmdir retains the directory-only operation in `moonbitlang/async/fs`. The
+standard `core/async/fs.remove` also removes regular files, and `x/fs.remove_dir`
+recursively removes nonempty directories. Temporary directory cleanup also uses
+`async/fs.rmdir` so it rejects a file substituted at the owned path. Sort uses the
+file-only removal operation for individual runs.
+
 Rmdir's ignore-nonempty policy classifies a failed removal, rather than reading
 a directory first and reporting simulated success. Typed OSError values identify
 ENOTEMPTY (Linux 39, macOS 66, Windows 145) and EEXIST. GNU's additional
@@ -51,7 +63,7 @@ directory operations supported on Wasm, plus race regressions.
 | Operation | Supported behavior and deliberate limit | Condition for expansion |
 | --- | --- | --- |
 | cp | New destinations with --no-preserve=mode follow umask. Default preservation and existing-file overwrite refuse; no-clobber/update skips remain. | Public mode, identity and handle operations; alias and partial-effect tests |
-| mv | Rename entries with ordered backup/prompt/update effects. Do not delete a remaining source to manufacture success; EXDEV has no copy/delete fallback. Ambiguous equal-time interactive/older-only cases refuse. | Identity and metadata-preserving fallback; link, time, mode and race tests |
+| mv | Rename entries with ordered backup/prompt/update effects. Do not delete a remaining source to manufacture success; EXDEV has no copy/delete fallback. Equal-time interactive/older-only cases require comparable entry identities. | Identity and metadata-preserving fallback; link, time, mode and race tests |
 | touch | Create missing files; -c skips missing files. Existing timestamp updates refuse without changing content. | Public timestamp setter and preserved-content observations |
 | patch | Offset/fuzz, mixed hunk results, new rejects, stdout/dry-run and selected create/delete. Existing target, named-output and reject replacement refuse. | Mode-preserving replacement and safe reject identity/truncation |
 | sort output | Ordinary sort consumes inputs before truncating an existing target, preserving inode/mode. Streaming merge refuses an existing output. | Safe identity/truncation or a sound alias/late-read-error algorithm |

@@ -1,19 +1,20 @@
 ///|
 fn diagnostic(error : Error) -> String {
-  let text = error.to_string()
-  // Preserve the command-level source name in existing Failure diagnostics.
-  match text.strip_prefix("Failure(internal/driver/") {
-    Some(location) => "Failure(" + location.to_owned()
-    None => text
+  match error {
+    Failure(message) =>
+      "Failure(" +
+      message.strip_prefix("internal/driver/").unwrap_or(message[:]).to_owned() +
+      ")"
+    _ => error.to_string()
   }
 }
 
 ///|
 async fn source(path : String) -> Bytes {
   if path == "-" {
-    @stdio.stdin.read_all().binary()
+    @stdio.stdin.read_all()
   } else {
-    @fs.read_file(path).binary()
+    @fs.read_binary(path)
   }
 }
 
@@ -242,7 +243,7 @@ async fn file_kind(path : String) -> @fs.FileKind? {
     return Some(Regular)
   }
   try @fs.kind(path) catch {
-    @os_error.OSError(_) as err if err.is_ENOENT() => None
+    @os_error.OsError(NotFound, ..) => None
     err => raise err
   } noraise {
     kind => Some(kind)
@@ -259,7 +260,8 @@ fn kind_name(kind : @fs.FileKind) -> String {
     CharDevice => "a character special file"
     BlockDevice => "a block special file"
     SymLink => "a symbolic link"
-    Unknown => "an unknown file type"
+    Console => "a character special file"
+    _ => "an unknown file type"
   }
 }
 
@@ -278,7 +280,7 @@ async fn compare_files(
     .unwrap_or_else(() => diagnostic_path(task.right))
   if task.left == task.right && !missing_left && !missing_right {
     if settings.report_identical {
-      @stdio.stdout.write(
+      @stdio.stdout.text.write(
         "Files \{display_left} and \{display_right} are identical\n",
       )
     }
@@ -312,7 +314,7 @@ async fn compare_files(
   }
   if !differs {
     if settings.report_identical {
-      @stdio.stdout.write(
+      @stdio.stdout.text.write(
         "Files \{display_left} and \{display_right} are identical\n",
       )
     }
@@ -320,11 +322,13 @@ async fn compare_files(
   }
   if settings.brief || binary {
     let word = if settings.brief { "Files" } else { "Binary files" }
-    @stdio.stdout.write("\{word} \{display_left} and \{display_right} differ\n")
+    @stdio.stdout.text.write(
+      "\{word} \{display_left} and \{display_right} differ\n",
+    )
     return 1
   }
   if task.nested {
-    @stdio.stdout.write(
+    @stdio.stdout.text.write(
       settings.command +
       " " +
       directory_operand(task.left) +
@@ -382,7 +386,7 @@ async fn report_types(
   let display_right = settings.labels
     .get(1)
     .unwrap_or_else(() => diagnostic_path(task.right))
-  @stdio.stdout.write(
+  @stdio.stdout.text.write(
     "File \{display_left} is \{kind_name(left)} while file \{display_right} is \{kind_name(right)}\n",
   )
   1
@@ -400,12 +404,12 @@ async fn compare_path(
   let allow_right = settings.new_file
   if left is None && right is None {
     if task.left_present {
-      @stdio.stderr.write(
+      @stdio.stderr.text.write(
         "diff: " + diagnostic_path(task.left) + ": No such file or directory\n",
       )
     }
     if task.right_present {
-      @stdio.stderr.write(
+      @stdio.stderr.text.write(
         "diff: " + diagnostic_path(task.right) + ": No such file or directory\n",
       )
     }
@@ -420,7 +424,7 @@ async fn compare_path(
           task.left
         },
       )
-      @stdio.stdout.write(
+      @stdio.stdout.text.write(
         "Only in " +
         diagnostic_path(parent) +
         ": " +
@@ -468,7 +472,7 @@ async fn compare_path(
     return compare_files(task, settings, left is None, right is None)
   }
   if task.nested && !settings.recursive {
-    @stdio.stdout.write(
+    @stdio.stdout.text.write(
       "Common subdirectories: " +
       diagnostic_path(task.left) +
       " and " +
@@ -572,11 +576,11 @@ async fn run(args : ArrayView[String]) -> Int32 {
   }
   let parsed = @cli.parse(normalized, option_specs())
   if parsed.contains("help") {
-    @stdio.stdout.write(metadata_help())
+    @stdio.stdout.text.write(metadata_help())
     return 0
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("diff \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("diff \{MODULE_VERSION}\n")
     return 0
   }
   guard parsed.operands.length() == 2 else {
@@ -657,11 +661,11 @@ async fn run(args : ArrayView[String]) -> Int32 {
   while pending.pop() is Some(task) {
     let result = compare_path(task, settings, pending) catch {
       DiffError(message) => {
-        @stdio.stderr.write("diff: \{message}\n")
+        @stdio.stderr.text.write("diff: \{message}\n")
         2
       }
       err => {
-        @stdio.stderr.write("diff: \{diagnostic(err)}\n")
+        @stdio.stderr.text.write("diff: \{diagnostic(err)}\n")
         2
       }
     }
@@ -717,7 +721,12 @@ async fn header(
     fail("unified stdin headers require an explicit --label")
   }
   let zone = @time_zone.load()
-  let (seconds, nanos) = if missing { (0L, 0) } else { @fs.mtime(path) }
+  let (seconds, nanos) = if missing {
+    (0L, 0)
+  } else {
+    let time = @fs.mtime(path)
+    (time.sec(), time.subsec_nanos())
+  }
   let date = zone.at_unix(seconds, nanosecond=nanos)
   let name = directory_operand(path)
   if context {
@@ -750,19 +759,19 @@ async fn header(
 pub async fn run_main() -> Unit {
   let status = run(@env.args()[1:]) catch {
     DiffError(message) => {
-      @stdio.stderr.write("diff: \{message}\n")
+      @stdio.stderr.text.write("diff: \{message}\n")
       2
     }
     @cli.CliError(message~, ..) => {
-      @stdio.stderr.write("diff: \{message}\n")
+      @stdio.stderr.text.write("diff: \{message}\n")
       2
     }
     err => {
-      @stdio.stderr.write("diff: \{diagnostic(err)}\n")
+      @stdio.stderr.text.write("diff: \{diagnostic(err)}\n")
       2
     }
   }
   if status != 0 {
-    @sys.exit(status)
+    @env.exit(status)
   }
 }

@@ -25,4 +25,6 @@ Produce no output and exit 0. Ordinary arguments are ignored.
 
 - Standalone --help and --version print metadata.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

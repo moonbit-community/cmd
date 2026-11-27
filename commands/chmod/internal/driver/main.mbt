@@ -183,7 +183,7 @@ pub async fn run_main() -> Unit {
         _ => (text, "")
       }
       @stdio.stderr.write("chmod: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -195,13 +195,13 @@ pub async fn run_main() -> Unit {
   if parsed.values.contains("reference") {
     if operands.is_empty() {
       @stdio.stderr.write("chmod: missing operand\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
     @stdio.stderr.write(
       "chmod: --reference is unavailable: the portable filesystem API cannot read permission bits\n",
     )
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let (selected_mode, symbolic_mode) = match operands.get(0) {
@@ -220,7 +220,7 @@ pub async fn run_main() -> Unit {
                 @stdio.stderr.write(
                   "chmod: invalid mode '\{value}': \{message}\n",
                 )
-                @sys.exit(1)
+                @env.exit(1)
                 return
               }
             },
@@ -230,19 +230,19 @@ pub async fn run_main() -> Unit {
     }
     None => {
       @stdio.stderr.write("chmod: missing mode\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
   let operands = operands[1:]
   if operands.is_empty() {
     @stdio.stderr.write("chmod: missing operand\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   if !@platform.permission_mutation_supported() {
     @stdio.stderr.write("chmod: unsupported capability: permission mutation\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let verbose = parsed.flags.contains("verbose")
@@ -264,7 +264,7 @@ pub async fn run_main() -> Unit {
       }
     }
     if failed {
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
     for path in operands {
@@ -296,6 +296,6 @@ pub async fn run_main() -> Unit {
     }
   }
   if failed {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

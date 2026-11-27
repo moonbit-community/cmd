@@ -30,7 +30,7 @@ fn validate_published_selection(selection : PublishedSelection) -> Unit raise {
     guard !id.is_empty() && !ids.contains(id) else {
       fail("duplicate or empty published case ID")
     }
-    ids.add(id)
+    ids.insert(id)
   }
 }
 
@@ -142,13 +142,13 @@ fn published_case_commands(cases : Array[@harness.Case]) -> Array[String] raise 
       @catalog.releasable(contract) else {
       fail("invalid primary release eligibility: " + fixture.command)
     }
-    names.add(fixture.command)
+    names.insert(fixture.command)
     for related in fixture.related_commands.unwrap_or([]) {
       guard @catalog.find(related) is Some(contract) else {
         fail("unknown related command: " + related)
       }
       if @catalog.releasable(contract) {
-        names.add(related)
+        names.insert(related)
       }
     }
   }

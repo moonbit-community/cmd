@@ -46,7 +46,7 @@ fn is_space_byte(b : Byte) -> Bool {
 
 ///|
 async fn count_reader(
-  reader : &@io.Reader,
+  reader : &@io.BinaryReader,
   selection : Selection,
   counts? : Counts,
 ) -> Counts {
@@ -61,7 +61,7 @@ async fn count_reader(
   defer {
     counts.max_line_length = Int64::max(counts.max_line_length, line_width)
   }
-  while reader.read(buffer, max_len=buffer.length()) is count && count > 0 {
+  while reader.read_into(buffer.mut_view()) is count && count > 0 {
     let chunk = data[:count]
     if selection.bytes {
       counts.bytes += count.to_int64()
@@ -76,13 +76,13 @@ async fn count_reader(
       let mut lines = 0
       let mut words = 0
       while offset + 16 <= count {
-        let block = @v128.v128_load(buffer, offset)
-        let spaces = @v128.i8x16_bitmask(
-          @v128.v128_or_(
-            @v128.i8x16_eq(block, @v128.i8x16_splat(b' ')),
-            @v128.v128_and_(
-              @v128.i8x16_ge_u(block, @v128.i8x16_splat(b'\t')),
-              @v128.i8x16_le_u(block, @v128.i8x16_splat(b'\r')),
+        let block = @simd.v128_load(buffer, offset)
+        let spaces = @simd.i8x16_bitmask(
+          @simd.v128_or_(
+            @simd.i8x16_eq(block, @simd.i8x16_splat(b' ')),
+            @simd.v128_and_(
+              @simd.i8x16_ge_u(block, @simd.i8x16_splat(b'\t')),
+              @simd.i8x16_le_u(block, @simd.i8x16_splat(b'\r')),
             ),
           ),
         )
@@ -92,8 +92,8 @@ async fn count_reader(
         words += ((spaces ^ 0xFFFF) & ((spaces << 1) | preceding_space)).popcnt()
         in_word = (spaces & 0x8000) == 0
         if selection.lines {
-          lines += @v128.i8x16_bitmask(
-            @v128.i8x16_eq(block, @v128.i8x16_splat(b'\n')),
+          lines += @simd.i8x16_bitmask(
+            @simd.i8x16_eq(block, @simd.i8x16_splat(b'\n')),
           ).popcnt()
         }
         offset += 16
@@ -289,9 +289,9 @@ fn nul_file_names(data : Bytes) -> Array[String] raise {
 ///|
 async fn read_file_list(path : String) -> Array[String] {
   let data = if path == "-" {
-    @stdio.stdin.read_all().binary()
+    @stdio.stdin.read_all()
   } else {
-    @async_fs.read_file(path).binary()
+    @async_fs.read_binary(path)
   }
   nul_file_names(data)
 }
@@ -313,16 +313,17 @@ fn quoted_name(path : String) -> String {
 
 ///|
 fn input_error(path : String, error : Error) -> String {
+  let error = @stream.transport_cause(error)
   let message = match error {
-    @os_error.OSError(_, ..) as os_error =>
-      if os_error.is_ENOENT() {
+    @os_error.OsError(kind, ..) =>
+      if kind is NotFound {
         "No such file or directory"
-      } else if os_error.is_EACCES() {
+      } else if kind is AccessDenied {
         "Permission denied"
-      } else if os_error.is_ENOTDIR() {
+      } else if kind is NotDirectory {
         "Not a directory"
       } else {
-        os_error.to_string()
+        error.to_string()
       }
     _ => error.to_string()
   }
@@ -331,7 +332,7 @@ fn input_error(path : String, error : Error) -> String {
 
 ///|
 async fn read_counted(
-  reader : &@io.Reader,
+  reader : &@io.BinaryReader,
   path : String,
   selection : Selection,
 ) -> (Counts?, String?) {
@@ -372,7 +373,7 @@ async fn count_source(
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("wc \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("wc \{MODULE_VERSION}\n")
     return
   }
   let args = @env.args()[1:]
@@ -412,28 +413,28 @@ pub async fn run_main() -> Unit {
         _ => (text, "")
       }
       if option == "total" {
-        @stdio.stderr.write(
+        @stdio.stderr.text.write(
           "wc: option '--total' requires an argument\nTry 'wc --help' for more information.\n",
         )
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
-      @stdio.stderr.write("wc: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("wc: \{message}: '\{option}'\n")
+      @env.exit(1)
       return
     }
   }
   let operands = parsed.values.get("operands").unwrap_or([])
   if parsed.flags.contains("help") {
-    @stdio.stdout.write(metadata_help())
+    @stdio.stdout.text.write(metadata_help())
     return
   }
   let mode = parse_total_mode(
     parsed.values.get("total").unwrap_or([]).last().unwrap_or("auto"),
   ) catch {
     CliError(message) => {
-      @stdio.stderr.write(message + "\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write(message + "\n")
+      @env.exit(1)
       return
     }
   }
@@ -458,16 +459,16 @@ pub async fn run_main() -> Unit {
     }
   }
   if parsed.values.contains("files0-from") && !operands.is_empty() {
-    @stdio.stderr.write("wc: extra operand with --files0-from\n")
-    @sys.exit(1)
+    @stdio.stderr.text.write("wc: extra operand with --files0-from\n")
+    @env.exit(1)
     return
   }
   let files = match parsed.values.get("files0-from").unwrap_or([]).last() {
     Some(path) =>
       read_file_list(path) catch {
         err => {
-          @stdio.stderr.write("wc: \{err}\n")
-          @sys.exit(1)
+          @stdio.stderr.text.write("wc: \{err}\n")
+          @env.exit(1)
           return
         }
       }
@@ -485,13 +486,15 @@ pub async fn run_main() -> Unit {
         Some(list) => quoted_name(list) + ":" + (index + 1).to_string() + ": "
         None => ""
       }
-      @stdio.stderr.write("wc: " + prefix + "invalid zero-length file name\n")
+      @stdio.stderr.text.write(
+        "wc: " + prefix + "invalid zero-length file name\n",
+      )
       failed = true
       continue
     }
     if path == "-" &&
       parsed.values.get("files0-from").unwrap_or([]).last() == Some("-") {
-      @stdio.stderr.write(
+      @stdio.stderr.text.write(
         "wc: when reading file names from standard input, no file name of '-' allowed\n",
       )
       failed = true
@@ -499,21 +502,21 @@ pub async fn run_main() -> Unit {
     }
     let (counts, error) = count_source(path, selection)
     if error is Some(message) {
-      @stdio.stderr.write(message + "\n")
+      @stdio.stderr.text.write(message + "\n")
       failed = true
     }
     if counts is Some(counts) {
       total.add(counts)
       if !(mode is Only) {
         let name = if implicit_stdin { None } else { Some(path) }
-        @stdio.stdout.write(
+        @stdio.stdout.text.write(
           render_counts(counts, selection, name, width) + "\n",
         )
       }
     }
   }
   if mode is (Always | Only) || (mode is Auto && files.length() > 1) {
-    @stdio.stdout.write(
+    @stdio.stdout.text.write(
       render_counts(
         total,
         selection,
@@ -528,6 +531,6 @@ pub async fn run_main() -> Unit {
     )
   }
   if failed {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

@@ -33,4 +33,6 @@ With no file, or with - as the filename, read stdin. Encoding wraps at 76 charac
 - Decoding rejects lowercase characters unless -i discards them. Invalid input may produce partial output before an error.
 - Encoding streams input; decoding reads the whole input into memory.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

@@ -1,10 +1,34 @@
 ///|
 priv struct NumberOutput {
+  controller : @io.BinaryWriterController
   bytes : Array[Byte]
 }
 
 ///|
-impl @io.Writer for NumberOutput with fn write_once(self, bytes, offset~, len~) {
+impl @io.BinaryWriter for NumberOutput
+
+///|
+impl @io.BinaryWriterImpl for NumberOutput with fn name(_) {
+  "NumberOutput"
+}
+
+///|
+impl @io.BinaryWriterImpl for NumberOutput with fn get_controller(self) {
+  self.controller
+}
+
+///|
+impl @io.BinaryWriterImpl for NumberOutput with fn flush_partial_data(_) {
+  ()
+}
+
+///|
+impl @io.BinaryWriterImpl for NumberOutput with fn raw_write_impl(
+  self,
+  bytes,
+  offset~,
+  len~,
+) {
   for i in offset..<(offset + len) {
     self.bytes.push(bytes[i])
   }
@@ -12,7 +36,10 @@ impl @io.Writer for NumberOutput with fn write_once(self, bytes, offset~, len~) 
 }
 
 ///|
-async fn number_for_test(reader : &@io.Reader, writer : &@io.Writer) -> Unit {
+async fn number_for_test(
+  reader : &@io.BinaryReader,
+  writer : &@io.BinaryWriter,
+) -> Unit {
   process_reader(
     reader,
     "a",
@@ -39,7 +66,10 @@ async test "numbering preserves sections binary bytes and an unterminated final 
     writer.write(b"a\n\n\\:\\:\n\xff\x00tail")
   })
   defer reader.close()
-  let output : NumberOutput = { bytes: [], }
+  let output : NumberOutput = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+  }
   number_for_test(reader, output)
   assert_eq(Bytes::from_array(output.bytes), b"1:a\n2:\n\n1:\xff\x00tail\n")
 }
@@ -51,7 +81,10 @@ async test "numbering retains completed output before an input failure" {
     fail("injected read failure")
   })
   defer reader.close()
-  let output : NumberOutput = { bytes: [], }
+  let output : NumberOutput = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+  }
   let failed = try {
     number_for_test(reader, output)
     false
@@ -64,12 +97,31 @@ async test "numbering retains completed output before an input failure" {
 
 ///|
 priv struct PartialNumberOutput {
+  controller : @io.BinaryWriterController
   bytes : Array[Byte]
   mut calls : Int32
 }
 
 ///|
-impl @io.Writer for PartialNumberOutput with fn write_once(
+impl @io.BinaryWriter for PartialNumberOutput
+
+///|
+impl @io.BinaryWriterImpl for PartialNumberOutput with fn name(_) {
+  "PartialNumberOutput"
+}
+
+///|
+impl @io.BinaryWriterImpl for PartialNumberOutput with fn get_controller(self) {
+  self.controller
+}
+
+///|
+impl @io.BinaryWriterImpl for PartialNumberOutput with fn flush_partial_data(_) {
+  ()
+}
+
+///|
+impl @io.BinaryWriterImpl for PartialNumberOutput with fn raw_write_impl(
   self,
   bytes,
   offset~,
@@ -90,7 +142,11 @@ impl @io.Writer for PartialNumberOutput with fn write_once(
 async test "numbering never replays bytes after a partial write failure" {
   let reader = @io.MemoryReader(writer => writer.write(b"one\ntwo\n"))
   defer reader.close()
-  let output : PartialNumberOutput = { bytes: [], calls: 0, }
+  let output : PartialNumberOutput = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+    calls: 0,
+  }
   assert_true(
     try {
       number_for_test(reader, output)
@@ -110,7 +166,10 @@ async test "numbering batches preserve blank grouping section resets and signed 
     writer.write(b"\n\\:\\:\\:\nh\n\\:\nf\n\\:\\:\nb")
   })
   defer reader.close()
-  let output : NumberOutput = { bytes: [], }
+  let output : NumberOutput = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+  }
   let number = Ref(-2)
   process_reader(
     reader,
@@ -141,7 +200,11 @@ async test "numbering batches preserve blank grouping section resets and signed 
 async test "numbering does not advance a declined oversized record after write failure" {
   let reader = @io.MemoryReader(writer => writer.write(Bytes::make(65537, b'x')))
   defer reader.close()
-  let output : PartialNumberOutput = { bytes: [], calls: 0, }
+  let output : PartialNumberOutput = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+    calls: 0,
+  }
   let number = Ref(10)
   assert_true(
     try {
@@ -177,7 +240,10 @@ async test "numbering does not advance a declined oversized record after write f
 async test "numbering empty input does not allocate a requested number field" {
   let reader = @io.MemoryReader(_ => ())
   defer reader.close()
-  let output : NumberOutput = { bytes: [], }
+  let output : NumberOutput = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+  }
   process_reader(
     reader,
     "a",

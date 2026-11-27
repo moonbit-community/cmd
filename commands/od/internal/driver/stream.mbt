@@ -68,7 +68,7 @@ fn DumpState::feed(self : DumpState, chunk : BytesView) -> String {
 }
 
 ///|
-async fn DumpState::read(self : DumpState, reader : &@io.Reader) -> Unit {
+async fn DumpState::read(self : DumpState, reader : &@io.BinaryReader) -> Unit {
   let buffer : FixedArray[Byte] = FixedArray::make(65536, 0)
   let bytes = buffer.unsafe_reinterpret_as_bytes()
   let capacity = buffer.length().to_int64()
@@ -77,11 +77,13 @@ async fn DumpState::read(self : DumpState, reader : &@io.Reader) -> Unit {
       Some(n) => self.skip.min(capacity) + n.min(capacity)
       None => capacity
     }
-    let count = reader.read(buffer, max_len=maximum.min(capacity).to_int())
+    let count = reader.read_into(
+      buffer.mut_view(end=maximum.min(capacity).to_int()),
+    )
     if count == 0 {
       break
     }
-    @stdio.stdout.write(self.feed(bytes[:count]))
+    @stdio.stdout.text.write(self.feed(bytes[:count]))
   }
 }
 

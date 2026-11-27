@@ -36,7 +36,7 @@ Use `--help` for the complete option list.
 
 ## Notes
 
-Compatible with the MoonBit 2026-11-17 toolchain.
+Build from source with the MoonBit 1.0 RC1 toolchain.
 
 - Packages and templates must already be installed locally. Network downloads, self-update, viewer opening, completion generation and timing traces are unsupported.
 - HTML needs --features html; HTML watch also needs --no-serve. Compilation is single-threaded and watch performs full recompilation.

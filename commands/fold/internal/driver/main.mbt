@@ -8,7 +8,7 @@ fn help_message() -> String {
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("fold \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("fold \{MODULE_VERSION}\n")
     return
   }
   let args : Array[String] = []
@@ -28,17 +28,17 @@ pub async fn run_main() -> Unit {
   }
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
-      @stdio.stderr.write("fold: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("fold: \{message}: '\{option}'\n")
+      @env.exit(1)
       return
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write(help_message() + "\n")
+    @stdio.stdout.text.write(help_message() + "\n")
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("fold \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("fold \{MODULE_VERSION}\n")
     return
   }
   let width = @string.parse_int(
@@ -47,8 +47,8 @@ pub async fn run_main() -> Unit {
     _ => 0
   }
   if width <= 0 || width > 2147483638 {
-    @stdio.stderr.write("fold: invalid number of columns\n")
-    @sys.exit(1)
+    @stdio.stderr.text.write("fold: invalid number of columns\n")
+    @env.exit(1)
     return
   }
   let sources = if parsed.operands.is_empty() { ["-"] } else { parsed.operands }
@@ -71,12 +71,14 @@ pub async fn run_main() -> Unit {
       }
     } catch {
       err => {
-        @stdio.stderr.write("fold: \{path}: \{err}\n")
+        @stdio.stderr.text.write(
+          "fold: \{path}: \{@stream.transport_cause(err)}\n",
+        )
         failed = true
       }
     }
   }
   if failed {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

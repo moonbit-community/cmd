@@ -1,6 +1,6 @@
 name = "cli/echo"
 
-version = "0.2.5"
+version = "0.2.6"
 
 readme = "README.md"
 
@@ -13,7 +13,3 @@ keywords = [ "command-line", "moonx", "wasm" ]
 preferred_target = "wasm"
 
 description = "echo command for MoonX."
-
-import {
-  "moonbitlang/async@0.22.9",
-}

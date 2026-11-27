@@ -105,7 +105,7 @@ pub async fn CommandReader::read_to_end(self : CommandReader) -> Bytes {
     if n == 0 {
       break
     }
-    out.write_bytes(chunk.unsafe_reinterpret_as_bytes()[0:n])
+    out.write_bytesview(chunk.unsafe_reinterpret_as_bytes()[0:n])
   }
   out.to_bytes()
 }

@@ -235,7 +235,7 @@ fn write_record(
   line : BytesView,
   delimiter : Byte,
 ) -> Unit {
-  writer.write_bytes(line)
+  writer.write_bytesview(line)
   writer.write_byte(delimiter)
 }
 
@@ -243,7 +243,7 @@ fn write_record(
 // Deferred output remains cancellable if the downstream writer stalls.
 #warnings("-cancellable_defer")
 async fn process_reader(
-  reader : &@io.Reader,
+  reader : &@io.BinaryReader,
   show_count : Bool,
   only_repeated : Bool,
   only_unique : Bool,
@@ -253,12 +253,12 @@ async fn process_reader(
   check_chars : Int32?,
   delimiter : Byte,
   mode : OutputMode,
-  writer~ : &@io.Writer = @stdio.stdout,
+  writer~ : &@io.BinaryWriter = @stdio.stdout,
 ) -> Unit {
-  let scanner = @stream.RecordReader::new(reader, delimiter~)
+  let scanner = @stream.RecordReader::from_binary(reader, delimiter~)
   let destination = writer
   let writer = @buffer.Buffer(capacity=@stream.chunk_size)
-  defer @stream.flush_buffer(destination, writer)
+  defer @stream.flush_binary(destination, writer)
   let mut previous : BytesView? = None
   let mut previous_key : BytesView? = None
   let mut count = 0
@@ -326,7 +326,7 @@ async fn process_reader(
   }
   while scanner.next_batch() is Some(batch) {
     while !batch.each_while(consume_record) {
-      @stream.flush_buffer(destination, writer)
+      @stream.flush_binary(destination, writer)
     }
   }
   match mode {
@@ -352,30 +352,30 @@ async fn process_reader(
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("uniq \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("uniq \{MODULE_VERSION}\n")
     return
   }
   let args = @env.args()[1:]
   let parsed = parse_args(args) catch {
     @cli.CliError(option~, message~, ..) => {
-      @stdio.stderr.write("uniq: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("uniq: \{message}: '\{option}'\n")
+      @env.exit(1)
       return
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write(metadata_help())
+    @stdio.stdout.text.write(metadata_help())
     return
   }
   if parsed.operands.length() > 1 {
-    @stdio.stderr.write("uniq: extra operand: '\{parsed.operands[1]}'\n")
-    @sys.exit(1)
+    @stdio.stderr.text.write("uniq: extra operand: '\{parsed.operands[1]}'\n")
+    @env.exit(1)
     return
   }
   let mode = output_mode(parsed) catch {
     CliError(message) => {
-      @stdio.stderr.write(message)
-      @sys.exit(1)
+      @stdio.stderr.text.write(message)
+      @env.exit(1)
       return
     }
   }
@@ -421,8 +421,8 @@ pub async fn run_main() -> Unit {
     (fields, chars, width)
   } catch {
     CliError(message) => {
-      @stdio.stderr.write(message + "\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write(message + "\n")
+      @env.exit(1)
       return
     }
   }
@@ -464,8 +464,8 @@ pub async fn run_main() -> Unit {
     }
   } catch {
     err => {
-      @stdio.stderr.write("uniq: \{err}\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("uniq: \{@stream.transport_cause(err)}\n")
+      @env.exit(1)
       return
     }
   }

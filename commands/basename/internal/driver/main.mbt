@@ -40,14 +40,14 @@ fn strip_suffix(name : String, suffix : String) -> String {
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("basename \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("basename \{MODULE_VERSION}\n")
     return
   }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
-      @stdio.stderr.write("basename: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("basename: \{message}: '\{option}'\n")
+      @env.exit(1)
       return
     }
   }
@@ -56,12 +56,12 @@ pub async fn run_main() -> Unit {
   let mut suffix = parsed.last_value("suffix")
   let operands = parsed.operands
   if parsed.contains("help") {
-    @stdio.stdout.write(metadata_help())
+    @stdio.stdout.text.write(metadata_help())
     return
   }
   if operands.is_empty() || (!multiple && operands.length() > 2) {
-    @stdio.stderr.write("basename: missing or extra operand\n")
-    @sys.exit(1)
+    @stdio.stderr.text.write("basename: missing or extra operand\n")
+    @env.exit(1)
     return
   }
   if !multiple && operands.length() == 2 {
@@ -75,6 +75,6 @@ pub async fn run_main() -> Unit {
       Some(value) => strip_suffix(name, value)
       None => name
     }
-    @stdio.stdout.write(output + separator)
+    @stdio.stdout.text.write(output + separator)
   }
 }

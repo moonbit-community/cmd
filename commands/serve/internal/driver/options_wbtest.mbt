@@ -17,7 +17,7 @@ test "minimal CLI defaults and explicit address" {
   assert_eq(root, "-public")
   assert_eq(addr.to_string(), "127.0.0.1:0")
   let (_, addr) = parse(["-p0"])
-  assert_eq(addr.port(), 0)
+  assert_eq(addr.port, 0)
   for
     args in [
       ["-p"],

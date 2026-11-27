@@ -59,8 +59,8 @@ async test "counting batches retain inverted matches NUL records and final fragm
         b"needle"
       let reader = @io.MemoryReader(writer => writer.write(data))
       defer reader.close()
-      let output : CapturedOutput = { bytes: [], }
-      let errors : CapturedOutput = { bytes: [], }
+      let output = CapturedOutput::new()
+      let errors = CapturedOutput::new()
       let options = {
         ..streaming_options(),
         count: true,

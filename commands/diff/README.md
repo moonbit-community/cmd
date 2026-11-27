@@ -38,4 +38,6 @@ Use `--help` for the complete option list.
 - Inputs are retained in memory. Whitespace and case handling use the supported byte-oriented profile.
 - Directory comparisons requiring unavailable device metadata are rejected; complete GNU directory semantics are not claimed.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

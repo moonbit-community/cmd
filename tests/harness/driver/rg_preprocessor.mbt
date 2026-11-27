@@ -19,7 +19,7 @@ async fn run_rg_preprocessor(mode : String, args : ArrayView[String]) -> Unit {
     "partial-failure" => {
       @stdio.stdout.write(b"alpha\n")
       @stdio.stderr.write(b"preprocessor failed\n")
-      @sys.exit(3)
+      @env.exit(3)
     }
     "stream" => {
       let chunk = Bytes::makei(8192, i => b"alpha\n"[i % 6])

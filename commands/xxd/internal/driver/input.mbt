@@ -1,11 +1,10 @@
 ///|
-async fn skip_bytes(reader : &@io.Reader, count : Int64) -> Unit {
+async fn skip_bytes(reader : &@io.BinaryReader, count : Int64) -> Unit {
   let buffer : FixedArray[Byte] = FixedArray::make(65536, 0)
   let mut remaining = count
   while remaining > 0L {
-    let count = reader.read(
-      buffer,
-      max_len=remaining.min(buffer.length().to_int64()).to_int(),
+    let count = reader.read_into(
+      buffer.mut_view(end=remaining.min(buffer.length().to_int64()).to_int()),
     )
     if count == 0 {
       raise CliError(4, "xxd: Sorry, cannot seek.")
@@ -51,11 +50,11 @@ async fn Output::write(self : Output, bytes : Bytes) -> Unit {
   )
   try {
     match self.file {
-      Some(file) => file.write_at(bytes[:], position=self.position)
+      Some(file) => file.at(self.position).write(bytes)
       None => @stdio.stdout.write(bytes)
     }
   } catch {
-    error => raise CliError(3, "xxd: \{error}")
+    error => raise CliError(3, "xxd: \{@stream.transport_cause(error)}")
   }
   self.position = next
 }

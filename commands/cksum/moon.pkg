@@ -1,6 +1,5 @@
 import {
   "cli/cksum/internal/driver",
-  "moonbitlang/async",
 }
 
 supported_targets = "wasm"

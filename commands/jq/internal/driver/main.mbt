@@ -329,7 +329,7 @@ pub async fn run_main() -> Unit {
       if !msg.has_suffix("\n") {
         @stdio.stderr.write("\n")
       }
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
     Run(options) => {
@@ -340,7 +340,7 @@ pub async fn run_main() -> Unit {
       let query_text = read_query(options.query) catch {
         err => {
           @stdio.stderr.write("moonjq: \{err}\n")
-          @sys.exit(2)
+          @env.exit(2)
           return
         }
       }
@@ -365,7 +365,7 @@ pub async fn run_main() -> Unit {
                 modules.sources.get(source).unwrap_or(query_text),
               ),
             )
-            @sys.exit(3)
+            @env.exit(3)
             return
           }
         }
@@ -378,12 +378,12 @@ pub async fn run_main() -> Unit {
             "jq: error: "
           }
           @stdio.stderr.write(prefix + message + "\n\njq: 1 compile error\n")
-          @sys.exit(3)
+          @env.exit(3)
           return
         }
         error => {
           @stdio.stderr.write("moonjq: \{error}\n")
-          @sys.exit(3)
+          @env.exit(3)
           return
         }
       }
@@ -413,11 +413,11 @@ pub async fn run_main() -> Unit {
           }
         }
         if cursor.sources.status != 0 {
-          @sys.exit(cursor.sources.status)
+          @env.exit(cursor.sources.status)
           return
         }
         if options.exit_status {
-          @sys.exit(
+          @env.exit(
             status_for_results(
               match state.last {
                 None => []
@@ -434,7 +434,7 @@ pub async fn run_main() -> Unit {
             message +
             "\n",
           )
-          @sys.exit(
+          @env.exit(
             if cursor.sources.status != 0 {
               cursor.sources.status
             } else {
@@ -453,7 +453,7 @@ pub async fn run_main() -> Unit {
             column.to_string() +
             "\n",
           )
-          @sys.exit(
+          @env.exit(
             if cursor.sources.status != 0 {
               cursor.sources.status
             } else if options.stream {
@@ -466,17 +466,12 @@ pub async fn run_main() -> Unit {
         }
         err => {
           @stdio.stderr.write("moonjq: \{err}\n")
-          @sys.exit(
+          @env.exit(
             if cursor.sources.status != 0 {
               cursor.sources.status
             } else {
               match err {
-                @json.InvalidChar(_, _)
-                | @json.InvalidEof
-                | @json.InvalidNumber(_, _)
-                | @json.InvalidIdentEscape(_)
-                | @json.DepthLimitExceeded
-                | @utf8.Malformed(_) => 4
+                @json.ParseError::_ | @utf8.Malformed(_) => 4
                 _ => 5
               }
             },

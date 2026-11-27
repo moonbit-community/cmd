@@ -41,7 +41,7 @@ fn ZeroLines::line(
 ) -> Unit {
   if zero {
     if self.count == 0 {
-      output.write_bytes(line[:])
+      output.write_bytesview(line[:])
     } else if self.count == 1 {
       self.second = line
     }
@@ -51,11 +51,11 @@ fn ZeroLines::line(
     }
   } else {
     if self.count == 2 {
-      output.write_bytes(self.second[:])
+      output.write_bytesview(self.second[:])
     } else if self.count > 2 {
-      output.write_bytes(b"*\n"[:])
+      output.write_bytesview(b"*\n"[:])
     }
-    output.write_bytes(line[:])
+    output.write_bytesview(line[:])
     self.count = 0
   }
 }
@@ -63,19 +63,19 @@ fn ZeroLines::line(
 ///|
 fn ZeroLines::finish(self : ZeroLines, output : @buffer.Buffer) -> Unit {
   if self.count == 2 {
-    output.write_bytes(self.second[:])
+    output.write_bytesview(self.second[:])
   } else if self.count == 3 {
-    output.write_bytes(self.second[:])
-    output.write_bytes(self.last[:])
+    output.write_bytesview(self.second[:])
+    output.write_bytesview(self.last[:])
   } else if self.count > 3 {
-    output.write_bytes(b"*\n"[:])
-    output.write_bytes(self.last[:])
+    output.write_bytesview(b"*\n"[:])
+    output.write_bytesview(self.last[:])
   }
 }
 
 ///|
 async fn dump_stream(
-  reader : &@io.Reader,
+  reader : &@io.BinaryReader,
   output : Output,
   opts : Options,
   start_offset : Int64,
@@ -103,14 +103,12 @@ async fn dump_stream(
     }
     let count = match positioned_file {
       Some(file) =>
-        file.read_at(
-          buffer,
-          position=checked_add(
-            start_offset, consumed, 4, "xxd: input offset overflow.",
-          ),
-          len=maximum,
+        file
+        .at(
+          checked_add(start_offset, consumed, 4, "xxd: input offset overflow."),
         )
-      None => reader.read(buffer, max_len=maximum)
+        .read_into(buffer.mut_view(end=maximum))
+      None => reader.read_into(buffer.mut_view(end=maximum))
     }
     if count == 0 {
       break

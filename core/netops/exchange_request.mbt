@@ -18,7 +18,8 @@ async fn open_transport(target : ParsedUrl, transport : Transport) -> HttpWire {
     created = Some(connection)
     HttpWire::new(connection)
   }) catch {
-    @tls.TlsError(message) => raise transfer_error(TlsFailure, message)
+    @tls.TlsError::_ as error =>
+      raise transfer_error(TlsFailure, error.to_string())
     TransferError(..) as error => raise error
     error =>
       raise transfer_error(
@@ -78,7 +79,7 @@ async fn HttpWire::start_exchange(
   }
   self.request_chunked = self.request_remaining is None && request.chunked
   let text = Buffer()
-  text.write_bytes(
+  text.write_bytesview(
     @utf8.encode(
       request.request_method.wire_name() +
       " " +
@@ -86,20 +87,20 @@ async fn HttpWire::start_exchange(
       " HTTP/1.1\r\n",
     ),
   )
-  text.write_bytes(@utf8.encode("Host: " + request.host + "\r\n"))
+  text.write_bytesview(@utf8.encode("Host: " + request.host + "\r\n"))
   for field in fields {
-    text.write_bytes(
+    text.write_bytesview(
       @utf8.encode(
         field.name + (if field.bytes().is_empty() { ":" } else { ": " }),
       ),
     )
-    text.write_bytes(field.bytes())
-    text.write_bytes(b"\r\n")
+    text.write_bytesview(field.bytes())
+    text.write_bytesview(b"\r\n")
   }
   if self.request_chunked {
-    text.write_bytes(b"Transfer-Encoding: chunked\r\n")
+    text.write_bytesview(b"Transfer-Encoding: chunked\r\n")
   }
-  text.write_bytes(b"\r\n")
+  text.write_bytesview(b"\r\n")
   self.write_transport(text.to_bytes(), transport)
 }
 
@@ -120,9 +121,9 @@ async fn HttpWire::write_exchange_payload(
   }
   if self.request_chunked {
     let framed = Buffer()
-    framed.write_bytes(@utf8.encode(wire_hex(bytes.length()) + "\r\n"))
-    framed.write_bytes(bytes)
-    framed.write_bytes(b"\r\n")
+    framed.write_bytesview(@utf8.encode(wire_hex(bytes.length()) + "\r\n"))
+    framed.write_bytesview(bytes)
+    framed.write_bytesview(b"\r\n")
     self.write_transport(framed.to_bytes(), transport)
   } else {
     self.write_transport(bytes, transport)
@@ -148,14 +149,13 @@ async fn HttpWire::write_exchange_body(
           )
       }
       defer file.close()
+      let chunks = @stream.ChunkReader::new(file)
       for ;; {
         let timeout = transport.timeout(
           transport.idle_timeout_ms,
           "request body input",
         )
-        let result = @async.with_timeout_opt(timeout, () => {
-          file.read_some(max_len=65536)
-        }) catch {
+        let result = @async.with_timeout_opt(timeout, () => chunks.read()) catch {
           error =>
             raise transfer_error(
               InputFailure,
@@ -169,15 +169,14 @@ async fn HttpWire::write_exchange_body(
         }
       }
     }
-    StdinBody =>
+    StdinBody => {
+      let chunks = @stream.ChunkReader::new(@stdio.stdin)
       for ;; {
         let timeout = transport.timeout(
           transport.idle_timeout_ms,
           "request body input",
         )
-        let result = @async.with_timeout_opt(timeout, () => {
-          @stdio.stdin.read_some(max_len=65536)
-        }) catch {
+        let result = @async.with_timeout_opt(timeout, () => chunks.read()) catch {
           error =>
             raise transfer_error(
               InputFailure,
@@ -190,6 +189,7 @@ async fn HttpWire::write_exchange_body(
           None => raise timeout_error("request body input", timeout)
         }
       }
+    }
   }
   if self.request_remaining is Some(remaining) && remaining != 0L {
     raise transfer_error(
@@ -239,7 +239,7 @@ async fn exchange_request(
       receive_header?,
     )
   }) catch {
-    @io.ReaderClosed =>
+    @io.ReaderError::UnexpectedEof =>
       raise transfer_error(
         if wire.header_bytes == 0L {
           EmptyReplyFailure

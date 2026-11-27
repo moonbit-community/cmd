@@ -44,7 +44,7 @@ async fn run_sort_fixture(
     assert_eq(status, 0)
   })
   defer output.close()
-  output.read_all().binary()
+  output.read_all()
 }
 
 ///|
@@ -114,14 +114,14 @@ test "sort merge accounting does not overflow near signed 64-bit budgets" {
 ///|
 async test "sort fan-in two retains oversized stable records and cleans multiple directories" {
   let root = @fs.tmpdir(prefix="sort-resource-controls-")
-  defer @fs.rmdir(root, recursive=true)
+  defer @fs.remove(root, recursive=true)
   let first = root + "/first"
   let second = root + "/second"
   @fs.mkdir(first)
   @fs.mkdir(second)
   let path = root + "/input"
   let long = "x".repeat(70000)
-  @fs.write_file(path, "2 first\n1 " + long + "\n2 second\n1 short\n2 third\n")
+  @fs.write_text(path, "2 first\n1 " + long + "\n2 second\n1 short\n2 third\n")
   let modifiers = test_modifiers()
   modifiers.mode = Numeric
   assert_eq(
@@ -154,10 +154,10 @@ async test "sort fan-in two retains oversized stable records and cleans multiple
 ///|
 async test "sort selected fan-in preserves merge source order and prepared random keys" {
   let root = @fs.tmpdir(prefix="sort-fanin-merge-")
-  defer @fs.rmdir(root, recursive=true)
+  defer @fs.remove(root, recursive=true)
   let sources = [root + "/a", root + "/b", root + "/c"]
   for index, path in sources {
-    @fs.write_file(
+    @fs.write_text(
       path,
       "1 " + index.to_string() + "\n2 " + index.to_string() + "\n",
     )
@@ -195,7 +195,7 @@ test "sort merge reservation leaves useful run space for a one MiB budget" {
 ///|
 async test "sort temporary run paths rotate between explicitly selected parents" {
   let root = @fs.tmpdir(prefix="sort-temp-parents-")
-  defer @fs.rmdir(root, recursive=true)
+  defer @fs.remove(root, recursive=true)
   let parents = [root + "/a", root + "/b"]
   for parent in parents {
     @fs.mkdir(parent)
@@ -220,14 +220,14 @@ async test "sort temporary run paths rotate between explicitly selected parents"
 ///|
 async test "sort temporary parent failure cleans owned runs and preserves output" {
   let root = @fs.tmpdir(prefix="sort-temp-failure-")
-  defer @fs.rmdir(root, recursive=true)
+  defer @fs.remove(root, recursive=true)
   let first = root + "/first"
   @fs.mkdir(first)
-  @fs.write_file(first + "/keep", "unowned\n")
+  @fs.write_text(first + "/keep", "unowned\n")
   let input = root + "/input"
   let output = root + "/output"
-  @fs.write_file(input, "c\nb\na\n")
-  @fs.write_file(output, "KEEP\n")
+  @fs.write_text(input, "c\nb\na\n")
+  @fs.write_text(output, "KEEP\n")
   // Each record becomes a run: the second spill reaches the missing parent.
   try
     execute_sort(
@@ -245,14 +245,14 @@ async test "sort temporary parent failure cleans owned runs and preserves output
     )
     |> ignore
   catch {
-    @os_error.OSError(_) as error => assert_true(error.is_ENOENT())
+    @os_error.OsError(NotFound, ..) => ()
     error => raise error
   } noraise {
     _ => fail("the second temporary parent must fail")
   }
-  assert_eq(@fs.read_file(output).binary(), b"KEEP\n")
+  assert_eq(@fs.read_binary(output), b"KEEP\n")
   assert_eq(@fs.readdir(first), ["keep"])
-  assert_eq(@fs.read_file(first + "/keep").binary(), b"unowned\n")
+  assert_eq(@fs.read_binary(first + "/keep"), b"unowned\n")
 }
 
 ///|
@@ -260,13 +260,32 @@ priv suberror SortRunWriteFailure
 
 ///|
 priv struct SortPrefixWriter {
+  controller : @io.BinaryWriterController
   bytes : Array[Byte]
   mut remaining : Int32
   mut calls : Int32
 }
 
 ///|
-impl @io.Writer for SortPrefixWriter with fn write_once(
+impl @io.BinaryWriter for SortPrefixWriter
+
+///|
+impl @io.BinaryWriterImpl for SortPrefixWriter with fn name(_) {
+  "SortPrefixWriter"
+}
+
+///|
+impl @io.BinaryWriterImpl for SortPrefixWriter with fn get_controller(self) {
+  self.controller
+}
+
+///|
+impl @io.BinaryWriterImpl for SortPrefixWriter with fn flush_partial_data(_) {
+  ()
+}
+
+///|
+impl @io.BinaryWriterImpl for SortPrefixWriter with fn raw_write_impl(
   self,
   data,
   offset~,
@@ -284,10 +303,15 @@ impl @io.Writer for SortPrefixWriter with fn write_once(
 
 ///|
 async test "sort temporary entry writes propagate a partial writer failure" {
-  let writer : SortPrefixWriter = { bytes: [], remaining: 14, calls: 0, }
+  let writer : SortPrefixWriter = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+    remaining: 14,
+    calls: 0,
+  }
   let entry : Entry = { record: b"record", keys: [b"key"], index: 7, }
   try write_entry(writer, entry) catch {
-    SortRunWriteFailure => ()
+    @io.WriterError::TransportError(SortRunWriteFailure, ..) => ()
     error => raise error
   } noraise {
     _ => fail("the temporary entry writer must propagate failure")
@@ -300,9 +324,14 @@ async test "sort temporary entry writes propagate a partial writer failure" {
 ///|
 async test "sort buffered output keeps unique representatives and failed writes are not replayed" {
   let global = test_modifiers()
-  let sink : SortPrefixWriter = { bytes: [], remaining: 100, calls: 0, }
+  let sink : SortPrefixWriter = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+    remaining: 100,
+    calls: 0,
+  }
   let output : SortedOutput = {
-    writer: @stream.BlockWriter::new(sink, size=4),
+    writer: @stream.BlockWriter::from_binary(sink, size=4),
     delimiter: b'\x00',
     unique: true,
     specs: [@order.parse_key("1,1", global)],
@@ -317,10 +346,15 @@ async test "sort buffered output keeps unique representatives and failed writes 
   output.emit_entries(entries[:])
   output.writer.flush()
   assert_eq(Bytes::from_array(sink.bytes), b"a first\x00b tail\x00")
-  let sink : SortPrefixWriter = { bytes: [], remaining: 3, calls: 0, }
+  let sink : SortPrefixWriter = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+    remaining: 3,
+    calls: 0,
+  }
   let failed : SortedOutput = {
     ..output,
-    writer: @stream.BlockWriter::new(sink, size=4),
+    writer: @stream.BlockWriter::from_binary(sink, size=4),
     previous: None,
   }
   assert_true(
@@ -341,10 +375,10 @@ async test "sort buffered output keeps unique representatives and failed writes 
 ///|
 async test "sort named merge output stays empty until all sources are safely spooled" {
   let root = @fs.tmpdir(prefix="sort-merge-output-safety-")
-  defer @fs.rmdir(root, recursive=true)
+  defer @fs.remove(root, recursive=true)
   let source = root + "/input"
   let target = root + "/output"
-  @fs.write_file(source, "a\nb\n")
+  @fs.write_text(source, "a\nb\n")
   prepare_output(target, true)
   let failed = Ref(false)
   let output = @io.MemoryReader(writer => {
@@ -368,9 +402,9 @@ async test "sort named merge output stays empty until all sources are safely spo
     }
   })
   defer output.close()
-  assert_eq(output.read_all().binary(), b"")
+  assert_eq(output.read_all(), b"")
   assert_true(failed.val)
-  assert_eq(@fs.read_file(target).binary(), b"")
+  assert_eq(@fs.read_binary(target), b"")
   try prepare_output(source, true) catch {
     @order.CliError(message) =>
       assert_true(message.has_prefix("sort: unsupported capability:"))
@@ -378,21 +412,21 @@ async test "sort named merge output stays empty until all sources are safely spo
   } noraise {
     _ => fail("existing merge output must reject")
   }
-  assert_eq(@fs.read_file(source).binary(), b"a\nb\n")
+  assert_eq(@fs.read_binary(source), b"a\nb\n")
 }
 
 ///|
 async test "sort external rounds preserve ordering and first unique representative" {
   let root = @fs.tmpdir(prefix="sort-external-rounds-")
-  defer @fs.rmdir(root, recursive=true)
+  defer @fs.remove(root, recursive=true)
   let path = root + "/input"
-  @fs.write_file(path, "2 first\n1 only\n2 second\n".repeat(400))
+  @fs.write_text(path, "2 first\n1 only\n2 second\n".repeat(400))
   let numeric = test_modifiers()
   numeric.mode = Numeric
-  let expected : &@io.Data = "1 only\n".repeat(400) +
+  let expected = "1 only\n".repeat(400) +
     "2 first\n".repeat(400) +
     "2 second\n".repeat(400)
-  assert_eq(run_sort_fixture([path], numeric), expected.binary())
+  assert_eq(run_sort_fixture([path], numeric), @utf8.encode(expected))
   assert_eq(
     run_sort_fixture([path], numeric, unique=true),
     b"1 only\n2 first\n",
@@ -413,9 +447,9 @@ async test "sort external rounds preserve ordering and first unique representati
 ///|
 async test "sort external records preserve binary NUL delimiters and missing final delimiter" {
   let root = @fs.tmpdir(prefix="sort-external-binary-")
-  defer @fs.rmdir(root, recursive=true)
-  @fs.write_file(root + "/a", b"z\xff\x00a\n\x00")
-  @fs.write_file(root + "/b", b"m\x00a\n")
+  defer @fs.remove(root, recursive=true)
+  @fs.write_binary(root + "/a", b"z\xff\x00a\n\x00")
+  @fs.write_binary(root + "/b", b"m\x00a\n")
   assert_eq(
     run_sort_fixture(
       [root + "/a", root + "/b"],
@@ -429,9 +463,9 @@ async test "sort external records preserve binary NUL delimiters and missing fin
 ///|
 async test "sort validates all sources before emitting records and streams check mode" {
   let root = @fs.tmpdir(prefix="sort-external-errors-")
-  defer @fs.rmdir(root, recursive=true)
+  defer @fs.remove(root, recursive=true)
   let path = root + "/input"
-  @fs.write_file(path, "a\nb\nc\n".repeat(100))
+  @fs.write_text(path, "a\nb\nc\n".repeat(100))
   let failed = Ref(false)
   let output = @io.MemoryReader(writer => {
     let _ = sort_sources(
@@ -451,7 +485,7 @@ async test "sort validates all sources before emitting records and streams check
     }
   })
   defer output.close()
-  assert_eq(output.read_all().binary(), b"")
+  assert_eq(output.read_all(), b"")
   assert_true(failed.val)
   let check_output = @io.MemoryReader(writer => {
     assert_eq(
@@ -469,7 +503,7 @@ async test "sort validates all sources before emitting records and streams check
     )
   })
   defer check_output.close()
-  assert_eq(check_output.read_all().binary(), b"")
+  assert_eq(check_output.read_all(), b"")
 }
 
 ///|
@@ -485,7 +519,7 @@ async test "sort batch admission preserves overflow ownership sequence and unter
   }
   let source = @io.MemoryReader(writer => writer.write(b"b\x00a\x00\xff"))
   defer source.close()
-  let reader = @stream.RecordReader::new(source, delimiter=b'\x00')
+  let reader = @stream.RecordReader::from_binary(source, delimiter=b'\x00')
   let batch = reader.next_batch().unwrap()
   let pending = input.batch(batch, 129).unwrap()
   assert_eq(input.entries.length(), 1)
@@ -521,11 +555,11 @@ async test "sort cached run entries preserve refill boundaries ownership and tru
     }
   })
   defer encoded.close()
-  let bytes = encoded.read_all().binary()
+  let bytes = encoded.read_all()
   let root = @fs.tmpdir(prefix="sort-run-cache-")
-  defer @fs.rmdir(root, recursive=true)
+  defer @fs.remove(root, recursive=true)
   let path = root + "/run"
-  @fs.write_file(path, bytes)
+  @fs.write_binary(path, bytes)
   for size in [1, 7, 12, 31, 65536] {
     let file = @fs.open(path, mode=ReadOnly)
     defer file.close()
@@ -550,7 +584,7 @@ async test "sort cached run entries preserve refill boundaries ownership and tru
       assert_eq(actual[i].index, entries[i].index)
     }
   }
-  @fs.write_file(path, bytes[:bytes.length() - 1])
+  @fs.write_binary(path, bytes[:bytes.length() - 1])
   let file = @fs.open(path, mode=ReadOnly)
   defer file.close()
   let reader : RunReader = {
@@ -576,10 +610,10 @@ async test "sort cached run entries preserve refill boundaries ownership and tru
 ///|
 async test "sort temporary run reader rejects truncated and corrupt lengths" {
   let root = @fs.tmpdir(prefix="sort-external-corruption-")
-  defer @fs.rmdir(root, recursive=true)
+  defer @fs.remove(root, recursive=true)
   let path = root + "/run"
   for bytes in [b"short", b"\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff\xff\xff"] {
-    @fs.write_file(path, bytes)
+    @fs.write_binary(path, bytes)
     let file = @fs.open(path, mode=ReadOnly)
     defer file.close()
     let reader : RunReader = {

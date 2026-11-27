@@ -3,9 +3,9 @@ import {
   "cli/core/fsops",
   "moonbitlang/async",
   "moonbitlang/async/fs",
+  "moonbitlang/x/fs" @identity,
   "moonbitlang/async/stdio",
   "moonbitlang/core/env",
-  "moonbitlang/x/sys",
 }
 
 import {

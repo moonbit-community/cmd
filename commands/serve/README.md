@@ -29,7 +29,7 @@ Default to the current directory on 127.0.0.1:8000. Serve regular files with GET
 
 The unpublished candidate adds the Wasm package `cli/serve/static_files`.
 Construct a `Directory::Directory(path)` for each site, then call its `serve`
-method from your HTTP handler. Instances may share a listener or use separate
+method from a `moonbitlang/core/async/http` request handler. Instances may share a listener or use separate
 listeners; routing, access policy and cancellation belong to the caller.
 See the [library example](static_files/README.md).
 
@@ -38,5 +38,7 @@ See the [library example](static_files/README.md).
 - Every readable file under the selected root, including hidden files, can be served. Use a trusted, stable directory; path checks do not guarantee confinement against concurrent filesystem replacement.
 - There is no directory listing, SPA fallback, upload, range, compression or TLS support. Paths and symlink targets must stay under the selected root.
 - Use numeric IP addresses; port 0 selects an available port. Launcher policy must allow reading the directory and binding the address.
+
+Build from source with the MoonBit 1.0 RC1 toolchain.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

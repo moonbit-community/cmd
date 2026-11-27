@@ -168,12 +168,12 @@ pub async fn run_main() -> Unit {
       @stdio.stderr.write(
         "realpath: option '--\{option}' requires an argument\nTry 'realpath --help' for more information.\n",
       )
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("realpath: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -189,7 +189,7 @@ pub async fn run_main() -> Unit {
     @stdio.stderr.write(
       "realpath: missing operand\nTry 'realpath --help' for more information.\n",
     )
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let existence = match
@@ -215,18 +215,18 @@ pub async fn run_main() -> Unit {
           @stdio.stderr.write(
             "realpath: unsupported capability: unresolved symbolic-link target (readlink)\n",
           )
-          @sys.exit(2)
+          @env.exit(2)
           return
         }
         error => {
           @stdio.stderr.write("realpath: \{argument}: \{error_text(error)}\n")
-          @sys.exit(1)
+          @env.exit(1)
           return
         }
       }
       if existence is Existing && !(@fs.kind(value) is Directory) {
         @stdio.stderr.write("realpath: \{argument}: Not a directory\n")
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
       if is_base {
@@ -271,6 +271,6 @@ pub async fn run_main() -> Unit {
     @stdio.stdout.write(output + separator)
   }
   if status != 0 {
-    @sys.exit(status)
+    @env.exit(status)
   }
 }

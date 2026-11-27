@@ -14,7 +14,7 @@ async fn table(
       false
     })
   })
-  output.read_all().text()
+  @io.Utf8Reader(output).read_all()
 }
 
 ///|
@@ -33,7 +33,7 @@ async fn columns(
       false
     })
   })
-  output.read_all().text()
+  @io.Utf8Reader(output).read_all()
 }
 
 ///|
@@ -135,15 +135,15 @@ async test "column wide grid retains interleaved index pages without changing by
       false
     })
   })
-  assert_eq(output.read_all().text(), expected.to_string())
+  assert_eq(@io.Utf8Reader(output).read_all(), expected.to_string())
 }
 
 ///|
 async test "column formats the consumed snapshot after source mutation" {
   let root = @fs.tmpdir(prefix="column-snapshot-test-")
-  defer @fs.rmdir(root, recursive=true)
+  defer @fs.remove(root, recursive=true)
   let path = root + "/input"
-  @fs.write_file(path, "a b\nlong c\n")
+  @fs.write_text(path, "a b\nlong c\n")
   let output = @io.MemoryReader(writer => {
     let _ = with_snapshot(table=true, separator=None, snapshot => {
       {
@@ -152,19 +152,19 @@ async test "column formats the consumed snapshot after source mutation" {
         snapshot.consume(source)
       }
       snapshot.finish()
-      @fs.write_file(path, "changed after the first pass\n")
+      @fs.write_text(path, "changed after the first pass\n")
       snapshot.render_table(writer, "  ")
       false
     })
   })
-  assert_eq(output.read_all().text(), "a     b\nlong  c\n")
+  assert_eq(@io.Utf8Reader(output).read_all(), "a     b\nlong  c\n")
 }
 
 ///|
 async test "column consumes long byte records and preserves unterminated EOF" {
   let long = "x".repeat(70000)
   let source = @io.MemoryReader(writer => {
-    writer.write(" \t\n" + long + "\n")
+    @io.Utf8Writer(writer).write(" \t\n" + long + "\n")
     writer.write(b"a\x00hidden\n\xff tail")
   })
   let output = @io.MemoryReader(writer => {
@@ -176,7 +176,7 @@ async test "column consumes long byte records and preserves unterminated EOF" {
       false
     })
   })
-  assert_eq(output.read_all().text(), long + "\na\n\\xff tail\n")
+  assert_eq(@io.Utf8Reader(output).read_all(), long + "\na\n\\xff tail\n")
 }
 
 ///|
@@ -191,7 +191,7 @@ test "column disk index arithmetic crosses 2 GiB and 4 GiB" {
 ///|
 async test "column retains complete records before an input failure" {
   let source = @io.MemoryReader(writer => {
-    writer.write("one\npartial")
+    @io.Utf8Writer(writer).write("one\npartial")
     @async.sleep(1)
     fail("fixture input failure")
   })
@@ -211,18 +211,42 @@ async test "column retains complete records before an input failure" {
       false
     })
   })
-  assert_eq(output.read_all().text(), "one\n")
+  assert_eq(@io.Utf8Reader(output).read_all(), "one\n")
 }
 
 ///|
 priv struct PrefixWriter {
+  controller : @io.BinaryWriterController
   bytes : Array[Byte]
   mut remaining : Int32
   mut calls : Int32
 }
 
 ///|
-impl @io.Writer for PrefixWriter with fn write_once(self, data, offset~, len~) {
+impl @io.BinaryWriter for PrefixWriter
+
+///|
+impl @io.BinaryWriterImpl for PrefixWriter with fn name(_) {
+  "PrefixWriter"
+}
+
+///|
+impl @io.BinaryWriterImpl for PrefixWriter with fn get_controller(self) {
+  self.controller
+}
+
+///|
+impl @io.BinaryWriterImpl for PrefixWriter with fn flush_partial_data(_) {
+  ()
+}
+
+///|
+impl @io.BinaryWriterImpl for PrefixWriter with fn raw_write_impl(
+  self,
+  data,
+  offset~,
+  len~,
+) {
   self.calls += 1
   guard self.remaining > 0 else { fail("fixture output failure") }
   let count = len.min(self.remaining)
@@ -235,7 +259,12 @@ impl @io.Writer for PrefixWriter with fn write_once(self, data, offset~, len~) {
 
 ///|
 async test "column stops on a failed output and retains its written prefix" {
-  let output : PrefixWriter = { bytes: [], remaining: 2, calls: 0, }
+  let output : PrefixWriter = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+    remaining: 2,
+    calls: 0,
+  }
   try
     with_snapshot(table=false, separator=None, snapshot => {
       snapshot.append("one")
@@ -246,7 +275,12 @@ async test "column stops on a failed output and retains its written prefix" {
     })
     |> ignore
   catch {
-    error => assert_true(error.to_string().contains("fixture output failure"))
+    error =>
+      assert_true(
+        @stream.transport_cause(error)
+        .to_string()
+        .contains("fixture output failure"),
+      )
   } noraise {
     _ => fail("must propagate output failure")
   }

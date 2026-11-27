@@ -493,7 +493,7 @@ pub async fn run_main() -> Unit {
   let parsed = parse_arguments(@env.args()[1:]) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("ls: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
   }
@@ -503,13 +503,13 @@ pub async fn run_main() -> Unit {
   }
   if invalid_display_option(parsed) is Some((message, status)) {
     @stdio.stderr.write(message)
-    @sys.exit(status)
+    @env.exit(status)
     return
   }
   let mut options = ls_options(parsed) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("ls: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
   }
@@ -565,19 +565,19 @@ pub async fn run_main() -> Unit {
     @stdio.stderr.write(
       "ls: -S cannot sort multiple directory operands without directory size metadata\n",
     )
-    @sys.exit(2)
+    @env.exit(2)
     return
   }
   directories.sort_by((left, right) => compare_entries(left, right, options))
   print_entries(files, options, palette, used_color) catch {
     @fsops.FsOpError(message) => {
       @stdio.stderr.write("ls: \{message}\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
     err => {
       @stdio.stderr.write("ls: \{err}\n")
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
   }
@@ -640,6 +640,6 @@ pub async fn run_main() -> Unit {
     @stdio.stdout.write(palette.codes["lc"] + palette.codes["rc"])
   }
   if status.val != 0 {
-    @sys.exit(status.val)
+    @env.exit(status.val)
   }
 }

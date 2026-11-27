@@ -32,7 +32,7 @@ Use `--help` for the complete option list.
 
 ## Notes
 
-Compatible with the MoonBit 2026-11-17 toolchain.
+Build from source with the MoonBit 1.0 RC1 toolchain.
 
 - Numeric formats use the fixed Linux profile and C locale. Forward offsets on non-seekable stdin are a project extension.
 

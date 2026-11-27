@@ -218,7 +218,7 @@ priv struct InflateOutput {
   mut size : UInt32
   pending : FixedArray[Byte]
   mut count : Int32
-  writer : &@io.Writer
+  writer : &@io.BinaryWriter
   test_only : Bool
 }
 
@@ -399,7 +399,7 @@ async fn compressed_block(
 #warnings("-cancellable_defer")
 async fn inflate(
   bits : Bits,
-  writer : &@io.Writer,
+  writer : &@io.BinaryWriter,
   test_only : Bool,
 ) -> (UInt32, UInt32) {
   let output : InflateOutput = {

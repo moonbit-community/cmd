@@ -8,28 +8,28 @@ fn help_message() -> String {
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("column \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("column \{MODULE_VERSION}\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
-      @stdio.stderr.write("column: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("column: \{message}: '\{option}'\n")
+      @env.exit(1)
       return
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write(help_message())
+    @stdio.stdout.text.write(help_message())
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("column \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("column \{MODULE_VERSION}\n")
     return
   }
   let separator = parsed.last_value("separator")
   if separator is Some(value) && value.iter().any(c => c.to_int() >= 128) {
-    @stdio.stderr.write("column: unsupported non-ASCII input separator\n")
-    @sys.exit(2)
+    @stdio.stderr.text.write("column: unsupported non-ASCII input separator\n")
+    @env.exit(2)
     return
   }
   let default_width = @string.parse_int(
@@ -43,8 +43,8 @@ pub async fn run_main() -> Unit {
     Some(value) => @string.parse_int(value) catch { _ => -1 }
   }
   if width < 0 {
-    @stdio.stderr.write("column: invalid output width\n")
-    @sys.exit(1)
+    @stdio.stderr.text.write("column: invalid output width\n")
+    @env.exit(1)
     return
   }
   let failed = run_layout(
@@ -58,11 +58,11 @@ pub async fn run_main() -> Unit {
     fill_rows=parsed.contains("fillrows"),
   ) catch {
     err => {
-      @stdio.stderr.write("column: \{err}\n")
+      @stdio.stderr.text.write("column: \{@stream.transport_cause(err)}\n")
       true
     }
   }
   if failed {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

@@ -36,4 +36,6 @@ Use `--help` for the complete option list.
 - Named-file compression requires -nc: -n omits saved name/time metadata and -c keeps the input. Named-file replacement and metadata preservation are unsupported.
 - Decompression validates members and checksums but may emit a valid prefix before reporting corruption.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

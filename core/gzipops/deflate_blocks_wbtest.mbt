@@ -144,7 +144,7 @@ async test "deflate dynamic header repeats across the literal distance boundary"
     plan.header_bits + deflate_token_bits(plan.table, tokens).unwrap(),
   )
   bits.align()
-  let output : Collected = { bytes: [], }
+  let output : Collected = Collected::new()
   let raw = bits.drain()
   let input = cursor(raw)
   defer input.close()

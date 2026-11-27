@@ -21,12 +21,36 @@ priv suberror HeadTestFailure
 
 ///|
 priv struct HeadTestWriter {
+  controller : @io.BinaryWriterController
   bytes : Array[Byte]
   mut budget : Int32?
 }
 
 ///|
-impl @io.Writer for HeadTestWriter with fn write_once(self, data, offset~, len~) {
+impl @io.BinaryWriter for HeadTestWriter
+
+///|
+impl @io.BinaryWriterImpl for HeadTestWriter with fn name(_) {
+  "HeadTestWriter"
+}
+
+///|
+impl @io.BinaryWriterImpl for HeadTestWriter with fn get_controller(self) {
+  self.controller
+}
+
+///|
+impl @io.BinaryWriterImpl for HeadTestWriter with fn flush_partial_data(_) {
+  ()
+}
+
+///|
+impl @io.BinaryWriterImpl for HeadTestWriter with fn raw_write_impl(
+  self,
+  data,
+  offset~,
+  len~,
+) {
   let count = match self.budget {
     Some(0) => raise HeadTestFailure
     Some(remaining) => {
@@ -53,8 +77,12 @@ async test "head buffered output preserves record delimiters and byte modes" {
     ] {
     let reader = @io.MemoryReader(writer => writer.write(data))
     defer reader.close()
-    let capture : HeadTestWriter = { bytes: [], budget: None, }
-    let output = @io.BufferedWriter::new(capture, size=CHUNK_SIZE)
+    let capture : HeadTestWriter = {
+      controller: @io.BinaryWriterController(),
+      bytes: [],
+      budget: None,
+    }
+    let output = @io.BufferedWriter(capture, size=CHUNK_SIZE)
     head_reader(reader, output, spec, bytes_mode, delimiter)
     output.flush()
     assert_eq(Bytes::from_array(capture.bytes), expected)
@@ -69,12 +97,15 @@ async test "head flushes completed output after input failure and marks failed w
       raise HeadTestFailure
     })
     defer reader.close()
-    let capture : HeadTestWriter = { bytes: [], budget: None, }
+    let capture : HeadTestWriter = {
+      controller: @io.BinaryWriterController(),
+      bytes: [],
+      budget: None,
+    }
     let sink : HeadOutput = { writer: capture, failed: false, }
-    let output = @io.BufferedWriter::new(sink, size=CHUNK_SIZE)
+    let output = @io.BufferedWriter(sink, size=CHUNK_SIZE)
     try head_reader(reader, output, First(100L), bytes_mode, b'\n') catch {
-      HeadTestFailure => ()
-      err => raise err
+      err => assert_true(@stream.transport_cause(err) is HeadTestFailure)
     } noraise {
       _ => fail("expected input failure")
     }
@@ -91,12 +122,15 @@ async test "head flushes completed output after input failure and marks failed w
   }
   let reader = @io.MemoryReader(writer => writer.write(b"abcdef\n"))
   defer reader.close()
-  let capture : HeadTestWriter = { bytes: [], budget: Some(2), }
+  let capture : HeadTestWriter = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+    budget: Some(2),
+  }
   let sink : HeadOutput = { writer: capture, failed: false, }
-  let output = @io.BufferedWriter::new(sink, size=4)
+  let output = @io.BufferedWriter(sink, size=4)
   try head_reader(reader, output, First(1L), false, b'\n') catch {
-    HeadTestFailure => ()
-    err => raise err
+    err => assert_true(@stream.transport_cause(err) is HeadTestFailure)
   } noraise {
     _ => fail("expected output failure")
   }

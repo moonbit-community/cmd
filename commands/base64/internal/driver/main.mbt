@@ -17,12 +17,13 @@ fn sextet(c : Char) -> Int32 raise CliError {
 
 ///|
 async fn encode_stream(
-  reader : &@io.Reader,
+  reader : &@io.BinaryReader,
   wrap : Int32,
-  writer~ : &@io.Writer = @stdio.stdout,
+  writer~ : &@io.BinaryWriter = @stdio.stdout,
 ) -> Unit {
   let encoder = Base64Encoder::new(wrap)
-  while @stream.read_chunk(reader) is Some(chunk) {
+  let chunks = @stream.ChunkReader::new(reader)
+  while chunks.read() is Some(chunk) {
     writer.write(encoder.encode(chunk[:]))
   }
   writer.write(encoder.finish())
@@ -61,12 +62,13 @@ fn decode_quad(
 
 ///|
 async fn decode_stream(
-  reader : &@io.Reader,
+  reader : &@io.BinaryReader,
   ignore_garbage : Bool,
-  writer~ : &@io.Writer = @stdio.stdout,
+  writer~ : &@io.BinaryWriter = @stdio.stdout,
 ) -> Unit {
   let quad : Array[Byte] = []
-  while @stream.read_chunk(reader) is Some(chunk) {
+  let chunks = @stream.ChunkReader::new(reader)
+  while chunks.read() is Some(chunk) {
     let out : Array[Byte] = []
     try {
       for byte in chunk {
@@ -128,24 +130,24 @@ async fn decode_stream(
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("base64 \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("base64 \{MODULE_VERSION}\n")
     return
   }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
-      @stdio.stderr.write("base64: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("base64: \{message}: '\{option}'\n")
+      @env.exit(1)
       return
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write(metadata_help())
+    @stdio.stdout.text.write(metadata_help())
     return
   }
   if parsed.operands.length() > 1 {
-    @stdio.stderr.write("base64: extra operand: '\{parsed.operands[1]}'\n")
-    @sys.exit(1)
+    @stdio.stderr.text.write("base64: extra operand: '\{parsed.operands[1]}'\n")
+    @env.exit(1)
     return
   }
   let decode_mode = parsed.contains("decode")
@@ -153,14 +155,14 @@ pub async fn run_main() -> Unit {
   let wrap_text = parsed.last_value("wrap").unwrap_or(DEFAULT_WRAP)
   let wrap = @string.parse_int(wrap_text) catch {
     _ => {
-      @stdio.stderr.write("base64: invalid wrap size: '\{wrap_text}'\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("base64: invalid wrap size: '\{wrap_text}'\n")
+      @env.exit(1)
       return
     }
   }
   if wrap < 0 {
-    @stdio.stderr.write("base64: invalid wrap size: '\{wrap_text}'\n")
-    @sys.exit(1)
+    @stdio.stderr.text.write("base64: invalid wrap size: '\{wrap_text}'\n")
+    @env.exit(1)
     return
   }
   let inputs = parsed.operands
@@ -183,13 +185,13 @@ pub async fn run_main() -> Unit {
     }
   } catch {
     CliError(msg) => {
-      @stdio.stderr.write("\{msg}\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("\{msg}\n")
+      @env.exit(1)
       return
     }
     err => {
-      @stdio.stderr.write("base64: \{err}\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("base64: \{@stream.transport_cause(err)}\n")
+      @env.exit(1)
       return
     }
   }

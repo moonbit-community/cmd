@@ -103,7 +103,7 @@ fn validate(metadata : Metadata) -> Unit raise {
       !option.description.is_empty() else {
       fail("invalid option metadata: " + metadata.command + ":" + option.name)
     }
-    names.add(option.name)
+    names.insert(option.name)
     if option.default_binding is Some(binding) {
       guard option.default_value is Some(value) &&
         (
@@ -183,7 +183,7 @@ fn validate(metadata : Metadata) -> Unit raise {
     guard !functions.contains(table.function_name) else {
       fail("duplicate parser table")
     }
-    functions.add(table.function_name)
+    functions.insert(table.function_name)
     for name in table.options {
       guard names.contains(name) else { fail("missing parser option: " + name) }
       let option = metadata.options

@@ -86,7 +86,7 @@ async fn program(parsed : @cli.ParsedArgs) -> @format.Program {
       format_index += 1
     } else if name == "format-file" {
       let file = parsed.values("format-file")[file_index]
-      let bytes = @fs.read_file(file).binary()
+      let bytes = @fs.read_binary(file)
       for format in @format.compile_lines(bytes, colors) {
         entries.push(Custom(format))
       }

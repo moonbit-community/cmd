@@ -11,23 +11,22 @@ fn output_line(args : ArrayView[String]) -> String {
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("yes \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("yes \{MODULE_VERSION}\n")
     return
   }
   let args = @env.args()[1:]
   if args.length() == 1 && args[0] == "--help" {
-    @stdio.stdout.write(metadata_help())
+    @stdio.stdout.text.write(metadata_help())
     return
   }
   if args.length() == 1 && args[0] == "--version" {
-    @stdio.stdout.write("yes \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("yes \{MODULE_VERSION}\n")
     return
   }
   let line = output_line(args)
   for ;; {
-    @stdio.stdout.write(line) catch {
-      // A closed pipe (for example `yes | head`) ends the producer. Cancellation
-      // remains visible under async 0.22.4's cancellation semantics.
+    @stdio.stdout.text.write(line) catch {
+      // A closed downstream pipe ends the producer.
       _ => return
     }
   }

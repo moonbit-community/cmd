@@ -4,9 +4,9 @@ async fn usage_error(
   message : String,
   trailer~ : Bool = true,
 ) -> Int32 {
-  @stdio.stderr.write("\{command}: \{message}\n")
+  @stdio.stderr.text.write("\{command}: \{message}\n")
   if trailer {
-    @stdio.stderr.write("Try '\{command} --help' for more information.\n")
+    @stdio.stderr.text.write("Try '\{command} --help' for more information.\n")
   }
   1
 }
@@ -22,16 +22,16 @@ async fn run_command(
   let specs = checksum_options(modern)
   let parsed = @args.parse(args, specs) catch {
     @args.CliError(option~, message~, ..) => {
-      @stdio.stderr.write("\{command}: \{message}: '\{option}'\n")
+      @stdio.stderr.text.write("\{command}: \{message}: '\{option}'\n")
       return 1
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write(help_message(command, modern))
+    @stdio.stdout.text.write(help_message(command, modern))
     return 0
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("\{command} \{version}\n")
+    @stdio.stdout.text.write("\{command} \{version}\n")
     return 0
   }
   let check = parsed.contains("check")
@@ -44,13 +44,13 @@ async fn run_command(
     selected_algorithm = match named_algorithm(name) {
       Some(algorithm) => Some(algorithm)
       None => {
-        @stdio.stderr.write(
+        @stdio.stderr.text.write(
           "cksum: invalid argument '\{name}' for '--algorithm'\n",
         )
-        @stdio.stderr.write(
+        @stdio.stderr.text.write(
           "Valid arguments are:\n  - 'bsd'\n  - 'sysv'\n  - 'crc'\n  - 'crc32b'\n  - 'md5'\n  - 'sha1'\n  - 'sha224'\n  - 'sha256'\n  - 'sha384'\n  - 'sha512'\n  - 'sha2'\n  - 'sha3'\n  - 'blake2b'\n  - 'sm3'\n",
         )
-        @stdio.stderr.write("Try 'cksum --help' for more information.\n")
+        @stdio.stderr.text.write("Try 'cksum --help' for more information.\n")
         return 1
       }
     }
@@ -93,7 +93,7 @@ async fn run_command(
     }
     if (!check || length_text is Some(_)) &&
       !(length is (224L | 256L | 384L | 512L)) {
-      @stdio.stderr.write(
+      @stdio.stderr.text.write(
         "\{command}: invalid length: '\{length_text.unwrap_or("")}'\n",
       )
       return usage_error(
@@ -105,7 +105,7 @@ async fn run_command(
   }
   if algorithm is Blake2b {
     if length > 512L {
-      @stdio.stderr.write(
+      @stdio.stderr.text.write(
         "\{command}: invalid length: '\{length_text.unwrap_or("")}'\n",
       )
       return usage_error(
@@ -115,7 +115,7 @@ async fn run_command(
       )
     }
     if length % 8L != 0L {
-      @stdio.stderr.write(
+      @stdio.stderr.text.write(
         "\{command}: invalid length: '\{length_text.unwrap_or("")}'\n",
       )
       return usage_error(
@@ -231,7 +231,9 @@ async fn run_command(
           } else {
             quote_name(source)
           }
-          @stdio.stderr.write("\{command}: \{name}: \{error_message(error)}\n")
+          @stdio.stderr.text.write(
+            "\{command}: \{name}: \{error_message(error)}\n",
+          )
           false
         }
       }
@@ -243,7 +245,7 @@ async fn run_command(
     for source in sources {
       let (digest, count) = digest_source(spec, source) catch {
         error => {
-          @stdio.stderr.write(
+          @stdio.stderr.text.write(
             "\{command}: \{quote_name(source)}: \{error_message(error)}\n",
           )
           failed = true
@@ -253,7 +255,7 @@ async fn run_command(
       if raw {
         @stdio.stdout.write(digest)
       } else {
-        @stdio.stdout.write(
+        @stdio.stdout.text.write(
           output_record(
             spec,
             digest,

@@ -1,7 +1,7 @@
 import {
   "cli/core/bytesearch",
   "moonbitlang/core/encoding/utf8",
-  "moonbitlang/core/v128",
+  "moonbitlang/core/simd",
 }
 
 // The bounded byte-set scanner uses the same public experimental SIMD API as rg.
@@ -9,3 +9,7 @@ import {
 warnings = "-alert_experimental"
 
 supported_targets = "wasm"
+
+options(
+  "allow-experimental-packages": [ "moonbitlang/core/simd" ],
+)

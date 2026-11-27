@@ -33,7 +33,7 @@ async test "response header limit counts fields rather than the terminating blan
         let server = serve_raw_response(group, response)
         try
           with_response(
-            exchange_test_request(server.addr.port()),
+            exchange_test_request(server.local_addr().port.to_int()),
             exchange_test_transport(),
             scope => assert_eq(scope.head().fields.length(), 1024),
           )
@@ -59,7 +59,7 @@ async test "wire chunked framing overrides Content-Length and accepts extensions
         group, "HTTP/1.1 200 OK\r\nTransfer-Encoding: Chunked\r\nContent-Length: 999\r\n\r\n5;name=value\r\nhello\r\n0\r\nX-Trailer: yes\r\n\r\n",
       )
       with_response(
-        exchange_test_request(server.addr.port()),
+        exchange_test_request(server.local_addr().port.to_int()),
         exchange_test_transport(),
         scope => {
           assert_eq(scope.head().framing, Chunked)
@@ -69,7 +69,7 @@ async test "wire chunked framing overrides Content-Length and accepts extensions
           let body = Buffer()
           for ;; {
             match scope.read() {
-              Data(bytes) => body.write_bytes(bytes)
+              Data(bytes) => body.write_bytesview(bytes)
               End => break
               Incomplete(_) => fail("complete fixture reported partial framing")
             }
@@ -90,9 +90,10 @@ async test "wire unknown length uploads stream independent chunks and a final te
       group.add_defer(() => server.close())
       let expected = b"3\r\none\r\n3\r\ntwo\r\n0\r\n\r\n"
       group.spawn_bg(no_wait=true, () => {
-        server.run_forever((connection, _) => {
+        server.run_forever(connection => {
           let headers = StringBuilder()
-          while connection.read_until("\r\n") is Some(line) && line != "" {
+          let text = @io.Utf8Reader(connection)
+          while text.read_until("\r\n") is Some(line) && line != "" {
             headers.write_string(line + "\r\n")
           }
           assert_true(
@@ -104,7 +105,7 @@ async test "wire unknown length uploads stream independent chunks and a final te
         })
       })
       let parsed = parse_absolute_url(
-        "http://127.0.0.1:\{server.addr.port()}/upload",
+        "http://127.0.0.1:\{server.local_addr().port.to_int()}/upload",
       )
       let transport : Transport = {
         proxy: None,

@@ -36,4 +36,6 @@ Use `--help` for the complete option list.
 
 - -S splits its argument using the supported quoting and expansion rules; it does not invoke a host shell. Child execution requires launcher permission.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

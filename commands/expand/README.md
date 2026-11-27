@@ -29,4 +29,6 @@ Read files or stdin and expand tabs to the next tab stop. The default interval i
 
 - Column tracking uses C-locale byte/control-character rules, not Unicode display width.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

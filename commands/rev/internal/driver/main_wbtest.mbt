@@ -14,9 +14,9 @@ async test "rev reverses records across scanner blocks and preserves termination
   }).unsafe_reinterpret_as_bytes()
   let output = @io.MemoryReader(writer => {
     let input = @io.MemoryReader(source => {
-      source.write("abc\n")
+      source.write(b"abc\n")
       source.write(long)
-      source.write("\n123")
+      source.write(b"\n123")
     })
     defer input.close()
     let count = Ref(0L)
@@ -26,7 +26,7 @@ async test "rev reverses records across scanner blocks and preserves termination
   defer output.close()
   assert_eq(output.read_exactly(4), b"cba\n")
   assert_eq(output.read_exactly(long.length()), reverse_line(long))
-  assert_eq(output.read_all().binary(), b"\n321")
+  assert_eq(output.read_all(), b"\n321")
 }
 
 ///|
@@ -54,7 +54,7 @@ async test "rev rejects invalid C records before output and continues later read
     }
   })
   defer output.close()
-  assert_eq(output.read_all().binary(), b"ko\n\x00liat")
+  assert_eq(output.read_all(), b"ko\n\x00liat")
   assert_eq(observations, [(1L, true), (0L, true), (1L, false)])
 }
 
@@ -63,13 +63,37 @@ priv suberror RevTestFailure
 
 ///|
 priv struct RevTestWriter {
+  controller : @io.BinaryWriterController
   bytes : Array[Byte]
   mut remaining : Int32?
   mut calls : Int32
 }
 
 ///|
-impl @io.Writer for RevTestWriter with fn write_once(self, data, offset~, len~) {
+impl @io.BinaryWriter for RevTestWriter
+
+///|
+impl @io.BinaryWriterImpl for RevTestWriter with fn name(_) {
+  "RevTestWriter"
+}
+
+///|
+impl @io.BinaryWriterImpl for RevTestWriter with fn get_controller(self) {
+  self.controller
+}
+
+///|
+impl @io.BinaryWriterImpl for RevTestWriter with fn flush_partial_data(_) {
+  ()
+}
+
+///|
+impl @io.BinaryWriterImpl for RevTestWriter with fn raw_write_impl(
+  self,
+  data,
+  offset~,
+  len~,
+) {
   self.calls += 1
   let count = match self.remaining {
     None => len
@@ -89,16 +113,20 @@ impl @io.Writer for RevTestWriter with fn write_once(self, data, offset~, len~) 
 ///|
 async test "rev flushes complete records after a producer read failure" {
   let reader = @io.MemoryReader(writer => {
-    writer.write("kept\npartial")
+    writer.write(b"kept\npartial")
     @async.sleep(1)
     raise RevTestFailure
   })
   defer reader.close()
-  let output : RevTestWriter = { bytes: [], remaining: None, calls: 0, }
+  let output : RevTestWriter = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+    remaining: None,
+    calls: 0,
+  }
   let count = Ref(0L)
   try reverse_reader(reader, count, writer=output) catch {
-    RevTestFailure => ()
-    error => raise error
+    error => assert_true(@stream.transport_cause(error) is RevTestFailure)
   } noraise {
     _ => fail("expected read failure")
   }
@@ -116,10 +144,14 @@ async test "rev never replays a partially failed buffered output" {
     ] {
     let reader = @io.MemoryReader(writer => writer.write(input))
     defer reader.close()
-    let output : RevTestWriter = { bytes: [], remaining: Some(2), calls: 0, }
+    let output : RevTestWriter = {
+      controller: @io.BinaryWriterController(),
+      bytes: [],
+      remaining: Some(2),
+      calls: 0,
+    }
     try reverse_reader(reader, Ref(0L), writer=output) catch {
-      RevTestFailure => ()
-      error => raise error
+      error => assert_true(@stream.transport_cause(error) is RevTestFailure)
     } noraise {
       _ => fail("expected output failure")
     }
@@ -147,11 +179,15 @@ async test "rev retains buffered record counts at exact and straddled write boun
     })
     let reader = @io.MemoryReader(writer => writer.write(data))
     defer reader.close()
-    let output : RevTestWriter = { bytes: [], remaining: Some(17), calls: 0, }
+    let output : RevTestWriter = {
+      controller: @io.BinaryWriterController(),
+      bytes: [],
+      remaining: Some(17),
+      calls: 0,
+    }
     let count = Ref(0L)
     try reverse_reader(reader, count, writer=output) catch {
-      RevTestFailure => ()
-      error => raise error
+      error => assert_true(@stream.transport_cause(error) is RevTestFailure)
     } noraise {
       _ => fail("expected write failure")
     }
@@ -167,7 +203,12 @@ async test "rev rejects late invalid bytes without leaking any of the rejected r
     let input = b"ok\n\n" + Bytes::make(length, b'a') + b"\x80\nignored\n"
     let reader = @io.MemoryReader(writer => writer.write(input))
     defer reader.close()
-    let output : RevTestWriter = { bytes: [], remaining: None, calls: 0, }
+    let output : RevTestWriter = {
+      controller: @io.BinaryWriterController(),
+      bytes: [],
+      remaining: None,
+      calls: 0,
+    }
     let count = Ref(0L)
     try reverse_reader(reader, count, writer=output) catch {
       InvalidCRecord => ()
@@ -188,16 +229,21 @@ async test "rev wide copies preserve unaligned records tails and ASCII control b
     let line = Bytes::makei(length, index => {
       ((index * 13 + length) % 117 + 11).to_byte()
     })
-    bytes.write_bytes(line)
+    bytes.write_bytesview(line)
     bytes.write_byte(b'\n')
-    expected.write_bytes(reverse_line(line))
+    expected.write_bytesview(reverse_line(line))
     expected.write_byte(b'\n')
   }
-  bytes.write_bytes(b"tail\x00\r")
-  expected.write_bytes(b"\r\x00liat")
+  bytes.write_bytesview(b"tail\x00\r")
+  expected.write_bytesview(b"\r\x00liat")
   let input = @io.MemoryReader(writer => writer.write(bytes.to_bytes()))
   defer input.close()
-  let output : RevTestWriter = { bytes: [], remaining: None, calls: 0, }
+  let output : RevTestWriter = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+    remaining: None,
+    calls: 0,
+  }
   let count = Ref(0L)
   reverse_reader(input, count, writer=output)
   assert_eq(count.val, 131L)

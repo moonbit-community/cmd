@@ -1,10 +1,11 @@
 ///|
 fn diagnostic(error : Error) -> String {
-  let text = error.to_string()
-  // Preserve the command-level source name in existing Failure diagnostics.
-  match text.strip_prefix("Failure(internal/driver/") {
-    Some(location) => "Failure(" + location.to_owned()
-    None => text
+  match error {
+    Failure(message) =>
+      "Failure(" +
+      message.strip_prefix("internal/driver/").unwrap_or(message[:]).to_owned() +
+      ")"
+    _ => error.to_string()
   }
 }
 
@@ -44,11 +45,11 @@ async fn run(args : ArrayView[String]) -> Int32 {
   }
   let parsed = @cli.parse(normalized, option_specs())
   if parsed.contains("help") {
-    @stdio.stdout.write(metadata_help())
+    @stdio.stdout.text.write(metadata_help())
     return 0
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("fmt \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("fmt \{MODULE_VERSION}\n")
     return 0
   }
   let requested_width = parsed.last_value("width")
@@ -71,9 +72,9 @@ async fn run(args : ArrayView[String]) -> Int32 {
   for path in paths {
     try {
       let data = if path == "-" {
-        @stdio.stdin.read_all().binary()
+        @stdio.stdin.read_all()
       } else {
-        @fs.read_file(path).binary()
+        @fs.read_binary(path)
       }
       @stdio.stdout.write(
         @reflow.format(
@@ -91,7 +92,7 @@ async fn run(args : ArrayView[String]) -> Int32 {
       )
     } catch {
       err => {
-        @stdio.stderr.write("fmt: \{path}: \{diagnostic(err)}\n")
+        @stdio.stderr.text.write("fmt: \{path}: \{diagnostic(err)}\n")
         status = 1
       }
     }
@@ -103,15 +104,15 @@ async fn run(args : ArrayView[String]) -> Int32 {
 pub async fn run_main() -> Unit {
   let status = run(@env.args()[1:]) catch {
     @cli.CliError(message~, ..) => {
-      @stdio.stderr.write("fmt: \{message}\n")
+      @stdio.stderr.text.write("fmt: \{message}\n")
       1
     }
     err => {
-      @stdio.stderr.write("fmt: \{diagnostic(err)}\n")
+      @stdio.stderr.text.write("fmt: \{diagnostic(err)}\n")
       1
     }
   }
   if status != 0 {
-    @sys.exit(status)
+    @env.exit(status)
   }
 }

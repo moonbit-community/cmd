@@ -2,8 +2,8 @@
 async test "span output keeps NUL delimiters and per-match byte prefixes" {
   let input = @io.MemoryReader(writer => writer.write(b"\xffaa aa\x00aa"))
   defer input.close()
-  let output : CapturedOutput = { bytes: [], }
-  let errors : CapturedOutput = { bytes: [], }
+  let output = CapturedOutput::new()
+  let errors = CapturedOutput::new()
   let options = {
     ..streaming_options(),
     only_matching: true,
@@ -42,8 +42,8 @@ async test "span output flushes a complete and partial record before a read erro
     fail("span read failure")
   })
   defer input.close()
-  let output : CapturedOutput = { bytes: [], }
-  let errors : CapturedOutput = { bytes: [], }
+  let output = CapturedOutput::new()
+  let errors = CapturedOutput::new()
   let options = {
     ..streaming_options(),
     only_matching: true,
@@ -71,12 +71,31 @@ async test "span output flushes a complete and partial record before a read erro
 
 ///|
 priv struct FailingSpanWriter {
+  controller : @io.BinaryWriterController
   bytes : Array[Byte]
   mut calls : Int32
 }
 
 ///|
-impl @io.Writer for FailingSpanWriter with fn write_once(
+impl @io.BinaryWriter for FailingSpanWriter
+
+///|
+impl @io.BinaryWriterImpl for FailingSpanWriter with fn name(_) {
+  "FailingSpanWriter"
+}
+
+///|
+impl @io.BinaryWriterImpl for FailingSpanWriter with fn get_controller(self) {
+  self.controller
+}
+
+///|
+impl @io.BinaryWriterImpl for FailingSpanWriter with fn flush_partial_data(_) {
+  ()
+}
+
+///|
+impl @io.BinaryWriterImpl for FailingSpanWriter with fn raw_write_impl(
   self,
   bytes,
   offset~,
@@ -101,8 +120,12 @@ async test "span output never retries a partially failed threshold flush" {
     )
   })
   defer input.close()
-  let output : FailingSpanWriter = { bytes: [], calls: 0, }
-  let errors : CapturedOutput = { bytes: [], }
+  let output : FailingSpanWriter = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+    calls: 0,
+  }
+  let errors = CapturedOutput::new()
   let options = {
     ..streaming_options(),
     only_matching: true,
@@ -122,7 +145,8 @@ async test "span output never retries a partially failed threshold flush" {
     )
     false
   } catch {
-    error => error.to_string().contains("span write failure")
+    error =>
+      @stream.transport_cause(error).to_string().contains("span write failure")
   }
   assert_true(failed)
   assert_eq(output.calls, 2)
@@ -139,8 +163,8 @@ async test "span output merges patterns by earliest start then longest end" {
     ] {
     let input = @io.MemoryReader(writer => writer.write(data))
     defer input.close()
-    let output : CapturedOutput = { bytes: [], }
-    let errors : CapturedOutput = { bytes: [], }
+    let output = CapturedOutput::new()
+    let errors = CapturedOutput::new()
     let patterns = sources.map(source => {
       @bytere.compile(source, extended=true).record_matcher()
     })

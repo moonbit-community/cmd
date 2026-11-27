@@ -10,9 +10,20 @@ test-tool consumers. The execution tools under `tests` and `tools` remain Native
 
 ## Workspace and published packages
 
-The workspace supports the MoonBit 2026-11-17 toolchain. Buffer capacity labels,
-explicit trait calls and integer parsing use its current APIs; numeric input
-grammar, output and exit-status behavior remain unchanged.
+The workspace targets MoonBit 1.0 RC1 (2026-11-26). The basename, date, dirname,
+echo, false, printenv, printf, pwd, sleep, true and yes commands use the
+standard library for asynchronous I/O. The base64, cat, column, comm, cut, fold,
+head, join, nl, paste, rev, tr, uniq and wc drivers also use standard binary
+streams. Base32, cmp, diff, expand, expr, fmt, hexdump, od, seq, strings,
+unexpand, xxd, the checksum family and gzip/gunzip/zcat also use standard
+async I/O. Grep, sed and sort use standard binary streams for records and rg uses
+standard binary stdout. Binary output preserves arbitrary bytes. `env`, `timeout`, `xargs` and
+external commands launched by `sh` use standard async child processes. Shell
+redirections retain the parent-owned pipes until the child exits. Curl and wget
+use standard async TCP and TLS through `cli/core/netops`. Serve exposes a
+`moonbitlang/core/async/http` request handler.
+Workspace commands use the RC1 runtime entry point and the shared byte-search
+code uses the standard library's experimental SIMD package on Wasm.
 
 Use `moonx cli/<command>` for published commands. `timeout` is local-only;
 its README shows the repository invocation. Module versions come from
@@ -82,7 +93,7 @@ identify the principal refusals and platform differences.
 | [md5sum](../commands/md5sum/README.md) | Streaming MD5 and checksum manifest verification. | Binary/text modes do not translate bytes. |
 | [mkdir](../commands/mkdir/README.md) | Multiple directories, parents and supported POSIX leaf modes. | No Windows mode setting or complete umask/parent-mode parity. |
 | [mktemp](../commands/mktemp/README.md) | Exclusive temporary files/directories with templates and suffixes. | No unsafe dry-run names. |
-| [mv](../commands/mv/README.md) | Rename, overwrite/update selection and simple or numbered backups. | No cross-filesystem fallback; Windows link and equal-timestamp restrictions. |
+| [mv](../commands/mv/README.md) | Rename, overwrite/update selection and simple or numbered backups. | No cross-filesystem fallback; Windows link restrictions; equal-time `-i` / `-u` use file identities on POSIX. |
 | [nl](../commands/nl/README.md) | Page/section numbering, regex selection, width and separators. | Byte-oriented matching and delimiters. |
 | [od](../commands/od/README.md) | Typed byte dumps, offsets, widths and limits. | Fixed Linux numeric profile; C locale. |
 | [paste](../commands/paste/README.md) | Parallel/serial joining, delimiter cycles and NUL records. | Byte delimiters. |
@@ -141,8 +152,9 @@ prefixes and queries. CLI arguments and single-directory serving are unchanged.
   The Unicode regex profile in rg and JSON string handling in jq are separate.
   Numeric tools with extended-precision formatting use the documented fixed
   Linux amd64 profile, not an arbitrary host ABI.
-- **Filesystem:** public APIs do not expose all modes, ownership, inode/device
-  identity, umask or timestamp setters. Commands reject affected operations
+- **Filesystem:** `x/fs` offers optional file identity on POSIX and NTFS. Windows
+  volume-type detection, raw mode, ownership, handle truncation, umask and
+  timestamp setters remain unavailable for the operations below. Commands reject affected operations
   instead of inventing metadata. POSIX links and Windows junctions differ;
   macOS directory-size queries also have an explicit unsupported boundary.
 - **I/O and effects:** earlier output and successful mutations can remain after

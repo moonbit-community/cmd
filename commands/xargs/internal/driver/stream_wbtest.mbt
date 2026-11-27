@@ -1,6 +1,6 @@
 ///|
 fn test_batches(
-  reader : &@io.Reader,
+  reader : &@io.BinaryReader,
   mode~ : InputMode = Words,
   max_args~ : Int32 = 1,
   max_lines~ : Int32 = 0,
@@ -27,9 +27,9 @@ async test "xargs dispatches complete batches while the producer keeps input ope
   @async.with_timeout(5000, () => {
     let acknowledged : @async.Queue[String] = @async.Queue(kind=Blocking(1))
     let input = @io.MemoryReader(writer => {
-      writer.write("first\n")
+      @io.Utf8Writer(writer).write("first\n")
       assert_eq(acknowledged.get(), "first")
-      writer.write("second\n")
+      @io.Utf8Writer(writer).write("second\n")
       assert_eq(acknowledged.get(), "second")
     })
     defer input.close()
@@ -50,7 +50,9 @@ async test "xargs dispatches complete batches while the producer keeps input ope
 async test "xargs refills free slots without waiting for a slow earlier child" {
   @async.with_timeout(5000, () => {
     let release : @async.Queue[Unit] = @async.Queue(kind=Blocking(1))
-    let input = @io.MemoryReader(writer => writer.write("slow fast third\n"))
+    let input = @io.MemoryReader(writer => {
+      @io.Utf8Writer(writer).write("slow fast third\n")
+    })
     defer input.close()
     let mut active = 0
     let mut maximum = 0
@@ -85,7 +87,7 @@ async test "xargs fatal child status interrupts an open producer and preserves l
   for status in [255, 126, 127] {
     @async.with_timeout(5000, () => {
       let input = @io.MemoryReader(writer => {
-        writer.write("one\n")
+        @io.Utf8Writer(writer).write("one\n")
         @async.sleep(60000)
       })
       defer input.close()
@@ -136,14 +138,16 @@ async test "xargs fragmented tokens preserve UTF-8 quotes escapes and delimiter 
 
 ///|
 async test "xargs batches count multibyte arguments once and preserve line groups" {
-  let input = @io.MemoryReader(writer => writer.write("\u00e9 \u00e9 x\n"))
+  let input = @io.MemoryReader(writer => {
+    @io.Utf8Writer(writer).write("\u00e9 \u00e9 x\n")
+  })
   defer input.close()
   let batches = test_batches(input, max_args=0, max_bytes=10L)
   assert_eq(batches.next(), Some(["\u00e9", "\u00e9"]))
   assert_eq(batches.next(), Some(["x"]))
   assert_eq(batches.next(), None)
   let lines = @io.MemoryReader(writer => {
-    writer.write("one two\n\nthree\nfour five\n")
+    @io.Utf8Writer(writer).write("one two\n\nthree\nfour five\n")
   })
   defer lines.close()
   let grouped = test_batches(lines, mode=Lines, max_args=0, max_lines=2)
@@ -155,7 +159,9 @@ async test "xargs batches count multibyte arguments once and preserve line group
 ///|
 async test "xargs preserves ordinary child exits 126 and 127 without stopping batches" {
   for status in [126, 127] {
-    let input = @io.MemoryReader(writer => writer.write("first second\n"))
+    let input = @io.MemoryReader(writer => {
+      @io.Utf8Writer(writer).write("first second\n")
+    })
     defer input.close()
     let seen : Array[String] = []
     assert_eq(
@@ -179,7 +185,9 @@ async test "xargs preserves ordinary child exits 126 and 127 without stopping ba
 async test "xargs reports launch failure through the scheduler and awaits active children" {
   @async.with_timeout(5000, () => {
     let release : @async.Queue[Unit] = @async.Queue(kind=Blocking(1))
-    let input = @io.MemoryReader(writer => writer.write("slow unavailable\n"))
+    let input = @io.MemoryReader(writer => {
+      @io.Utf8Writer(writer).write("slow unavailable\n")
+    })
     defer input.close()
     let mut completed = false
     let messages : Array[String] = []

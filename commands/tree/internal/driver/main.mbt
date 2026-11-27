@@ -571,7 +571,7 @@ pub async fn run_main() -> Unit {
   let invocation = parse_arguments(@env.args()[1:].to_owned()) catch {
     TreeError(message) => {
       @stdio.stderr.write("tree: \{message}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -598,7 +598,7 @@ pub async fn run_main() -> Unit {
     roots.push(node)
   }
   if failed {
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let output = TreeOutput::new(async fn(bytes) { @stdio.stdout.write(bytes) })

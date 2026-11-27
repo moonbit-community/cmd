@@ -8,7 +8,6 @@ import {
   "moonbitlang/core/env",
   "moonbitlang/core/json",
   "moonbitlang/x/path",
-  "moonbitlang/x/sys",
 }
 
 supported_targets = "native"

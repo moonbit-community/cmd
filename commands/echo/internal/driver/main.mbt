@@ -86,16 +86,16 @@ fn decode_escapes(text : String) -> (Bytes, Bool) {
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("echo \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("echo \{MODULE_VERSION}\n")
     return
   }
   let args = @env.args()[1:]
   if args.length() == 1 && args[0] == "--help" {
-    @stdio.stdout.write(metadata_help())
+    @stdio.stdout.text.write(metadata_help())
     return
   }
   if args.length() == 1 && args[0] == "--version" {
-    @stdio.stdout.write("echo \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("echo \{MODULE_VERSION}\n")
     return
   }
   let mut newline = true
@@ -131,7 +131,7 @@ pub async fn run_main() -> Unit {
     let mut stopped = false
     for operand_index in index..<args.length() {
       if operand_index > index {
-        @stdio.stdout.write(" ")
+        @stdio.stdout.text.write(" ")
       }
       let (output, operand_stopped) = decode_escapes(args[operand_index])
       @stdio.stdout.write(output)
@@ -141,12 +141,12 @@ pub async fn run_main() -> Unit {
       }
     }
     if newline && !stopped {
-      @stdio.stdout.write("\n")
+      @stdio.stdout.text.write("\n")
     }
   } else {
-    @stdio.stdout.write(args[index:].join(" "))
+    @stdio.stdout.text.write(args[index:].join(" "))
     if newline {
-      @stdio.stdout.write("\n")
+      @stdio.stdout.text.write("\n")
     }
   }
 }

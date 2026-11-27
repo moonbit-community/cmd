@@ -44,7 +44,7 @@ fn parse_duration(text : String) -> Double raise CliError {
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("sleep \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("sleep \{MODULE_VERSION}\n")
     return
   }
   let raw_args = @env.args()[1:]
@@ -54,24 +54,24 @@ pub async fn run_main() -> Unit {
     raw_args
   }
   if args.length() > 0 && (args[0] == "-h" || args[0] == "--help") {
-    @stdio.stdout.write(usage() + "\n")
+    @stdio.stdout.text.write(usage() + "\n")
     return
   }
   if args.length() == 1 && args[0] == "--version" {
-    @stdio.stdout.write("sleep \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("sleep \{MODULE_VERSION}\n")
     return
   }
   if args.is_empty() {
-    @stdio.stderr.write("sleep: missing operand\n\n" + usage() + "\n")
-    @sys.exit(1)
+    @stdio.stderr.text.write("sleep: missing operand\n\n" + usage() + "\n")
+    @env.exit(1)
     return
   }
   let mut seconds = 0.0
   for arg in args {
     seconds += parse_duration(arg) catch {
       CliError(msg) => {
-        @stdio.stderr.write("\{msg}\n")
-        @sys.exit(1)
+        @stdio.stderr.text.write("\{msg}\n")
+        @env.exit(1)
         return
       }
     }

@@ -1,16 +1,15 @@
 ///|
 async test "stable keys retain sequence order through external runs" {
   let root = @fs.tmpdir(prefix="sort-stable-")
-  defer @fs.rmdir(root, recursive=true)
+  defer @fs.remove(root, recursive=true)
   let input = root + "/input"
-  @fs.write_file(input, "b alpha\nz beta\na alpha\nc beta\n".repeat(40))
+  @fs.write_text(input, "b alpha\nz beta\na alpha\nc beta\n".repeat(40))
   let global = test_modifiers()
   let specs = [@order.parse_key("2,2", global)]
-  let expected : &@io.Data = "b alpha\na alpha\n".repeat(40) +
-    "z beta\nc beta\n".repeat(40)
+  let expected = "b alpha\na alpha\n".repeat(40) + "z beta\nc beta\n".repeat(40)
   assert_eq(
     run_sort_fixture([input], global, specs~, stable=true),
-    expected.binary(),
+    @utf8.encode(expected),
   )
   assert_eq(
     run_sort_fixture([input], global, specs~, stable=true, unique=true),
@@ -21,11 +20,11 @@ async test "stable keys retain sequence order through external runs" {
 ///|
 async test "merge preserves operand ties and assumes ordered inputs" {
   let root = @fs.tmpdir(prefix="sort-merge-")
-  defer @fs.rmdir(root, recursive=true)
+  defer @fs.remove(root, recursive=true)
   let a = root + "/a"
   let b = root + "/b"
-  @fs.write_file(a, "a 2\nc 1\n")
-  @fs.write_file(b, "a 1\nb 3\n")
+  @fs.write_text(a, "a 2\nc 1\n")
+  @fs.write_text(b, "a 1\nb 3\n")
   let global = test_modifiers()
   let specs = [@order.parse_key("1,1", global)]
   assert_eq(
@@ -40,7 +39,7 @@ async test "merge preserves operand ties and assumes ordered inputs" {
     run_sort_fixture([a, b], global, merge=true, unique=true, specs~),
     b"a 2\nb 3\nc 1\n",
   )
-  @fs.write_file(b, "z 0\na 0\n")
+  @fs.write_text(b, "z 0\na 0\n")
   assert_eq(
     run_sort_fixture([a, b], global, merge=true),
     b"a 2\nc 1\nz 0\na 0\n",
@@ -50,16 +49,16 @@ async test "merge preserves operand ties and assumes ordered inputs" {
   for index in 0..<20 {
     let file = root + "/source-" + index.to_string()
     files.push(file)
-    @fs.write_file(file, "a \{index}\nb \{index}\n")
+    @fs.write_text(file, "a \{index}\nb \{index}\n")
     expected.write_string("a \{index}\n")
   }
   for index in 0..<20 {
     expected.write_string("b \{index}\n")
   }
-  let expected : &@io.Data = expected.to_string()
+  let expected = expected.to_string()
   assert_eq(
     run_sort_fixture(files, global, merge=true, stable=true, specs~),
-    expected.binary(),
+    @utf8.encode(expected),
   )
   assert_eq(
     run_sort_fixture(files, global, merge=true, unique=true, specs~),
@@ -70,24 +69,23 @@ async test "merge preserves operand ties and assumes ordered inputs" {
 ///|
 async test "seeded random keys survive external runs and unique selection" {
   let root = @fs.tmpdir(prefix="sort-random-runs-")
-  defer @fs.rmdir(root, recursive=true)
+  defer @fs.remove(root, recursive=true)
   let input = root + "/input"
-  @fs.write_file(input, "b alpha\nz beta\na alpha\nc beta\n".repeat(40))
+  @fs.write_text(input, "b alpha\nz beta\na alpha\nc beta\n".repeat(40))
   let global = test_modifiers()
   global.mode = Random
   let specs = [@order.parse_key("2,2", global)]
   let seed = b"0123456789abcdef"
-  let expected : &@io.Data = "b alpha\na alpha\n".repeat(40) +
-    "z beta\nc beta\n".repeat(40)
+  let expected = "b alpha\na alpha\n".repeat(40) + "z beta\nc beta\n".repeat(40)
   assert_eq(
     run_sort_fixture([input], global, specs~, stable=true, seed~),
-    expected.binary(),
+    @utf8.encode(expected),
   )
   assert_eq(
     run_sort_fixture([input], global, specs~, unique=true, seed~),
     b"b alpha\nz beta\n",
   )
-  @fs.write_file(input, "zeta\nalpha\nbeta\nalpha\n\n")
+  @fs.write_text(input, "zeta\nalpha\nbeta\nalpha\n\n")
   assert_eq(
     run_sort_fixture([input], global, seed~),
     b"alpha\nalpha\nzeta\n\nbeta\n",
@@ -141,14 +139,14 @@ test "option conflicts and effective random inheritance follow GNU" {
 ///|
 async test "output aliases consume input before truncation and preserve failures" {
   let root = @fs.tmpdir(prefix="sort-output-")
-  defer @fs.rmdir(root, recursive=true)
+  defer @fs.remove(root, recursive=true)
   let input = root + "/input"
   let output = root + "/output"
-  @fs.write_file(input, "b\na\n")
+  @fs.write_text(input, "b\na\n")
   assert_eq(execute_sort(parse_args(["-o", input, input])), 0)
-  assert_eq(@fs.read_file(input).text(), "a\nb\n")
+  assert_eq(@fs.read_text(input), "a\nb\n")
   @fs.mkdir(root + "/directory")
-  @fs.write_file(output, "KEEP\n")
+  @fs.write_text(output, "KEEP\n")
   try
     execute_sort(parse_args(["-o", output, input, root + "/directory"]))
     |> ignore
@@ -159,7 +157,7 @@ async test "output aliases consume input before truncation and preserve failures
   } noraise {
     _ => fail("directory input must fail during reading")
   }
-  assert_eq(@fs.read_file(output).text(), "KEEP\n")
+  assert_eq(@fs.read_text(output), "KEEP\n")
   try execute_sort(parse_args(["-m", "-o", output, input])) |> ignore catch {
     @order.CliError(message) =>
       assert_eq(
@@ -169,8 +167,8 @@ async test "output aliases consume input before truncation and preserve failures
   } noraise {
     _ => fail("existing merge output requires file identity support")
   }
-  assert_eq(@fs.read_file(output).text(), "KEEP\n")
-  @fs.write_file(input, "b 2\na 1\n")
+  assert_eq(@fs.read_text(output), "KEEP\n")
+  @fs.write_text(input, "b 2\na 1\n")
   assert_eq(
     execute_sort(
       parse_args([
@@ -179,5 +177,5 @@ async test "output aliases consume input before truncation and preserve failures
     ),
     0,
   )
-  assert_eq(@fs.read_file(output).text(), "a 1\nb 2\n")
+  assert_eq(@fs.read_text(output), "a 1\nb 2\n")
 }

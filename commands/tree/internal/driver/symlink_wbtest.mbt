@@ -123,7 +123,7 @@ async test "tree link representations preserve type name escaping and link color
   }
   let options = parse_arguments(["--noreport"]).options
   let bytes = @buffer.Buffer()
-  let output = TreeOutput::new(chunk => bytes.write_bytes(chunk[:]))
+  let output = TreeOutput::new(chunk => bytes.write_bytesview(chunk[:]))
   render_json([node], options, node_counts(node), output)
   output.flush()
   assert_eq(

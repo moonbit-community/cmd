@@ -15,20 +15,25 @@ assert_eq(args.last_value("output"), Some("result.txt"))
 assert_eq(args.operands, ["input.txt"])
 ```
 
+For standard async I/O, use `stream.ChunkReader` for bounded reads and the
+`from_binary` constructors on `RecordReader`, `LineScanner` and `BlockWriter`.
+Record views retain their bytes across subsequent reads. The checksum and
+gzip codecs accept standard binary readers and writers.
+
 ## Packages
 
 | Package | Purpose |
 | --- | --- |
 | cli | Option parsing and structured argument errors. |
-| stream, tempio | Byte streams and temporary-file I/O. |
+| stream, tempio | Bounded binary reads, record scanning, buffered output and temporary-file I/O. |
 | fsops, fswalk, platform | Path/filesystem mechanisms, traversal and host capabilities. |
 | bytesearch, bytere | Byte searching and the supported byte-regex engine. |
 | numfmt, quoting | Numeric parsing/formatting and byte/path quoting. |
 | checksum, checksum/cli | Digest algorithms and shared checksum command handling. |
 | gzipops, gzipops/cli | Gzip streams and shared codec command handling. |
-| [netops](netops/README.md) | Scoped HTTP transport, URL, IDNA and public-suffix mechanisms. |
+| [netops](netops/README.md) | HTTP transport over standard async TCP and TLS, URL, IDNA and public-suffix mechanisms. |
 | time_zone | Timezone selection, TZif/POSIX conversion and local-time validation. |
-| process, shell | Child execution and the supported shell language. |
+| process, shell | Standard async child processes, redirection and the supported shell language. |
 
 The generated `pkg.generated.mbti` in each package lists its current public
 API. Command-specific argument policy, diagnostics and effects remain in the
@@ -36,7 +41,7 @@ owning command; there is no executable `moonx cli/core` entry.
 
 ## Notes
 
-Compatible with the MoonBit 2026-11-17 toolchain.
+Build from source with the MoonBit 1.0 RC1 toolchain.
 
 - Product consumers target MoonX/Wasm and use released public MoonBit APIs.
   Host permissions and unavailable filesystem/process metadata remain explicit

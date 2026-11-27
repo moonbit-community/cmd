@@ -71,33 +71,33 @@ fn parse_args(args : ArrayView[String]) -> @cli.ParsedArgs raise @cli.CliError {
 pub async fn run_main() -> Unit {
   let args = @env.args()[1:]
   if args is ["--version"] {
-    @stdio.stdout.write("xxd \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("xxd \{MODULE_VERSION}\n")
     return
   }
   let parsed = parse_args(args) catch {
     @cli.CliError(option~, message~, ..) => {
-      @stdio.stderr.write("xxd: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("xxd: \{message}: '\{option}'\n")
+      @env.exit(1)
       return
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write(help_message() + "\n")
+    @stdio.stdout.text.write(help_message() + "\n")
     return
   }
   if parsed.operands.length() > 2 {
-    @stdio.stderr.write("xxd: extra operand: '\{parsed.operands[2]}'\n")
-    @sys.exit(1)
+    @stdio.stderr.text.write("xxd: extra operand: '\{parsed.operands[2]}'\n")
+    @env.exit(1)
     return
   }
   execute(parsed, options(parsed)) catch {
     CliError(status, message) => {
-      @stdio.stderr.write(message + "\n")
-      @sys.exit(status)
+      @stdio.stderr.text.write(message + "\n")
+      @env.exit(status)
     }
     error => {
-      @stdio.stderr.write("xxd: \{error}\n")
-      @sys.exit(2)
+      @stdio.stderr.text.write("xxd: \{error}\n")
+      @env.exit(2)
     }
   }
 }

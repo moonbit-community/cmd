@@ -36,7 +36,7 @@ async fn uniq_output(
     )
   })
   defer output.close()
-  output.read_all().binary()
+  output.read_all()
 }
 
 ///|

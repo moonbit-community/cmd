@@ -4904,17 +4904,45 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
-      "behavior_id": "case:repair-fs-mv-equal-time-boundary",
+      "behavior_id": "case:mv-update-distinct-equal-time",
       "command": "mv",
-      "status": "boundary",
+      "status": "supported",
       "implementation": "json-case",
       "source": "tests/cases/mv.json",
-      "case_id": "repair-fs-mv-equal-time-boundary",
+      "case_id": "mv-update-distinct-equal-time",
+      "aliases": [
+        "repair-fs-mv-equal-time-boundary"
+      ],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:mv-interactive-distinct-equal-time",
+      "command": "mv",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/mv.json",
+      "case_id": "mv-interactive-distinct-equal-time",
       "aliases": [],
       "platforms": [
         "posix"
       ],
-      "oracle_profile": ""
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:mv-update-hardlink-equal-time",
+      "command": "mv",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/mv.json",
+      "case_id": "mv-update-hardlink-equal-time",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
     },
     {
       "behavior_id": "case:repair-fs-mv-interactive-no-eof",

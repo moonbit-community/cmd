@@ -33,4 +33,6 @@ Create exclusively and print the path. Templates need at least three consecutive
 - Unsafe -u dry runs are unsupported. Suffixes cannot contain path separators.
 - Without an explicit destination, TMPDIR or /tmp must name an existing directory.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

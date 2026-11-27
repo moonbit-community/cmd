@@ -39,4 +39,6 @@ Use `--help` for the complete option list.
 - Long listings and ownership, inode, permission or capability metadata are unsupported.
 - Automatic terminal color is unavailable; select --color=always or never. -P is a project extension.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

@@ -7,7 +7,6 @@ import {
   "moonbitlang/core/env",
   "moonbitlang/core/string",
   "moonbitlang/x/crypto",
-  "moonbitlang/x/sys",
 }
 
 supported_targets = "native"

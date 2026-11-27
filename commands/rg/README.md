@@ -40,7 +40,9 @@ Use `--help` for the complete option list.
 
 ## Notes
 
-Compatible with the MoonBit 2026-11-17 toolchain.
+Both line-buffered and block-buffered output use standard binary stdout.
+
+Build from source with the MoonBit 1.0 RC1 toolchain.
 
 - PCRE2, compressed search (-z), one-filesystem traversal and byte-based DFA cache limits are unsupported.
 - Search runs on one thread without memory mapping. Multiline mode may retain the complete input.

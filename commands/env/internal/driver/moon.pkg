@@ -1,12 +1,11 @@
 import {
   "cli/core/process",
-  "moonbitlang/async",
-  "moonbitlang/async/fs",
-  "moonbitlang/async/os_error",
-  "moonbitlang/async/stdio",
+  "moonbitlang/core/async",
+  "moonbitlang/core/async/fs",
+  "moonbitlang/core/async/os_error",
+  "moonbitlang/core/async/stdio",
   "moonbitlang/core/env" @core_env,
   "moonbitlang/x/path",
-  "moonbitlang/x/sys",
 }
 
 supported_targets = "wasm"

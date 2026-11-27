@@ -1,11 +1,35 @@
 ///|
 priv struct CapturedBytes {
+  controller : @io.BinaryWriterController
   data : @buffer.Buffer
 }
 
 ///|
-impl @io.Writer for CapturedBytes with fn write_once(self, bytes, offset~, len~) {
-  self.data.write_bytes(bytes[offset:offset + len])
+impl @io.BinaryWriter for CapturedBytes
+
+///|
+impl @io.BinaryWriterImpl for CapturedBytes with fn name(_) {
+  "CapturedBytes"
+}
+
+///|
+impl @io.BinaryWriterImpl for CapturedBytes with fn get_controller(self) {
+  self.controller
+}
+
+///|
+impl @io.BinaryWriterImpl for CapturedBytes with fn flush_partial_data(_) {
+  ()
+}
+
+///|
+impl @io.BinaryWriterImpl for CapturedBytes with fn raw_write_impl(
+  self,
+  bytes,
+  offset~,
+  len~,
+) {
+  self.data.write_bytesview(bytes[offset:offset + len])
   len
 }
 
@@ -16,7 +40,10 @@ async test "uniq read errors flush completed groups without finalizing the pendi
     fail("injected input failure")
   })
   defer reader.close()
-  let output = CapturedBytes::{ data: @buffer.Buffer(), }
+  let output = CapturedBytes::{
+    controller: @io.BinaryWriterController(),
+    data: @buffer.Buffer(),
+  }
   let failed = try {
     process_reader(
       reader,

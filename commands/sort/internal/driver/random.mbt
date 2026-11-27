@@ -10,7 +10,7 @@ async fn random_seed(source : String?) -> Bytes {
     raise @order.CliError("sort: open failed: '': No such file or directory")
   }
   let file = @fs.open(path, mode=ReadOnly) catch {
-    @os_error.OSError(_) as error =>
+    @os_error.OsError(_, ..) as error =>
       raise @order.CliError("sort: open failed: \{path}: \{os_message(error)}")
     error => raise error
   }
@@ -19,12 +19,12 @@ async fn random_seed(source : String?) -> Bytes {
 }
 
 ///|
-async fn read_random_seed(reader : &@io.Reader, path : String) -> Bytes {
+async fn read_random_seed(reader : &@io.BinaryReader, path : String) -> Bytes {
   let seed = FixedArray::make(16, b'\x00')
   let mut used = 0
   while used < 16 {
-    let count = reader.read(seed, offset=used, max_len=16 - used) catch {
-      @os_error.OSError(_) as error =>
+    let count = reader.read_into(seed.mut_view(start=used)) catch {
+      @io.ReaderError::TransportError(@os_error.OsError(_, ..) as error, ..) =>
         raise @order.CliError("sort: '\{path}': \{os_message(error)}")
       error => raise error
     }
@@ -37,16 +37,13 @@ async fn read_random_seed(reader : &@io.Reader, path : String) -> Bytes {
 }
 
 ///|
-fn os_message(error : @os_error.OSError) -> String {
-  if error.is_ENOENT() {
-    "No such file or directory"
-  } else if error.is_EACCES() {
-    "Permission denied"
-  } else if error.is_ENOTDIR() {
-    "Not a directory"
-  } else if error.is_EEXIST() {
-    "File exists"
-  } else {
-    error.to_string()
+fn os_message(error : @os_error.OsError) -> String {
+  let @os_error.OsError(kind, ..) = error
+  match kind {
+    NotFound => "No such file or directory"
+    AccessDenied => "Permission denied"
+    NotDirectory => "Not a directory"
+    AlreadyExists => "File exists"
+    _ => error.to_string()
   }
 }

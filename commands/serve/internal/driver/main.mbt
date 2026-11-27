@@ -1,10 +1,11 @@
 ///|
 fn diagnostic(error : Error) -> String {
-  let text = error.to_string()
-  // Preserve the command-level source name in existing Failure diagnostics.
-  match text.strip_prefix("Failure(internal/driver/") {
-    Some(location) => "Failure(" + location.to_owned()
-    None => text
+  match error {
+    Failure(message) =>
+      "Failure(" +
+      message.strip_prefix("internal/driver/").unwrap_or(message[:]).to_owned() +
+      ")"
+    _ => error.to_string()
   }
 }
 
@@ -47,12 +48,12 @@ pub async fn run_main() -> Unit {
   let args = match command.parse_outcome(argv=@env.args()[1:]) {
     Parsed(args) => args
     Help(text) | Version(text) => {
-      @stdio.stdout.write(text + "\n")
+      @stdio.stdout.text.write(text + "\n")
       return
     }
     Failed(error) => {
-      @stdio.stderr.write(diagnostic(error))
-      @sys.exit(1)
+      @stdio.stderr.text.write(diagnostic(error))
+      @env.exit(1)
       return
     }
   }
@@ -65,21 +66,21 @@ pub async fn run_main() -> Unit {
     let files = @static_files.Directory::Directory(root)
     let server = @http.Server(address)
     defer server.close()
-    @stdio.stderr.write(
-      "Serving " + root + " on http://" + server.addr.to_string() + "\n",
+    @stdio.stderr.text.write(
+      "Serving " + root + " on http://" + server.local_addr().to_string() + "\n",
     )
     server.run_forever(
-      (request, _body, connection) => files.serve(request, connection),
+      (request, connection) => files.serve(request, connection),
       max_connections=64,
     )
   } catch {
     UsageError(message) => {
-      @stdio.stderr.write("serve: " + message + "\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("serve: " + message + "\n")
+      @env.exit(1)
     }
     error => {
-      @stdio.stderr.write("serve: " + diagnostic(error) + "\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("serve: " + diagnostic(error) + "\n")
+      @env.exit(1)
     }
   }
 }

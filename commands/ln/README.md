@@ -37,4 +37,6 @@ Use `--help` for the complete option list.
 - Hard links and Windows link creation are unsupported. Declining a replacement, including EOF, returns status 1.
 - If creation and backup restoration both fail, the diagnostic names both paths; inspect them before retrying.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

@@ -50,7 +50,7 @@ pub fn Row::fill(self : Row, output : @buffer.Buffer, limit~ : Int32) -> Bool {
     match self.phase {
       Field => {
         let count = available.min(self.bytes.length() - self.offset)
-        output.write_bytes(self.bytes[self.offset:self.offset + count])
+        output.write_bytesview(self.bytes[self.offset:self.offset + count])
         self.offset += count
         if self.offset == self.bytes.length() {
           self.offset = 0
@@ -68,7 +68,7 @@ pub fn Row::fill(self : Row, output : @buffer.Buffer, limit~ : Int32) -> Bool {
       }
       Padding => {
         let count = self.padding.min(available).min(spaces.length())
-        output.write_bytes(spaces[:count])
+        output.write_bytesview(spaces[:count])
         self.padding -= count
         if self.padding == 0 {
           self.phase = Separator
@@ -76,7 +76,7 @@ pub fn Row::fill(self : Row, output : @buffer.Buffer, limit~ : Int32) -> Bool {
       }
       Separator => {
         let count = available.min(self.separator.length() - self.offset)
-        output.write_bytes(self.separator[self.offset:self.offset + count])
+        output.write_bytesview(self.separator[self.offset:self.offset + count])
         self.offset += count
         if self.offset == self.separator.length() {
           self.column += 1

@@ -16,7 +16,7 @@ pub fn default_environment() -> Map[String, String]
 
 pub fn launch_failure_status(LaunchFailure) -> Int32
 
-pub async fn run(ChildSpec, stdin? : &@moonbitlang/async/process.ProcessInput, stdout? : &@moonbitlang/async/process.ProcessOutput, stderr? : &@moonbitlang/async/process.ProcessOutput) -> Int32
+pub async fn run(ChildSpec, stdin? : @moonbitlang/core/async/process.ProcessInput, stdout? : @moonbitlang/core/async/process.ProcessOutput, stderr? : @moonbitlang/core/async/process.ProcessOutput) -> Int32
 
 // Errors
 

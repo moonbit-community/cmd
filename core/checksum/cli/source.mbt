@@ -53,12 +53,12 @@ priv suberror DigestError {
 
 ///|
 fn error_message(error : Error) -> String {
+  let error = @stream.transport_cause(error)
   match error {
     DigestError(message) => message
-    @os_error.OSError(_) as error if error.is_ENOENT() =>
-      "No such file or directory"
-    @os_error.OSError(_) as error if error.is_EACCES() => "Permission denied"
-    @os_error.OSError(_) as error if error.is_ENOTDIR() => "Not a directory"
+    @os_error.OsError(NotFound, ..) => "No such file or directory"
+    @os_error.OsError(AccessDenied, ..) => "Permission denied"
+    @os_error.OsError(NotDirectory, ..) => "Not a directory"
     _ => error.to_string()
   }
 }

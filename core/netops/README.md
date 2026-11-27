@@ -23,6 +23,9 @@ See [the generated interface](pkg.generated.mbti) for signatures and
 
 ## Notes
 
+- TCP, TLS and upload streams use `moonbitlang/core/async`. HTTPS accepts
+  peer closure for close-delimited responses. Fixed lengths and chunk framing
+  are still checked by the HTTP reader.
 - HTTP/1.0 and HTTP/1.1 support fixed-length, chunked, close-delimited and
   bodyless responses. Content coding is not decoded. Earlier body bytes can
   be delivered before a later framing failure.

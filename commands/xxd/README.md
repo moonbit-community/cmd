@@ -37,4 +37,6 @@ Use `--help` for the complete option list.
 
 - Backward seeks on stdin are unsupported. Existing output-file identity and mode guarantees are limited; use a new output path when possible.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

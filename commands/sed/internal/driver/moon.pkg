@@ -6,12 +6,10 @@ import {
   "cli/core/cli",
   "cli/core/bytere",
   "cli/core/stream",
-  "moonbitlang/async/io",
-  "moonbitlang/async/fs",
-  "moonbitlang/async/stdio",
+  "moonbitlang/core/async/fs",
+  "moonbitlang/core/async/stdio",
   "moonbitlang/core/env",
   "moonbitlang/core/buffer",
-  "moonbitlang/x/sys",
 }
 
 supported_targets = "wasm"
@@ -24,5 +22,6 @@ rule(
 dev_build(rule: "gen_version", input: "../../moon.mod", output: "version.mbt")
 
 import {
-  "moonbitlang/async",
+  "moonbitlang/core/async",
+  "moonbitlang/core/async/io",
 } for "wbtest"

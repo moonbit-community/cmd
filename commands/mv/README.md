@@ -37,7 +37,9 @@ Use `--help` for the complete option list.
 ## Notes
 
 - Cross-filesystem moves are unsupported. Windows rejects moving symlinks/junctions and backing up destination links.
-- -i and -u reject equal source/target timestamps. Same-file moves fail except for explicit skip modes.
+- On POSIX, `-u` skips distinct files with equal timestamps and `-i` prompts before replacing them. Without backups, both detect hard-link aliases before moving. Windows retains the equal-time refusal because the filesystem type cannot be verified.
 - If both a move and backup restoration fail, inspect the destination and backup paths named in the diagnostic before retrying.
+
+Build from source with the MoonBit 1.0 RC1 toolchain.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

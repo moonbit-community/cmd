@@ -67,7 +67,9 @@ test "byte items preserve raw length and reject untransportable argv prefixes" {
 
 ///|
 async test "confirmations use a separate reader and preserve C locale yes rules" {
-  let input = @io.MemoryReader(writer => writer.write("yep\n no\nY\n"))
+  let input = @io.MemoryReader(writer => {
+    @io.Utf8Writer(writer).write("yep\n no\nY\n")
+  })
   defer input.close()
   assert_true(confirm_batch(input, "command", ["one"]))
   assert_false(confirm_batch(input, "command", ["two"]))

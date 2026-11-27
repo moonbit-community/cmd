@@ -25,4 +25,6 @@ Default to the physical path unless POSIXLY_CORRECT is set. -L uses a valid logi
 | `--version` | Show the version. |
 <!-- END GENERATED OPTIONS -->
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

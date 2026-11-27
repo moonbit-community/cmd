@@ -15,13 +15,13 @@ test "base32 fragmented quanta preserve padding and wrap columns" {
         let encoder = Base32Encoder::new(wrap)
         let output = @buffer.Buffer()
         for at = 0; at < input.length(); at = at + size {
-          output.write_bytes(
+          output.write_bytesview(
             encoder.encode(input[at:(at + size).min(input.length())]),
           )
           assert_eq(encoder.encode(b""[:]), b"")
           assert_true(encoder.count < 5)
         }
-        output.write_bytes(encoder.finish())
+        output.write_bytesview(encoder.finish())
         assert_eq(encoder.finish(), b"")
         let expected = @buffer.Buffer()
         for i, byte in raw {
@@ -38,6 +38,7 @@ test "base32 fragmented quanta preserve padding and wrap columns" {
 
 ///|
 priv struct Base32Output {
+  controller : @io.BinaryWriterController
   bytes : Array[Byte]
   mut calls : Int32
   fail_after : Int32
@@ -45,7 +46,30 @@ priv struct Base32Output {
 }
 
 ///|
-impl @io.Writer for Base32Output with fn write_once(self, bytes, offset~, len~) {
+impl @io.BinaryWriter for Base32Output
+
+///|
+impl @io.BinaryWriterImpl for Base32Output with fn name(_) {
+  "Base32Output"
+}
+
+///|
+impl @io.BinaryWriterImpl for Base32Output with fn get_controller(self) {
+  self.controller
+}
+
+///|
+impl @io.BinaryWriterImpl for Base32Output with fn flush_partial_data(_) {
+  ()
+}
+
+///|
+impl @io.BinaryWriterImpl for Base32Output with fn raw_write_impl(
+  self,
+  bytes,
+  offset~,
+  len~,
+) {
   self.calls += 1
   guard self.calls <= self.fail_after else { fail("base32 output failed") }
   let count = len.min(3)
@@ -68,6 +92,7 @@ async test "base32 emits a complete quantum while input remains open" {
     })
     defer reader.close()
     let output : Base32Output = {
+      controller: @io.BinaryWriterController(),
       bytes: [],
       calls: 0,
       fail_after: 100,
@@ -86,6 +111,7 @@ async test "base32 read and write failures preserve only completed output" {
   })
   defer reader.close()
   let output : Base32Output = {
+    controller: @io.BinaryWriterController(),
     bytes: [],
     calls: 0,
     fail_after: 100,
@@ -96,13 +122,15 @@ async test "base32 read and write failures preserve only completed output" {
       encode_stream(reader, 76, output)
       false
     } catch {
-      error => error.to_string().contains("late read failure")
+      error =>
+        @stream.transport_cause(error).to_string().contains("late read failure")
     },
   )
   assert_eq(Bytes::from_array(output.bytes), b"MZXW6YTB")
   let reader2 = @io.MemoryReader(writer => writer.write(b"foobar"))
   defer reader2.close()
   let failed : Base32Output = {
+    controller: @io.BinaryWriterController(),
     bytes: [],
     calls: 0,
     fail_after: 1,
@@ -113,7 +141,8 @@ async test "base32 read and write failures preserve only completed output" {
       encode_stream(reader2, 0, failed)
       false
     } catch {
-      error => error.to_string().contains("output failed")
+      error =>
+        @stream.transport_cause(error).to_string().contains("output failed")
     },
   )
   assert_eq(Bytes::from_array(failed.bytes), b"MZX")
@@ -127,8 +156,5 @@ async test "base32 streams across read windows without intermediate padding" {
   defer reader.close()
   let encoded = @io.MemoryReader(writer => encode_stream(reader, 0, writer))
   defer encoded.close()
-  assert_eq(
-    encoded.read_all().binary(),
-    b"MZXW6YTB".repeat(13108) + b"OI======",
-  )
+  assert_eq(encoded.read_all(), b"MZXW6YTB".repeat(13108) + b"OI======")
 }

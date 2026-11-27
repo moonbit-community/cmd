@@ -171,7 +171,7 @@ priv struct Input {
   mut index : Int32
   mut path : String
   mut file : @fs.File?
-  mut reader : &@io.Reader?
+  mut reader : @stream.ChunkReader?
   mut buffer : Bytes
   mut position : Int32
   mut number : Int32
@@ -197,17 +197,19 @@ async fn Input::open_next(self : Input) -> Bool {
     self.path = self.paths[self.index]
     self.index += 1
     if self.path == "-" {
-      self.reader = Some((@stdio.stdin : &@io.Reader))
+      self.reader = Some(@stream.ChunkReader::new(@stdio.stdin))
       return true
     }
     try {
       let file = @fs.open(self.path, mode=ReadOnly)
       self.file = Some(file)
-      self.reader = Some((file : &@io.Reader))
+      self.reader = Some(@stream.ChunkReader::new(file))
       return true
     } catch {
       err => {
-        @stdio.stderr.write("sed: \{self.path}: \{err}\n")
+        @stdio.stderr.text.write(
+          "sed: \{self.path}: \{@stream.transport_cause(err)}\n",
+        )
         self.status = 2
       }
     }
@@ -224,9 +226,11 @@ async fn Input::fill(self : Input) -> Bool {
   // Commit earlier output before an external read can block or report an error.
   // Already buffered input never introduces a new I/O boundary.
   self.output.flush()
-  let chunk = reader.read_some(max_len=@stream.chunk_size) catch {
+  let chunk = reader.read() catch {
     err => {
-      @stdio.stderr.write("sed: \{self.path}: \{err}\n")
+      @stdio.stderr.text.write(
+        "sed: \{self.path}: \{@stream.transport_cause(err)}\n",
+      )
       self.status = 2
       None
     }
@@ -280,18 +284,18 @@ async fn Input::next(self : Input) -> @stream.RecordView? {
   // Complete records borrow the immutable chunk. A spanning record uses one buffer,
   // so fragmented readers do not retain one allocation per input fragment.
   let pending = @buffer.Buffer(capacity=self.buffer.length() - first)
-  pending.write_bytes(self.buffer[first:])
+  pending.write_bytesview(self.buffer[first:])
   self.position = self.buffer.length()
   let mut terminated = false
   for ;; {
     guard self.fill() else { break }
     if self.buffer[:].find(b"\n") is Some(length) {
-      pending.write_bytes(self.buffer[:length])
+      pending.write_bytesview(self.buffer[:length])
       self.position = length + 1
       terminated = true
       break
     }
-    pending.write_bytes(self.buffer[:])
+    pending.write_bytesview(self.buffer[:])
     self.position = self.buffer.length()
   }
   self.number += 1
@@ -341,9 +345,13 @@ async fn execute(
 ) -> Unit {
   // A pending write failure precedes a later script error. BlockWriter
   // consumes failed writes, so this cannot replay a partially sent prefix.
-  errdefer runtime.output.flush()
-  execute_cycles(commands, input, quiet, runtime)
-  runtime.output.flush()
+  try {
+    errdefer runtime.output.flush()
+    execute_cycles(commands, input, quiet, runtime)
+    runtime.output.flush()
+  } catch {
+    error => raise @stream.transport_cause(error)
+  }
 }
 
 ///|

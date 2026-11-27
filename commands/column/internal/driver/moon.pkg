@@ -6,14 +6,13 @@ import {
   "cli/core/tempio",
   "cli/core/cli",
   "cli/core/stream",
-  "moonbitlang/async/fs",
-  "moonbitlang/async/io",
-  "moonbitlang/async/stdio",
+  "moonbitlang/core/async/fs",
+  "moonbitlang/core/async/io",
+  "moonbitlang/core/async/stdio",
   "moonbitlang/core/buffer",
   "moonbitlang/core/encoding/utf8",
   "moonbitlang/core/env",
   "moonbitlang/core/string",
-  "moonbitlang/x/sys",
 }
 
 supported_targets = "wasm"
@@ -29,5 +28,5 @@ import {
 } for "wbtest"
 
 import {
-  "moonbitlang/async",
+  "moonbitlang/core/async",
 } for "wbtest"

@@ -1,6 +1,6 @@
 name = "cli/serve"
 
-version = "0.1.5"
+version = "0.1.6"
 
 readme = "README.md"
 
@@ -13,8 +13,3 @@ keywords = [ "command-line", "moonx", "wasm" ]
 preferred_target = "wasm"
 
 description = "Minimal static HTTP file server for MoonX."
-
-import {
-  "moonbitlang/async@0.22.9",
-  "moonbitlang/x@0.5.7",
-}

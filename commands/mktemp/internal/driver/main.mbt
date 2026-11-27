@@ -144,12 +144,12 @@ pub async fn run_main() -> Unit {
       @stdio.stderr.write(
         "mktemp: \{description}\nTry 'mktemp --help' for more information.\n",
       )
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("mktemp: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -165,14 +165,14 @@ pub async fn run_main() -> Unit {
     @stdio.stderr.write(
       "mktemp: too many templates\nTry 'mktemp --help' for more information.\n",
     )
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let template = parsed.operands.get(0).unwrap_or("tmp.XXXXXXXXXX")
   let spec = parse_template(template, parsed.last_value("suffix")) catch {
     MktempError(message) => {
       @stdio.stderr.write("mktemp: \{message}\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -191,14 +191,14 @@ pub async fn run_main() -> Unit {
     @stdio.stderr.write(
       "mktemp: invalid template, '\{with_suffix}', contains directory separator\n",
     )
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   if destination && !legacy && @path.Path(template).is_absolute() {
     @stdio.stderr.write(
       "mktemp: invalid template, '\{with_suffix}'; with --tmpdir, it may not be absolute\n",
     )
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let environment = @env.get_env_var("TMPDIR").filter(value => !value.is_empty())
@@ -242,7 +242,7 @@ pub async fn run_main() -> Unit {
           "mktemp: failed to create \{kind} via template '\{display_template}': \{creation_error(error)}\n",
         )
       }
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -260,7 +260,7 @@ pub async fn run_main() -> Unit {
       if !quiet {
         @stdio.stderr.write("mktemp: write error: \{creation_error(error)}\n")
       }
-      @sys.exit(1)
+      @env.exit(1)
     }
   }
 }

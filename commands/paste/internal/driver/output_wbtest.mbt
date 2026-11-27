@@ -1,16 +1,36 @@
 ///|
 priv struct PasteOutput {
+  controller : @io.BinaryWriterController
   bytes : Array[Byte]
 }
 
 ///|
 priv struct StalledPasteOutput {
+  controller : @io.BinaryWriterController
   ready : @async.Queue[Unit]
   release : @async.Queue[Unit]
 }
 
 ///|
-impl @io.Writer for StalledPasteOutput with fn write_once(
+impl @io.BinaryWriter for StalledPasteOutput
+
+///|
+impl @io.BinaryWriterImpl for StalledPasteOutput with fn name(_) {
+  "StalledPasteOutput"
+}
+
+///|
+impl @io.BinaryWriterImpl for StalledPasteOutput with fn get_controller(self) {
+  self.controller
+}
+
+///|
+impl @io.BinaryWriterImpl for StalledPasteOutput with fn flush_partial_data(_) {
+  ()
+}
+
+///|
+impl @io.BinaryWriterImpl for StalledPasteOutput with fn raw_write_impl(
   self,
   _,
   offset~,
@@ -28,12 +48,16 @@ async test "paste deferred output remains cancellable under backpressure" {
     for serial in [true, false] {
       let reader = @io.MemoryReader(writer => writer.write(b"one\n"))
       defer reader.close()
-      let scanner = @stream.LineScanner::new(reader)
+      let scanner = @stream.LineScanner::from_binary(reader)
       @async.with_task_group(group => {
         let ready : @async.Queue[Unit] = @async.Queue(kind=Unbounded)
         let release : @async.Queue[Unit] = @async.Queue(kind=Unbounded)
         defer ignore(release.try_put(()))
-        let output : StalledPasteOutput = { ready, release, }
+        let output : StalledPasteOutput = {
+          controller: @io.BinaryWriterController(),
+          ready,
+          release,
+        }
         let task = group.spawn(() => {
           if serial {
             paste_serial(scanner, [b","], b'\n', writer=output)
@@ -57,7 +81,30 @@ async test "paste deferred output remains cancellable under backpressure" {
 }
 
 ///|
-impl @io.Writer for PasteOutput with fn write_once(self, bytes, offset~, len~) {
+impl @io.BinaryWriter for PasteOutput
+
+///|
+impl @io.BinaryWriterImpl for PasteOutput with fn name(_) {
+  "PasteOutput"
+}
+
+///|
+impl @io.BinaryWriterImpl for PasteOutput with fn get_controller(self) {
+  self.controller
+}
+
+///|
+impl @io.BinaryWriterImpl for PasteOutput with fn flush_partial_data(_) {
+  ()
+}
+
+///|
+impl @io.BinaryWriterImpl for PasteOutput with fn raw_write_impl(
+  self,
+  bytes,
+  offset~,
+  len~,
+) {
   for i in offset..<(offset + len) {
     self.bytes.push(bytes[i])
   }
@@ -69,8 +116,11 @@ async test "paste serial delimiters and repeated input ownership preserve bytes"
   for serial in [true, false] {
     let reader = @io.MemoryReader(writer => writer.write(b"a\x00b\x00\xfftail"))
     defer reader.close()
-    let scanner = @stream.LineScanner::new(reader, delimiter=b'\x00')
-    let output : PasteOutput = { bytes: [], }
+    let scanner = @stream.LineScanner::from_binary(reader, delimiter=b'\x00')
+    let output : PasteOutput = {
+      controller: @io.BinaryWriterController(),
+      bytes: [],
+    }
     if serial {
       paste_serial(scanner, [b",", b""], b'\x00', writer=output)
     } else {
@@ -95,8 +145,11 @@ async test "paste preserves the emitted prefix on input failure" {
       fail("injected read failure")
     })
     defer reader.close()
-    let scanner = @stream.LineScanner::new(reader)
-    let output : PasteOutput = { bytes: [], }
+    let scanner = @stream.LineScanner::from_binary(reader)
+    let output : PasteOutput = {
+      controller: @io.BinaryWriterController(),
+      bytes: [],
+    }
     let failed = try {
       if serial {
         paste_serial(scanner, [b","], b'\n', writer=output)

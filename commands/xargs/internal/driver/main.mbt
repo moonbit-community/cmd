@@ -102,8 +102,8 @@ fn parse_positive(value : String, option : String) -> Int32 raise XargsError {
 async fn parse_positive_or_exit(value : String, option : String) -> Int32? {
   try parse_positive(value, option) catch {
     XargsError(message) => {
-      @stdio.stderr.write("xargs: \{message}\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("xargs: \{message}\n")
+      @env.exit(1)
       None
     }
   } noraise {
@@ -129,7 +129,7 @@ async fn run_child(
   context : @process.ExecutionContext,
   verbose : Bool,
   launch~ : async (@process.ChildSpec) -> Int32 = spec => @process.run(spec),
-  diagnose~ : async (String) -> Unit = text => @stdio.stderr.write(text),
+  diagnose~ : async (String) -> Unit = text => @stdio.stderr.text.write(text),
 ) -> ChildOutcome {
   if verbose {
     let command_line = program + " " + arguments.join(" ") + "\n"
@@ -140,7 +140,7 @@ async fn run_child(
       diagnose("xargs: cannot run '\{program}': \{err}\n")
       return FailedToLaunch(
         match err {
-          @os_error.OSError(_) as os if os.is_ENOENT() => CommandNotFound
+          @os_error.OsError(NotFound, ..) => CommandNotFound
           _ => CommandNotInvokable
         },
       )
@@ -174,7 +174,7 @@ fn combine_status(current : Int32, child : ChildOutcome) -> Int32 {
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("xargs \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("xargs \{MODULE_VERSION}\n")
     return
   }
   let mut args = @env.args()[1:].to_owned()
@@ -212,10 +212,10 @@ pub async fn run_main() -> Unit {
       interactive = true
     } else if options && metadata_option_matches("delimiter", arg) {
       if i + 1 >= args.length() {
-        @stdio.stderr.write(
+        @stdio.stderr.text.write(
           "xargs: option requires an argument -- 'd'\nTry 'xargs --help' for more information.\n",
         )
-        @sys.exit(1)
+        @env.exit(1)
         return
       }
       i += 1
@@ -241,8 +241,8 @@ pub async fn run_main() -> Unit {
       show_limits = true
     } else if options && metadata_option_matches("max-args", arg) {
       if i + 1 >= args.length() {
-        @stdio.stderr.write("xargs: option requires an argument: -n\n")
-        @sys.exit(1)
+        @stdio.stderr.text.write("xargs: option requires an argument: -n\n")
+        @env.exit(1)
         return
       }
       i += 1
@@ -250,8 +250,8 @@ pub async fn run_main() -> Unit {
       max_args = value
     } else if options && metadata_option_matches("max-lines", arg) {
       if i + 1 >= args.length() {
-        @stdio.stderr.write("xargs: option requires an argument: -L\n")
-        @sys.exit(1)
+        @stdio.stderr.text.write("xargs: option requires an argument: -L\n")
+        @env.exit(1)
         return
       }
       i += 1
@@ -259,8 +259,8 @@ pub async fn run_main() -> Unit {
       max_lines = value
     } else if options && metadata_option_matches("max-chars", arg) {
       if i + 1 >= args.length() {
-        @stdio.stderr.write("xargs: option requires an argument: -s\n")
-        @sys.exit(1)
+        @stdio.stderr.text.write("xargs: option requires an argument: -s\n")
+        @env.exit(1)
         return
       }
       i += 1
@@ -268,8 +268,8 @@ pub async fn run_main() -> Unit {
       max_bytes = value
     } else if options && metadata_option_matches("P", arg) {
       if i + 1 >= args.length() {
-        @stdio.stderr.write("xargs: option requires an argument: -P\n")
-        @sys.exit(1)
+        @stdio.stderr.text.write("xargs: option requires an argument: -P\n")
+        @env.exit(1)
         return
       }
       i += 1
@@ -277,8 +277,8 @@ pub async fn run_main() -> Unit {
       max_procs = value
     } else if options && metadata_option_matches("eof", arg) {
       if i + 1 >= args.length() {
-        @stdio.stderr.write("xargs: option requires an argument: -E\n")
-        @sys.exit(1)
+        @stdio.stderr.text.write("xargs: option requires an argument: -E\n")
+        @env.exit(1)
         return
       }
       i += 1
@@ -289,8 +289,8 @@ pub async fn run_main() -> Unit {
       eof_string = Some(arg[6:].to_owned())
     } else if options && metadata_option_matches("replace", arg) {
       if i + 1 >= args.length() {
-        @stdio.stderr.write("xargs: option requires an argument: \{arg}\n")
-        @sys.exit(1)
+        @stdio.stderr.text.write("xargs: option requires an argument: \{arg}\n")
+        @env.exit(1)
         return
       }
       i += 1
@@ -335,7 +335,7 @@ pub async fn run_main() -> Unit {
         _ => max_procs = value
       }
     } else if options && metadata_option_matches("help", arg) {
-      @stdio.stdout.write(metadata_help())
+      @stdio.stdout.text.write(metadata_help())
       return
     } else if options && arg.has_prefix("-") && arg != "-" {
       let mut valid = true
@@ -348,8 +348,8 @@ pub async fn run_main() -> Unit {
         }
       }
       if !valid {
-        @stdio.stderr.write("xargs: unsupported option: \{arg}\n")
-        @sys.exit(1)
+        @stdio.stderr.text.write("xargs: unsupported option: \{arg}\n")
+        @env.exit(1)
         return
       }
     } else {
@@ -359,7 +359,7 @@ pub async fn run_main() -> Unit {
     i += 1
   }
   if delimiter is Some(_) && eof_string is Some(_) {
-    @stdio.stderr.write(
+    @stdio.stderr.text.write(
       "xargs: warning: the -E option has no effect if -0 or -d is used.\n\n",
     )
     eof_string = None
@@ -371,10 +371,10 @@ pub async fn run_main() -> Unit {
     command[1:].to_owned()
   }
   if command_size([program], prefix) > max_bytes.to_int64() {
-    @stdio.stderr.write(
+    @stdio.stderr.text.write(
       "xargs: cannot fit single argument within argument list size limit\n",
     )
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let confirmation : @fs.File? = if interactive {
@@ -382,10 +382,10 @@ pub async fn run_main() -> Unit {
     Some(
       @fs.open(device, mode=ReadOnly) catch {
         _ => {
-          @stdio.stderr.write(
+          @stdio.stderr.text.write(
             "xargs: unsupported capability: independent confirmation channel unavailable\n",
           )
-          @sys.exit(2)
+          @env.exit(2)
           return
         }
       },
@@ -395,7 +395,7 @@ pub async fn run_main() -> Unit {
   }
   defer (if confirmation is Some(file) { file.close() })
   if show_limits {
-    @stdio.stdout.write("max-args-bytes: \{max_bytes}\n")
+    @stdio.stdout.text.write("max-args-bytes: \{max_bytes}\n")
     return
   }
   let mode : InputMode = match delimiter {
@@ -422,7 +422,7 @@ pub async fn run_main() -> Unit {
   let diagnose : async (String) -> Unit = text => {
     diagnostic_slot.acquire()
     defer diagnostic_slot.release()
-    @stdio.stderr.write(text)
+    @stdio.stderr.text.write(text)
   }
   let status = run_stream(
     batches,
@@ -444,25 +444,25 @@ pub async fn run_main() -> Unit {
     },
   ) catch {
     ArgvBytesBoundary => {
-      @stdio.stderr.write(
+      @stdio.stderr.text.write(
         "xargs: unsupported capability: non-UTF-8 argument transport\n",
       )
-      @sys.exit(2)
+      @env.exit(2)
       return
     }
     XargsError(message) => {
-      @stdio.stderr.write("xargs: \{message}\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("xargs: \{message}\n")
+      @env.exit(1)
       return
     }
     error => {
-      @stdio.stderr.write("xargs: input or execution failed: \{error}\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("xargs: input or execution failed: \{error}\n")
+      @env.exit(1)
       return
     }
   }
   if status != 0 {
-    @sys.exit(status)
+    @env.exit(status)
     return
   }
 }

@@ -3,8 +3,8 @@
 pub async fn run_main() -> Unit {
   let args = @env.args()[1:]
   if args.length() == 1 && args[0] == "--help" {
-    @stdio.stdout.write(metadata_help())
+    @stdio.stdout.text.write(metadata_help())
   } else if args.length() == 1 && args[0] == "--version" {
-    @stdio.stdout.write("true \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("true \{MODULE_VERSION}\n")
   }
 }

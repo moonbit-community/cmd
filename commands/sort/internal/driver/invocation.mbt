@@ -71,7 +71,7 @@ async fn preflight_sources(sources : Array[String]) -> Unit {
   for source in sources {
     if source != "-" {
       let file = @fs.open(source, mode=ReadOnly) catch {
-        @os_error.OSError(_) as error =>
+        @os_error.OsError(_, ..) as error =>
           raise @order.CliError(
             "sort: cannot read: \{source}: \{os_message(error)}",
           )
@@ -89,11 +89,11 @@ async fn prepare_output(path : String, merge : Bool) -> Unit {
     mode=WriteOnly,
     create_mode=if merge { CreateNew } else { OpenOrCreate },
   ) catch {
-    @os_error.OSError(_) as error if merge && error.is_EEXIST() =>
+    @os_error.OsError(AlreadyExists, ..) if merge =>
       raise @order.CliError(
         "sort: unsupported capability: merge into existing output",
       )
-    @os_error.OSError(_) as error =>
+    @os_error.OsError(_, ..) as error =>
       raise @order.CliError("sort: open failed: \{path}: \{os_message(error)}")
     error => raise error
   }

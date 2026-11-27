@@ -17,7 +17,8 @@ async fn transform_stream(
   squeeze : FixedArray[Bool]?,
 ) -> Unit {
   let mut previous = -1
-  while @stream.read_chunk(@stdio.stdin) is Some(chunk) {
+  let chunks = @stream.ChunkReader::new(@stdio.stdin)
+  while chunks.read() is Some(chunk) {
     let out : Array[Byte] = []
     for input in chunk {
       let input_code = input.to_int()
@@ -45,7 +46,7 @@ async fn transform_stream(
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("tr \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("tr \{MODULE_VERSION}\n")
     return
   }
   let args = @env.args()[1:]
@@ -77,14 +78,14 @@ pub async fn run_main() -> Unit {
           )
         _ => (text, "")
       }
-      @stdio.stderr.write("tr: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("tr: \{message}: '\{option}'\n")
+      @env.exit(1)
       return
     }
   }
   let operands = parsed.values.get("operands").unwrap_or([])
   if parsed.flags.contains("help") {
-    @stdio.stdout.write(metadata_help())
+    @stdio.stdout.text.write(metadata_help())
     return
   }
   let delete = parsed.flags.contains("delete")
@@ -94,13 +95,13 @@ pub async fn run_main() -> Unit {
   let truncate_set1 = parsed.flags.contains("truncate-set1")
   let sets = operands
   if sets.is_empty() {
-    @stdio.stderr.write("tr: missing operand\n")
-    @sys.exit(1)
+    @stdio.stderr.text.write("tr: missing operand\n")
+    @env.exit(1)
     return
   }
   if sets.length() > 2 {
-    @stdio.stderr.write("tr: extra operand '\{sets[2]}'\n")
-    @sys.exit(1)
+    @stdio.stderr.text.write("tr: extra operand '\{sets[2]}'\n")
+    @env.exit(1)
     return
   }
   try {
@@ -117,11 +118,11 @@ pub async fn run_main() -> Unit {
     }
     if @env.get_env_var("POSIXLY_CORRECT") is None {
       for warning in set1_details.warnings {
-        @stdio.stderr.write(warning)
+        @stdio.stderr.text.write(warning)
       }
       for details in set2_details {
         for warning in details.warnings {
-          @stdio.stderr.write(warning)
+          @stdio.stderr.text.write(warning)
         }
       }
     }
@@ -197,13 +198,13 @@ pub async fn run_main() -> Unit {
     }
   } catch {
     @sets.CliError(msg) => {
-      @stdio.stderr.write("\{msg}\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("\{msg}\n")
+      @env.exit(1)
       return
     }
     err => {
-      @stdio.stderr.write("tr: \{err}\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("tr: \{@stream.transport_cause(err)}\n")
+      @env.exit(1)
       return
     }
   }

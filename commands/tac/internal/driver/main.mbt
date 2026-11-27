@@ -14,7 +14,7 @@ pub async fn run_main() -> Unit {
   let parsed = @cli.parse(@env.args()[1:], option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
       @stdio.stderr.write("tac: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -25,7 +25,7 @@ pub async fn run_main() -> Unit {
   let value = parsed.last_value("separator").unwrap_or(DEFAULT_SEPARATOR)
   if parsed.contains("regex") && value.is_empty() {
     @stdio.stderr.write("tac: separator cannot be empty\n")
-    @sys.exit(1)
+    @env.exit(1)
     return
   }
   let regex = try {
@@ -45,12 +45,12 @@ pub async fn run_main() -> Unit {
         _ => message
       }
       @stdio.stderr.write("tac: " + message + "\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
     error => {
       @stdio.stderr.write("tac: " + error.to_string() + "\n")
-      @sys.exit(1)
+      @env.exit(1)
       return
     }
   }
@@ -115,7 +115,7 @@ pub async fn run_main() -> Unit {
     }
   }
   if status != 0 {
-    @sys.exit(status)
+    @env.exit(status)
   }
 }
 

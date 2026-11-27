@@ -1,6 +1,6 @@
 name = "cli/typst"
 
-version = "0.1.3"
+version = "0.1.4"
 
 readme = "README.md"
 
@@ -16,5 +16,5 @@ import {
   "moonbitlang/typst@0.1.10",
   "moonbitlang/pdflite@0.4.2",
   "moonbitlang/async@0.22.9",
-  "moonbitlang/x@0.5.7",
+  "moonbitlang/x@0.5.9",
 }

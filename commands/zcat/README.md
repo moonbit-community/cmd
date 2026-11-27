@@ -30,4 +30,6 @@ Use `--help` for the complete option list.
 
 - Checksums are verified. A corrupt later member may fail after earlier decompressed bytes have already been written.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

@@ -2,7 +2,6 @@
 package "cli/core/stream"
 
 import {
-  "moonbitlang/async/io",
   "moonbitlang/core/buffer",
   "moonbitlang/core/debug",
 }
@@ -10,23 +9,33 @@ import {
 // Values
 pub let chunk_size : Int32
 
-pub async fn flush_buffer(&@io.Writer, @buffer.Buffer) -> Unit
+pub async fn flush_binary(&@moonbitlang/core/async/io.BinaryWriter, @buffer.Buffer) -> Unit
 
-pub async fn read_chunk(&@io.Reader) -> Bytes?
+pub async fn flush_buffer(&@moonbitlang/async/io.Writer, @buffer.Buffer) -> Unit
+
+pub async fn read_chunk(&@moonbitlang/async/io.Reader) -> Bytes?
+
+pub fn transport_cause(Error) -> Error
 
 // Errors
 
 // Types and methods
 type BlockWriter
 pub async fn BlockWriter::flush(Self) -> Unit
-pub fn BlockWriter::new(&@io.Writer, size? : Int32, line_buffered? : Bool) -> Self
+pub fn BlockWriter::from_binary(&@moonbitlang/core/async/io.BinaryWriter, size? : Int32, line_buffered? : Bool) -> Self
+pub fn BlockWriter::new(&@moonbitlang/async/io.Writer, size? : Int32, line_buffered? : Bool) -> Self
 pub fn BlockWriter::try_write_slice(Self, FixedArray[Byte], Int32, Int32) -> Bool raise
-pub async fn BlockWriter::write(Self, &@io.Data) -> Unit
+pub async fn BlockWriter::write(Self, &@moonbitlang/async/io.Data) -> Unit
 pub async fn BlockWriter::write_bytes(Self, BytesView) -> Unit
 pub async fn BlockWriter::write_once(Self, Bytes, offset~ : Int32, len~ : Int32) -> Int32
-pub async fn BlockWriter::write_reader(Self, &@io.Reader) -> Unit
+pub async fn BlockWriter::write_reader(Self, &@moonbitlang/async/io.Reader) -> Unit
 pub async fn BlockWriter::write_slice(Self, FixedArray[Byte], Int32, Int32) -> Unit
-pub impl @io.Writer for BlockWriter
+pub impl @moonbitlang/async/io.Writer for BlockWriter
+pub impl @moonbitlang/core/async/io.BinaryWriter for BlockWriter
+
+type ChunkReader
+pub fn ChunkReader::new(&@moonbitlang/core/async/io.BinaryReader, size? : Int32) -> Self
+pub async fn ChunkReader::read(Self) -> Bytes?
 
 #derive(Eq, @debug.Debug)
 pub(all) struct Line {
@@ -41,7 +50,8 @@ pub struct LineScanner {
   records : RecordReader
   mut batch : RecordBatch?
 }
-pub fn LineScanner::new(&@io.Reader, delimiter? : Byte) -> Self
+pub fn LineScanner::from_binary(&@moonbitlang/core/async/io.BinaryReader, delimiter? : Byte) -> Self
+pub fn LineScanner::new(&@moonbitlang/async/io.Reader, delimiter? : Byte) -> Self
 pub async fn LineScanner::next(Self) -> Line?
 
 type RecordBatch
@@ -49,7 +59,8 @@ pub fn RecordBatch::each_while(Self, (BytesView, Bool) -> Bool) -> Bool
 pub fn RecordBatch::next(Self) -> RecordView?
 
 type RecordReader
-pub fn RecordReader::new(&@io.Reader, delimiter? : Byte) -> Self
+pub fn RecordReader::from_binary(&@moonbitlang/core/async/io.BinaryReader, delimiter? : Byte) -> Self
+pub fn RecordReader::new(&@moonbitlang/async/io.Reader, delimiter? : Byte) -> Self
 pub async fn RecordReader::next_batch(Self) -> RecordBatch?
 
 pub(all) struct RecordView {

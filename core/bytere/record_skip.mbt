@@ -19,8 +19,8 @@ fn RecordSkip::advance(
   let membership = self.membership
   let mut pos = start
   while data.length() - pos >= 16 {
-    let bytes = @v128.i64x2_replace_lane(
-      @v128.i64x2_splat(data.unsafe_read_uint64_le(pos)),
+    let bytes = @simd.i64x2_replace_lane(
+      @simd.i64x2_splat(data.unsafe_read_uint64_le(pos)),
       data.unsafe_read_uint64_le(pos + 8),
       1,
     )

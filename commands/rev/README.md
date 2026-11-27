@@ -27,4 +27,6 @@ Read files or stdin, reverse each record and write it with its original record s
 
 - Non-ASCII input is rejected. Memory use grows with the longest record; NUL-delimited records are supported.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

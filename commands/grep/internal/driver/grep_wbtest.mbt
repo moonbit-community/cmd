@@ -52,11 +52,35 @@ test "fixed matcher accepts byte-decoded records" {
 
 ///|
 priv struct CapturedOutput {
+  controller : @io.BinaryWriterController
   bytes : Array[Byte]
 }
 
 ///|
-impl @io.Writer for CapturedOutput with fn write_once(
+fn CapturedOutput::new() -> CapturedOutput {
+  { controller: @io.BinaryWriterController(), bytes: [], }
+}
+
+///|
+impl @io.BinaryWriter for CapturedOutput
+
+///|
+impl @io.BinaryWriterImpl for CapturedOutput with fn name(_) {
+  "CapturedOutput"
+}
+
+///|
+impl @io.BinaryWriterImpl for CapturedOutput with fn get_controller(self) {
+  self.controller
+}
+
+///|
+impl @io.BinaryWriterImpl for CapturedOutput with fn flush_partial_data(_) {
+  ()
+}
+
+///|
+impl @io.BinaryWriterImpl for CapturedOutput with fn raw_write_impl(
   self,
   bytes,
   offset~,
@@ -116,8 +140,8 @@ async test "streamed grep preserves binary decisions and error prefixes" {
       )
     })
     defer input.close()
-    let output : CapturedOutput = { bytes: [], }
-    let errors : CapturedOutput = { bytes: [], }
+    let output = CapturedOutput::new()
+    let errors = CapturedOutput::new()
     let options = { ..streaming_options(), binary_mode: mode, }
     assert_eq(
       process_reader(
@@ -140,8 +164,8 @@ async test "streamed grep preserves binary decisions and error prefixes" {
     fail("later read failed")
   })
   defer input.close()
-  let output : CapturedOutput = { bytes: [], }
-  let errors : CapturedOutput = { bytes: [], }
+  let output = CapturedOutput::new()
+  let errors = CapturedOutput::new()
   let options = { ..streaming_options(), binary_mode: Text, }
   try
     process_reader(
@@ -169,8 +193,8 @@ async test "streamed quiet grep completes while its producer remains open" {
     @async.sleep(10000)
   })
   defer input.close()
-  let output : CapturedOutput = { bytes: [], }
-  let errors : CapturedOutput = { bytes: [], }
+  let output = CapturedOutput::new()
+  let errors = CapturedOutput::new()
   let options = { ..streaming_options(), quiet: true, }
   let matcher = Matcher::Fixed([b"needle"], false, false)
   assert_true(

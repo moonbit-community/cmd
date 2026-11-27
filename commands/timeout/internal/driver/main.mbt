@@ -30,7 +30,7 @@ fn parse_duration(value : String) -> Int32 raise {
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("timeout \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("timeout \{MODULE_VERSION}\n")
     return
   }
   let args = @env.args()[1:]
@@ -45,22 +45,22 @@ pub async fn run_main() -> Unit {
     } else if options && arg == "--" {
       options = false
     } else if options && arg == "--help" {
-      @stdio.stdout.write(metadata_help())
+      @stdio.stdout.text.write(metadata_help())
       return
     } else if options && (arg == "--preserve-status" || arg == "--foreground") {
-      @stdio.stderr.write("timeout: unsupported option: \{arg}\n")
-      @sys.exit(125)
+      @stdio.stderr.text.write("timeout: unsupported option: \{arg}\n")
+      @env.exit(125)
       return
     } else if options && arg.has_prefix("-") && arg != "-" {
-      @stdio.stderr.write("timeout: unsupported option: \{arg}\n")
-      @sys.exit(125)
+      @stdio.stderr.text.write("timeout: unsupported option: \{arg}\n")
+      @env.exit(125)
       return
     } else {
       duration = Some(
         parse_duration(arg) catch {
           _ => {
-            @stdio.stderr.write("timeout: invalid duration: \{arg}\n")
-            @sys.exit(125)
+            @stdio.stderr.text.write("timeout: invalid duration: \{arg}\n")
+            @env.exit(125)
             return
           }
         },
@@ -71,14 +71,14 @@ pub async fn run_main() -> Unit {
   let milliseconds = match duration {
     Some(value) => value
     None => {
-      @stdio.stderr.write("timeout: missing duration\n")
-      @sys.exit(125)
+      @stdio.stderr.text.write("timeout: missing duration\n")
+      @env.exit(125)
       return
     }
   }
   if command.is_empty() {
-    @stdio.stderr.write("timeout: missing command\n")
-    @sys.exit(125)
+    @stdio.stderr.text.write("timeout: missing command\n")
+    @env.exit(125)
     return
   }
   let context = @process.ExecutionContext::current()
@@ -86,11 +86,11 @@ pub async fn run_main() -> Unit {
     @process.run(@process.child(command[0], command[1:].to_owned(), context~))
   }) catch {
     err => {
-      @stdio.stderr.write("timeout: cannot run '\{command[0]}': \{err}\n")
-      @sys.exit(
+      @stdio.stderr.text.write("timeout: cannot run '\{command[0]}': \{err}\n")
+      @env.exit(
         @process.launch_failure_status(
           match err {
-            @os_error.OSError(_) as os if os.is_ENOENT() => CommandNotFound
+            @os_error.OsError(NotFound, ..) => CommandNotFound
             _ => CommandNotInvokable
           },
         ),
@@ -99,10 +99,10 @@ pub async fn run_main() -> Unit {
     }
   }
   match result {
-    Some(code) => if code != 0 { @sys.exit(code) }
+    Some(code) => if code != 0 { @env.exit(code) }
     None => {
-      @stdio.stderr.write("timeout: command timed out\n")
-      @sys.exit(124)
+      @stdio.stderr.text.write("timeout: command timed out\n")
+      @env.exit(124)
     }
   }
 }

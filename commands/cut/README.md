@@ -33,7 +33,7 @@ Read files or stdin and write selected portions of each record. Lists accept ind
 
 ## Notes
 
-Compatible with the MoonBit 2026-11-17 toolchain.
+Build from source with the MoonBit 1.0 RC1 toolchain.
 
 - Selection is byte-oriented; character mode does not provide multibyte character slicing.
 

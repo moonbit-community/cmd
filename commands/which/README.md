@@ -29,4 +29,6 @@ Search PATH or inspect an explicit path. Windows also uses PATHEXT.
 
 - Shell aliases, functions and builtins are not searched.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

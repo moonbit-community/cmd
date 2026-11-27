@@ -88,13 +88,18 @@ test "base32 byte encoding preserves every byte and wrap boundaries" {
 ///|
 async test "base32 whole input acceptance retains fragments and read failures" {
   let input = Bytes::makei(65539, i => (i % 251).to_byte())
+  let encoded = encode_bytes(input, 0)
   let reader = @io.MemoryReader(writer => {
-    writer.write(input[:1])
-    writer.write(input[1:65536])
-    writer.write(input[65536:])
+    writer.write(encoded[:1])
+    writer.write(encoded[1:65536])
+    writer.write(encoded[65536:])
   })
   defer reader.close()
-  assert_eq(read_input(reader), input)
+  let decoded = @io.MemoryReader(writer => {
+    convert(reader, true, false, 0, writer~)
+  })
+  defer decoded.close()
+  assert_eq(decoded.read_all(), input)
   let failed = @io.MemoryReader(writer => {
     writer.write(b"accepted prefix")
     fail("base32 late read error")
@@ -102,10 +107,13 @@ async test "base32 whole input acceptance retains fragments and read failures" {
   defer failed.close()
   assert_true(
     try {
-      ignore(read_input(failed))
+      convert(failed, true, false, 0)
       false
     } catch {
-      _ => true
+      error =>
+        @stream.transport_cause(error)
+        .to_string()
+        .contains("base32 late read error")
     },
   )
 }

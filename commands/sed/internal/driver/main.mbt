@@ -2,11 +2,11 @@
 async fn run(args : ArrayView[String]) -> Int32 {
   let parsed = @cli.parse(args, option_specs())
   if parsed.contains("help") {
-    @stdio.stdout.write(metadata_help())
+    @stdio.stdout.text.write(metadata_help())
     return 0
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("sed \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("sed \{MODULE_VERSION}\n")
     return 0
   }
   let scripts : Array[String] = []
@@ -20,7 +20,7 @@ async fn run(args : ArrayView[String]) -> Int32 {
       e += 1
     }
     if option == "file" {
-      scripts.push(@bytere.text(@fs.read_file(script_files[f]).binary()))
+      scripts.push(@bytere.text(@fs.read_binary(script_files[f])))
       f += 1
     }
   }
@@ -43,7 +43,7 @@ async fn run(args : ArrayView[String]) -> Int32 {
   let runtime : Runtime = {
     previous: None,
     missing_newline: false,
-    output: @stream.BlockWriter::new(@stdio.stdout),
+    output: @stream.BlockWriter::from_binary(@stdio.stdout),
   }
   let input : Input = {
     paths: files,
@@ -66,19 +66,19 @@ async fn run(args : ArrayView[String]) -> Int32 {
 pub async fn run_main() -> Unit {
   let status = run(@env.args()[1:]) catch {
     @program.SedLabelError(message) => {
-      @stdio.stderr.write("sed: \{message}\n")
+      @stdio.stderr.text.write("sed: \{message}\n")
       4
     }
     @program.SedError(message) | @bytere.PatternError(message) => {
-      @stdio.stderr.write("sed: \{message}\n")
+      @stdio.stderr.text.write("sed: \{message}\n")
       1
     }
     err => {
-      @stdio.stderr.write("sed: \{err}\n")
+      @stdio.stderr.text.write("sed: \{err}\n")
       1
     }
   }
   if status != 0 {
-    @sys.exit(status)
+    @env.exit(status)
   }
 }

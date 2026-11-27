@@ -57,7 +57,7 @@ fn TableRenderer::fill(
 ///|
 async fn Snapshot::render_table(
   self : Snapshot,
-  output : &@io.Writer,
+  output : &@io.BinaryWriter,
   output_separator : String,
 ) -> Unit {
   let renderer : TableRenderer = {

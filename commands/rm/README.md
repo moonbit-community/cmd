@@ -37,4 +37,6 @@ Use `--help` for the complete option list.
 - Terminal-sensitive write-protection prompts are unavailable. Use an explicit interactive mode when confirmation is needed.
 - Final dot/dot-dot operands and symbolic-link operands ending in a separator are refused. Earlier successful removals are not rolled back.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

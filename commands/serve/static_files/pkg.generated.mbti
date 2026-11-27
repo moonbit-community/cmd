@@ -2,7 +2,7 @@
 package "cli/serve/static_files"
 
 import {
-  "moonbitlang/async/http",
+  "moonbitlang/core/async/http",
 }
 
 // Values
@@ -14,7 +14,7 @@ pub struct Directory {
   // private fields
 }
 pub async fn Directory::Directory(String) -> Self
-pub async fn Directory::serve(Self, @http.Request, @http.ServerConnection, path? : String) -> Unit
+pub async fn Directory::serve(Self, @http.RequestHeader, @http.ServerConnection, path? : String) -> Unit
 
 // Type aliases
 

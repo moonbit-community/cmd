@@ -120,19 +120,20 @@ async test "Windows file predicates retain the host normalized parent-component 
   @fs.write_file(root + "/known", "data")
   // This external observer only establishes the native Windows path contract.
   // The product still passes raw paths to the public MoonBit filesystem API.
-  let (status, output) = @async.with_timeout(10000, () => {
-    @async_process.collect_stdout(
+  let output = @async.with_timeout(10000, () => {
+    @async_process.run(
       "powershell.exe",
       [
         "-NoProfile", "-NonInteractive", "-Command", "$ErrorActionPreference = 'Stop'; $r = $env:MOONCMD_SHELL_PATH_ROOT; [Console]::Write(([IO.File]::Exists($r + '/missing/../known')).ToString() + '|' + [IO.File]::ReadAllText($r + '/missing/../known') + '|' + ([IO.File]::Exists($r + '/known/child')).ToString() + '|' + ([IO.File]::Exists($r + '/missing')).ToString())",
       ],
       extra_env=Map([("MOONCMD_SHELL_PATH_ROOT", root)]),
+      stdout=Collect,
     )
   }) catch {
     error => fail("required Windows path observer failed: \{error}")
   }
-  assert_eq(status, 0)
-  assert_eq(output.text(), "True|data|False|False")
+  assert_eq(output.exit_code, 0)
+  assert_eq(output.stdout_text(), "True|data|False|False")
   let errors : ShellTestOutput = { bytes: [], }
   let session = Session::new(cwd=root, env={}, error=errors)
   for value in ["missing/../known", "known/../known"] {

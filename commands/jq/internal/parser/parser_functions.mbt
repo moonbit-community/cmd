@@ -31,11 +31,11 @@ fn Parser::parse_function_def(self : Parser) -> @ast.Expr raise ParseError {
   }
   self.expect(TColon)
   let visible = self.functions.copy()
-  visible.add("\{name}/\{params.length()}")
+  visible.insert("\{name}/\{params.length()}")
   self.functions = visible.copy()
   for param in params {
     if !param.has_prefix("$") {
-      self.functions.add(param + "/0")
+      self.functions.insert(param + "/0")
     }
   }
   let body = self.parse_pipe()

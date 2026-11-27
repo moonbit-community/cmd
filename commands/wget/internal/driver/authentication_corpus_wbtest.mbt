@@ -46,7 +46,7 @@ async fn authentication_cases() -> Array[AuthenticationCase] {
       fixture.label != "" && !seen.contains(fixture.label),
       msg="missing or duplicate authentication ID",
     )
-    seen.add(fixture.label)
+    seen.insert(fixture.label)
     assert_true(!fixture.urls.is_empty(), msg=fixture.label)
     assert_eq(
       fixture.oracle_request_lines.length(),
@@ -59,7 +59,7 @@ async fn authentication_cases() -> Array[AuthenticationCase] {
         route.path.has_prefix("/") && !paths.contains(route.path),
         msg=fixture.label,
       )
-      paths.add(route.path)
+      paths.insert(route.path)
       assert_true(
         route.failure_status == 401 || route.failure_status == 403,
         msg=fixture.label,

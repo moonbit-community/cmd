@@ -20,7 +20,7 @@ pub fn result_integrity_errors(
     if seen.contains(report.id) {
       errors.push("duplicate result: " + report.id)
     }
-    seen.add(report.id)
+    seen.insert(report.id)
     if !["pass", "fail", "skip", "infra"].contains(report.result) {
       errors.push("unknown result status: " + report.id)
     }

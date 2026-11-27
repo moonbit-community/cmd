@@ -34,7 +34,7 @@ async fn main {
       !seen.contains(command) else {
       fail("unknown, empty or duplicate resource command: " + command)
     }
-    seen.add(command)
+    seen.insert(command)
   }
   let sizes : Array[Int64] = []
   for
@@ -423,5 +423,5 @@ async fn main {
     }
   }
   println("resource completed failures=\{failures}")
-  @sys.exit(if failures == 0 { 0 } else { 1 })
+  @env.exit(if failures == 0 { 0 } else { 1 })
 }

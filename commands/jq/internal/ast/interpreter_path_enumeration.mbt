@@ -59,7 +59,7 @@ fn iter_paths(
   let path : Array[Json] = []
   let stack_ref : Ref[Array[PathFrame]] = Ref([])
   let root_pending : Ref[Bool] = Ref(true)
-  Iter::new(fn() {
+  Iter::Iter(fn() {
     if root_pending.val {
       root_pending.val = false
       let root_has_children = push_container_frame(stack_ref.val, input, false)

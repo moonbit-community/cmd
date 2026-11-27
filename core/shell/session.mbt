@@ -31,7 +31,7 @@ pub fn Session::new(
   let variables = Map(env.to_array())
   variables["PWD"] = cwd
   let exported = Set(env.keys().collect())
-  exported.add("PWD")
+  exported.insert("PWD")
   let context : Context = {
     env: variables,
     exported,

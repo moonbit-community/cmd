@@ -53,7 +53,7 @@ fn DeflateBits::stored(
     self.align()
     self.put(count.reinterpret_as_uint(), 16)
     self.put((count ^ 0xffff).reinterpret_as_uint(), 16)
-    self.bytes.write_bytes(input[offset:offset + count])
+    self.bytes.write_bytesview(input[offset:offset + count])
     offset += count
     if last {
       break

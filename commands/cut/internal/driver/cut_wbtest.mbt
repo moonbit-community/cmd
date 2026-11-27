@@ -49,7 +49,7 @@ async fn same_delimiter_output(
 ) -> Bytes {
   let reader = @io.MemoryReader(writer => writer.write(input))
   defer reader.close()
-  let scanner = @stream.LineScanner::new(reader, delimiter=b'\x00')
+  let scanner = @stream.LineScanner::from_binary(reader, delimiter=b'\x00')
   let output = @io.MemoryReader(writer => {
     cut_same_delimiter(
       scanner,
@@ -61,7 +61,7 @@ async fn same_delimiter_output(
     )
   })
   defer output.close()
-  output.read_all().binary()
+  output.read_all()
 }
 
 ///|
@@ -72,7 +72,7 @@ async fn no_fields_output(input : Bytes) -> Bytes {
     cut_no_fields(reader, b':', b'\n', false, writer~)
   })
   defer output.close()
-  output.read_all().binary()
+  output.read_all()
 }
 
 ///|

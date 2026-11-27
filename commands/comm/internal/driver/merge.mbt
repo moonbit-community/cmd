@@ -14,9 +14,9 @@ priv struct CommInput {
 }
 
 ///|
-fn CommInput::new(reader : &@io.Reader, delimiter : Byte) -> CommInput {
+fn CommInput::new(reader : &@io.BinaryReader, delimiter : Byte) -> CommInput {
   {
-    records: @stream.RecordReader::new(reader, delimiter~),
+    records: @stream.RecordReader::from_binary(reader, delimiter~),
     batch: None,
     current: None,
     previous: None,
@@ -119,7 +119,7 @@ fn CommMerge::pump(self : CommMerge) -> CommAction {
         self.count2 += 1
         self.right.needed = true
         if !self.hide2 {
-          self.output.write_bytes(self.prefix2)
+          self.output.write_bytesview(self.prefix2)
         }
         !self.hide2
       }
@@ -128,13 +128,13 @@ fn CommMerge::pump(self : CommMerge) -> CommAction {
         self.left.needed = true
         self.right.needed = true
         if !self.hide3 {
-          self.output.write_bytes(self.prefix3)
+          self.output.write_bytesview(self.prefix3)
         }
         !self.hide3
       }
     }
     if visible {
-      self.output.write_bytes(line)
+      self.output.write_bytesview(line)
       self.output.write_byte(self.record_delimiter)
       if self.output.length() >= 65536 {
         return Flush

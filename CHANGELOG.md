@@ -12,6 +12,22 @@ are preserved in the
 [pre-consolidation changelog](https://github.com/moonbit-community/cmd/blob/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/CHANGELOG.md)
 and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dffa0e7709809569bbb1/docs/adr).
 
+## 2026-11-27
+
+- Migrate eleven command drivers to standard-library asynchronous I/O on MoonBit
+  1.0 RC1. These patch versions are development candidates.
+- Use x file identity for equal-time POSIX mv update and interactive moves.
+- Move curl and wget transport to standard TCP and TLS and serve to the
+  standard HTTP listener. Preserve the clients’ byte-level HTTP framing.
+- Use standard child processes for env, timeout, xargs and shell redirections.
+- Migrate checksum and gzip codecs, binary comparison, numeric output and
+  byte-formatting commands to standard async I/O.
+- Move grep, sed and sort record processing and rg stdout to standard binary I/O.
+- Migrate fourteen stream consumers to standard binary readers and writers,
+  preserving bounded reads, record ownership and partial-write behavior.
+- Update the workspace for RC1's implicit async runtime, standard SIMD package,
+  buffer and collection APIs. Use x 0.5.9 in command modules that depend on x.
+
 ## 2026-11-18
 
 Development candidates; publication follows validation.

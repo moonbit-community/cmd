@@ -1,10 +1,14 @@
 import {
-  "moonbitlang/core/v128",
+  "moonbitlang/core/simd",
 }
 
-// `moonbitlang/core/v128` (SIMD) is marked experimental; using it is the
+// `moonbitlang/core/simd` (SIMD) is marked experimental; using it is the
 // point of this package.
 
 warnings = "-implicit_impl_as_method-alert_experimental"
 
 supported_targets = "wasm"
+
+options(
+  "allow-experimental-packages": [ "moonbitlang/core/simd" ],
+)

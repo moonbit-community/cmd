@@ -159,7 +159,7 @@ pub fn oracle_profile_errors(profile : OracleProfile) -> Array[String] {
         "invalid or duplicate oracle upstream source: " + source.project,
       )
     }
-    projects.add(source.project)
+    projects.insert(source.project)
   }
   for
     (project, prefix) in [

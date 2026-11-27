@@ -33,4 +33,6 @@ Use `--help` for the complete option list.
 
 - Supports the documented 7-bit/8-bit byte profiles, including tabs. Wide encodings, Unicode classification and object-file section parsing are unsupported.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

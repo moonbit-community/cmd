@@ -25,8 +25,8 @@ Reuse the format while arguments remain. Backslash escapes, numeric formatting a
 
 ## Notes
 
-Compatible with the MoonBit 2026-11-17 toolchain.
-
 - Numeric formatting uses the fixed Linux amd64 extended-precision profile. Locale-specific formatting is unsupported.
+
+Build from source with the MoonBit 1.0 RC1 toolchain.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

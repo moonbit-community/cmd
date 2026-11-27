@@ -26,23 +26,20 @@ fn Connection::close(self : Connection) -> Unit {
 }
 
 ///|
-async fn Connection::read_some(self : Connection, max_len~ : Int32) -> Bytes? {
+fn Connection::reader(self : Connection) -> &@io.BinaryReader {
   match self.kind {
-    Plain(socket) => socket.read_some(max_len~)
-    Secure(tls, _) => tls.read_some(max_len~)
+    Plain(socket) => socket as &@io.BinaryReader
+    Secure(tls, _) => tls as &@io.BinaryReader
   }
 }
 
 ///|
-impl @io.Writer for Connection with fn write_once(self, bytes, offset~, len~) {
+async fn Connection::write(self : Connection, bytes : BytesView) -> Unit {
   match self.kind {
-    Plain(socket) => socket.write_once(bytes, offset~, len~)
-    Secure(tls, _) => tls.write_once(bytes, offset~, len~)
+    Plain(socket) => socket.write(bytes)
+    Secure(tls, _) => tls.write(bytes)
   }
 }
-
-///|
-extend Connection with @io.Writer::{write}
 
 ///|
 async fn Connection::secure(
@@ -50,9 +47,12 @@ async fn Connection::secure(
   host : String,
   trust : @tls.TrustedRoot,
 ) -> Connection {
+  // Close-delimited HTTPS bodies also accept peers that close the TCP stream.
   let tls = match self.kind {
-    Plain(socket) => @tls.Tls::client(socket, host~, trust~)
-    Secure(tls, _) => @tls.Tls::client(tls, host~, trust~)
+    Plain(socket) =>
+      @tls.Tls::client(socket, host~, trust~, require_shutdown=false)
+    Secure(tls, _) =>
+      @tls.Tls::client(tls, host~, trust~, require_shutdown=false)
   }
   Connection::new(Secure(tls, self))
 }
@@ -82,10 +82,14 @@ async fn connect_endpoint(
   trust : @tls.TrustedRoot,
 ) -> Connection {
   let hostname = parsed.socket_host()
+  let port = parsed.socket_port()
+  guard port >= 0 && port <= 65535 else {
+    raise transfer_error(ConnectionFailure, "invalid URL port")
+  }
   let base = match proxy {
     None =>
       Connection::new(
-        Plain(@socket.Tcp::connect_to_host(hostname, port=parsed.socket_port())),
+        Plain(@socket.Tcp::connect_to_host(hostname, port=port.to_uint16())),
       )
     Some(proxy) => {
       let connection = connect_endpoint(proxy, None, trust)

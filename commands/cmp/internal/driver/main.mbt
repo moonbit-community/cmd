@@ -31,7 +31,7 @@ fn parse_skips(text : String) -> (Int64, Int64) raise CliError {
 }
 
 ///|
-async fn drop_bytes(reader : &@io.Reader, count : Int64) -> Unit {
+async fn drop_bytes(reader : &@io.BinaryReader, count : Int64) -> Unit {
   let mut remaining = count
   while remaining > 0 {
     let request = if remaining > 0x3FFF_FFFF {
@@ -39,11 +39,11 @@ async fn drop_bytes(reader : &@io.Reader, count : Int64) -> Unit {
     } else {
       remaining.to_int()
     }
-    let dropped = reader.drop(request)
-    if dropped < request {
-      return
+    reader.drop_exactly(request) catch {
+      UnexpectedEof => return
+      error => raise error
     }
-    remaining -= dropped.to_int64()
+    remaining -= request.to_int64()
   }
 }
 
@@ -136,8 +136,8 @@ async fn offset_width(
 
 ///|
 async fn compare_readers(
-  left : &@io.Reader,
-  right : &@io.Reader,
+  left : &@io.BinaryReader,
+  right : &@io.BinaryReader,
   left_name : String,
   right_name : String,
   silent : Bool,
@@ -150,6 +150,8 @@ async fn compare_readers(
 ) -> Bool {
   drop_bytes(left, skip_left)
   drop_bytes(right, skip_right)
+  let left_chunks = @stream.ChunkReader::new(left)
+  let right_chunks = @stream.ChunkReader::new(right)
   let mut left_chunk : Bytes? = None
   let mut right_chunk : Bytes? = None
   let mut left_pos = 0
@@ -160,11 +162,11 @@ async fn compare_readers(
   let mut line_start = true
   while limit is None || compared < limit.unwrap() {
     if left_chunk is None || left_pos >= left_chunk.unwrap().length() {
-      left_chunk = left.read_some(max_len=65536)
+      left_chunk = left_chunks.read()
       left_pos = 0
     }
     if right_chunk is None || right_pos >= right_chunk.unwrap().length() {
-      right_chunk = right.read_some(max_len=65536)
+      right_chunk = right_chunks.read()
       right_pos = 0
     }
     match (left_chunk, right_chunk) {
@@ -183,7 +185,7 @@ async fn compare_readers(
             " after byte \{compared}, in line \{line}"
           }
           let name = @quoting.locale_quote(@utf8.encode(shorter)[:])
-          @stdio.stderr.write("cmp: EOF on \{name}\{ending}\n")
+          @stdio.stderr.text.write("cmp: EOF on \{name}\{ending}\n")
         }
         break
       }
@@ -218,7 +220,7 @@ async fn compare_readers(
             different = true
             let position = compared + offset.to_int64() + 1
             if !silent && !verbose {
-              @stdio.stdout.write(
+              @stdio.stdout.text.write(
                 first_difference(
                   left_name, right_name, position, line, left_byte, right_byte, print_bytes,
                 ),
@@ -226,7 +228,7 @@ async fn compare_readers(
               return true
             }
             if verbose && !silent {
-              @stdio.stdout.write(
+              @stdio.stdout.text.write(
                 verbose_difference(
                   position, left_byte, right_byte, width, print_bytes,
                 ),
@@ -262,27 +264,27 @@ fn pad_left(text : String, width : Int32) -> String {
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("cmp \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("cmp \{MODULE_VERSION}\n")
     return
   }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
-      @stdio.stderr.write("cmp: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @stdio.stderr.text.write("cmp: \{message}: '\{option}'\n")
+      @env.exit(2)
       return
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write(metadata_help())
+    @stdio.stdout.text.write(metadata_help())
     return
   }
   let files = parsed.operands
   let silent = parsed.contains("silent") || parsed.contains("quiet")
   let verbose = parsed.contains("verbose")
   if silent && verbose {
-    @stdio.stderr.write("cmp: options -l and -s are incompatible\n")
-    @sys.exit(2)
+    @stdio.stderr.text.write("cmp: options -l and -s are incompatible\n")
+    @env.exit(2)
     return
   }
   let limit = match parsed.last_value("bytes") {
@@ -290,8 +292,8 @@ pub async fn run_main() -> Unit {
       Some(
         parse_count(value, "byte limit") catch {
           CliError(message) => {
-            @stdio.stderr.write(message + "\n")
-            @sys.exit(2)
+            @stdio.stderr.text.write(message + "\n")
+            @env.exit(2)
             return
           }
         },
@@ -302,24 +304,24 @@ pub async fn run_main() -> Unit {
     Some(value) =>
       parse_skips(value) catch {
         CliError(message) => {
-          @stdio.stderr.write(message + "\n")
-          @sys.exit(2)
+          @stdio.stderr.text.write(message + "\n")
+          @env.exit(2)
           return
         }
       }
     None => (0L, 0L)
   }
   if files.length() < 1 || files.length() > 2 {
-    @stdio.stderr.write("cmp: expected two distinct input sources\n")
-    @sys.exit(2)
+    @stdio.stderr.text.write("cmp: expected two distinct input sources\n")
+    @env.exit(2)
     return
   }
   let sources = if files.length() == 1 { [files[0], "-"] } else { files }
   let width = offset_width(sources, (skip_left, skip_right), limit)
   let print_bytes = parsed.contains("print-bytes")
   if sources[0] == "-" && sources[1] == "-" {
-    @stdio.stderr.write("cmp: expected two distinct input sources\n")
-    @sys.exit(2)
+    @stdio.stderr.text.write("cmp: expected two distinct input sources\n")
+    @env.exit(2)
     return
   }
   let different = try {
@@ -376,12 +378,12 @@ pub async fn run_main() -> Unit {
     }
   } catch {
     err => {
-      @stdio.stderr.write("cmp: \{err}\n")
-      @sys.exit(2)
+      @stdio.stderr.text.write("cmp: \{@stream.transport_cause(err)}\n")
+      @env.exit(2)
       return
     }
   }
   if different {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

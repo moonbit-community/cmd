@@ -1,12 +1,36 @@
 ///|
 priv struct JoinSink {
+  controller : @io.BinaryWriterController
   bytes : Array[Byte]
   mut calls : Int32
   fail_after : Int32
 }
 
 ///|
-impl @io.Writer for JoinSink with fn write_once(self, data, offset~, len~) {
+impl @io.BinaryWriter for JoinSink
+
+///|
+impl @io.BinaryWriterImpl for JoinSink with fn name(_) {
+  "JoinSink"
+}
+
+///|
+impl @io.BinaryWriterImpl for JoinSink with fn get_controller(self) {
+  self.controller
+}
+
+///|
+impl @io.BinaryWriterImpl for JoinSink with fn flush_partial_data(_) {
+  ()
+}
+
+///|
+impl @io.BinaryWriterImpl for JoinSink with fn raw_write_impl(
+  self,
+  data,
+  offset~,
+  len~,
+) {
   self.calls += 1
   guard self.calls <= self.fail_after else { fail("join sink failure") }
   let count = if self.fail_after < 100 { len.min(3) } else { len }
@@ -18,14 +42,19 @@ impl @io.Writer for JoinSink with fn write_once(self, data, offset~, len~) {
 
 ///|
 async test "join buffered output flushes before the next external read" {
-  let sink : JoinSink = { bytes: [], calls: 0, fail_after: 100, }
+  let sink : JoinSink = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+    calls: 0,
+    fail_after: 100,
+  }
   let left = @io.MemoryReader(writer => {
-    writer.write("a L1\nb L2\n")
-    writer.write("c L3\n")
+    writer.write(b"a L1\nb L2\n")
+    writer.write(b"c L3\n")
     assert_eq(Bytes::from_array(sink.bytes), b"a L1 R1\n")
   })
   defer left.close()
-  let right = @io.MemoryReader(writer => writer.write("a R1\nb R2\nc R3\n"))
+  let right = @io.MemoryReader(writer => writer.write(b"a R1\nb R2\nc R3\n"))
   defer right.close()
   merge_readers(
     left,
@@ -51,10 +80,15 @@ async test "join buffered output flushes before the next external read" {
 
 ///|
 async test "join output retains duplicate products and never replays a failed write" {
-  let sink : JoinSink = { bytes: [], calls: 0, fail_after: 100, }
-  let left = @io.MemoryReader(writer => writer.write("a L1\na L2\nz end"))
+  let sink : JoinSink = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+    calls: 0,
+    fail_after: 100,
+  }
+  let left = @io.MemoryReader(writer => writer.write(b"a L1\na L2\nz end"))
   defer left.close()
-  let right = @io.MemoryReader(writer => writer.write("a R1\na R2\nz last"))
+  let right = @io.MemoryReader(writer => writer.write(b"a R1\na R2\nz last"))
   defer right.close()
   merge_readers(
     left,
@@ -79,8 +113,13 @@ async test "join output retains duplicate products and never replays a failed wr
     Bytes::from_array(sink.bytes),
     b"a L1 R1\na L1 R2\na L2 R1\na L2 R2\nz end last\n",
   )
-  let failed : JoinSink = { bytes: [], calls: 0, fail_after: 1, }
-  let output = @stream.BlockWriter::new(failed)
+  let failed : JoinSink = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+    calls: 0,
+    fail_after: 1,
+  }
+  let output = @stream.BlockWriter::from_binary(failed)
   write_joined(
     output,
     Some({ fields: [b"a", b"left"], }),

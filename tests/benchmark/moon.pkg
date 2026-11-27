@@ -16,11 +16,11 @@ import {
   "moonbitlang/core/string",
   "moonbitlang/x/path",
   "moonbitlang/x/crypto",
-  "moonbitlang/x/sys",
 }
 
 import {
   "cli/core/gzipops",
+  "moonbitlang/core/async/fs" @binary_fs,
   "moonbitlang/core/buffer",
   "moonbitlang/core/double",
 } for "wbtest"

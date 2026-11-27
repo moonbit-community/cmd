@@ -162,11 +162,12 @@ fn make_hasher(spec : DigestSpec) -> Hasher {
 ///|
 pub async fn digest_reader(
   spec : DigestSpec,
-  reader : &@io.Reader,
+  reader : &@io.BinaryReader,
 ) -> (Bytes, UInt64) {
   let hasher = make_hasher(spec)
   let mut length = 0UL
-  while reader.read_some(max_len=65536) is Some(chunk) {
+  let chunks = @stream.ChunkReader::new(reader)
+  while chunks.read() is Some(chunk) {
     (hasher.update)(chunk)
     length += chunk.length().to_uint64()
   }
