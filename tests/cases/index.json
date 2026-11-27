@@ -80,6 +80,71 @@
       "oracle_profile": ""
     },
     {
+      "behavior_id": "case:md5sum-posix-default-marker",
+      "command": "md5sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/md5sum.json",
+      "case_id": "md5sum-posix-default-marker",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:sha1sum-posix-default-marker",
+      "command": "sha1sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha1sum.json",
+      "case_id": "sha1sum-posix-default-marker",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:sha256sum-posix-default-marker",
+      "command": "sha256sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha256sum.json",
+      "case_id": "sha256sum-posix-default-marker",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:sha512sum-posix-default-marker",
+      "command": "sha512sum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/sha512sum.json",
+      "case_id": "sha512sum-posix-default-marker",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:cksum-posix-default-marker",
+      "command": "cksum",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/cksum.json",
+      "case_id": "cksum-posix-default-marker",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
       "behavior_id": "case:cksum-windows-checksum-modes",
       "command": "cksum",
       "status": "supported",

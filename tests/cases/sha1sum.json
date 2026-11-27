@@ -2,6 +2,24 @@
   "schema": 2,
   "cases": [
     {
+      "id": "sha1sum-posix-default-marker",
+      "command": "sha1sum",
+      "args": [],
+      "files": [],
+      "stdin_text": "",
+      "environment": {},
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "expected_stdout_text": "da39a3ee5e6b4b0d3255bfef95601890afd80709  -\n",
+      "expected_stderr_text": "",
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11 on POSIX"
+    },
+    {
       "id": "sha1sum-windows-checksum-modes",
       "command": "sha1sum",
       "isolated": true,

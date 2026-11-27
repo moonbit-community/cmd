@@ -47,7 +47,13 @@ async fn windows_checksum_scenario(
   assert_eq(version.status, 0)
   assert_true(@harness.scenario_text(version.stdout).contains("GNU coreutils"))
   let differences : Array[String] = []
-  for (mode, flags) in [("default", []), ("binary", ["-b"]), ("text", ["-t"])] {
+  for
+    (mode, flags) in [
+      ("default", []),
+      ("binary", ["-b"]),
+      ("text", ["-t"]),
+      ("zero", ["-z"]),
+    ] {
     for source in ["file", "redirect", "pipe"] {
       let args = if source == "file" { [..flags, "payload"] } else { flags }
       let label = mode + "-" + source
