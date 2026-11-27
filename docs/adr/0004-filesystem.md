@@ -148,6 +148,11 @@ an unrelated core publication. Revisit the adapter when a deliberate release
 updates this command's dependency coordinate. Mode tests retain the numeric
 boundaries and symbolic interpretation, while filesystem scenarios own effects.
 
+For regular files, symbolic chmod evaluates explicit-class expressions over
+the possible initial modes before mutating a path. A fixed result permits
+class copies, incremental clauses, special bits and conditional execute.
+Expressions whose result depends on the file still require a public mode read.
+
 | Area | Current choice and limitation |
 | --- | --- |
 | realpath | Public physical resolution; lexical -m/-s and relative-to/base rules. Windows physical modes expand existing 8.3 aliases; lexical modes preserve spelling. Unresolved link targets need readlink. |

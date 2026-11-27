@@ -2,6 +2,246 @@
   "schema": 2,
   "cases": [
     {
+      "id": "chmod-symbolic-increments",
+      "command": "chmod",
+      "args": [
+        "a=rw,u+x",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "payload",
+          "mode": 384
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "input",
+          "kind": "file",
+          "content_text": "payload",
+          "mode": 502
+        }
+      ],
+      "coverage": [
+        "symbolic-assignment"
+      ],
+      "source_version": "GNU coreutils chmod"
+    },
+    {
+      "id": "chmod-symbolic-copy",
+      "command": "chmod",
+      "args": [
+        "a=rw,u+x,g=u,o=g-w",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "payload",
+          "mode": 384
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "input",
+          "kind": "file",
+          "content_text": "payload",
+          "mode": 509
+        }
+      ],
+      "coverage": [
+        "symbolic-assignment"
+      ],
+      "source_version": "GNU coreutils chmod"
+    },
+    {
+      "id": "chmod-symbolic-conditional",
+      "command": "chmod",
+      "args": [
+        "a=r,u+x,g+X",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "payload",
+          "mode": 384
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "input",
+          "kind": "file",
+          "content_text": "payload",
+          "mode": 364
+        }
+      ],
+      "coverage": [
+        "symbolic-assignment"
+      ],
+      "source_version": "GNU coreutils chmod"
+    },
+    {
+      "id": "chmod-symbolic-subtract-copy",
+      "command": "chmod",
+      "args": [
+        "a=rwx,g-u",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "payload",
+          "mode": 384
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "input",
+          "kind": "file",
+          "content_text": "payload",
+          "mode": 455
+        }
+      ],
+      "coverage": [
+        "symbolic-assignment"
+      ],
+      "source_version": "GNU coreutils chmod"
+    },
+    {
+      "id": "chmod-symbolic-depends",
+      "command": "chmod",
+      "args": [
+        "u+x",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "payload",
+          "mode": 384
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "chmod: invalid mode 'u+x': result depends on existing permission bits\n",
+      "expected_files": [
+        {
+          "path": "input",
+          "kind": "file",
+          "content_text": "payload",
+          "mode": 384
+        }
+      ],
+      "coverage": [
+        "symbolic-assignment"
+      ],
+      "source_version": "Mode-read capability boundary"
+    },
+    {
+      "id": "chmod-symbolic-subtract-mixed",
+      "command": "chmod",
+      "args": [
+        "a-u",
+        "input"
+      ],
+      "files": [
+        {
+          "path": "input",
+          "content_text": "payload",
+          "mode": 384
+        }
+      ],
+      "stdin_text": "",
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "host_platforms": [
+        "posix"
+      ],
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": false,
+      "expected_stdout_text": "",
+      "expected_stderr_text": "chmod: invalid mode 'a-u': result depends on existing permission bits\n",
+      "expected_files": [
+        {
+          "path": "input",
+          "kind": "file",
+          "content_text": "payload",
+          "mode": 384
+        }
+      ],
+      "coverage": [
+        "symbolic-assignment"
+      ],
+      "source_version": "Mode-read capability boundary"
+    },
+    {
       "id": "phase4-chmod-numeric",
       "command": "chmod",
       "args": [
@@ -145,7 +385,7 @@
         "help"
       ],
       "source_version": "workspace cli/chmod@0.2.5 metadata contract",
-      "expected_stdout_text": "Usage: chmod [-R] [-v] MODE FILE...\n      --help      display this help and exit\n      --version   display version and exit\nWindows permission changes and --reference are unsupported. Symbolic assignments must cover u/g/o explicitly and apply only to regular files.\n       chmod [-R] [-v] --reference=RFILE FILE...\nMODE may be numeric or a complete symbolic '=' assignment such as a=rwx or u=rw,g=r,o=.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+      "expected_stdout_text": "Usage: chmod [-R] [-v] MODE FILE...\n      --help      display this help and exit\n      --version   display version and exit\nWindows permission changes and --reference are unsupported. Regular-file symbolic modes require explicit classes and a result independent of the old bits.\n       chmod [-R] [-v] --reference=RFILE FILE...\nMODE may be numeric or symbolic, for example a=rw,u+x or u=rw,g=u,o=.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
       "expected_stderr_text": "",
       "aliases": [
         "compat-catalog-line-32"
@@ -169,7 +409,7 @@
         "version"
       ],
       "source_version": "workspace cli/chmod@0.2.5 metadata contract",
-      "expected_stdout_text": "chmod 0.2.8\n",
+      "expected_stdout_text": "chmod 0.2.9\n",
       "expected_stderr_text": ""
     },
     {
