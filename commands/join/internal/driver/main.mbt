@@ -98,8 +98,8 @@ fn compare_bytes(left : Bytes, right : Bytes, ignore_case : Bool) -> Int32 {
   for index = 0; index < length; index = index + 1 {
     let a = left[index]
     let b = right[index]
-    let a = if a >= b'A' && a <= b'Z' { a.to_int() + 32 } else { a.to_int() }
-    let b = if b >= b'A' && b <= b'Z' { b.to_int() + 32 } else { b.to_int() }
+    let a = if a >= b'a' && a <= b'z' { a.to_int() - 32 } else { a.to_int() }
+    let b = if b >= b'a' && b <= b'z' { b.to_int() - 32 } else { b.to_int() }
     if a != b {
       return a - b
     }

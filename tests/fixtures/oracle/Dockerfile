@@ -321,6 +321,30 @@ RUN curl --fail --location --retry 5 \
   && install -m 0755 typst-x86_64-unknown-linux-musl/typst /oracle/bin/typst \
   && rm -rf typst.tar.xz typst-x86_64-unknown-linux-musl
 
+FROM toolchain AS build-archives
+
+ARG TAR_VERSION=1.35+dfsg-3ubuntu0.4
+ARG TAR_SHA256=fdf41a87936824e50c8ac11b0b22d1395aeb0754feef2dae5575b5d5a93793ec
+ARG ZIP_VERSION=3.0-13build1
+ARG ZIP_SHA256=5c1a2dfb052f50e7031037aa2e267839804d2254c4d282040fdfe826ffba1e38
+ARG UNZIP_VERSION=6.0-28ubuntu4.1
+ARG UNZIP_SHA256=a505b9d491386167bd8e14e3383315a4a7d6539e4406745901ccf009a7988271
+
+RUN for package in tar zip unzip; do \
+      case "$package" in \
+        tar) version="$TAR_VERSION"; digest="$TAR_SHA256"; directory=t/tar ;; \
+        zip) version="$ZIP_VERSION"; digest="$ZIP_SHA256"; directory=z/zip ;; \
+        unzip) version="$UNZIP_VERSION"; digest="$UNZIP_SHA256"; directory=u/unzip ;; \
+      esac; \
+      curl --fail --location --retry 5 \
+        "https://archive.ubuntu.com/ubuntu/pool/main/$directory/${package}_${version}_amd64.deb" \
+        --output archive.deb \
+      && echo "$digest  archive.deb" | sha256sum --check --strict \
+      && dpkg-deb -x archive.deb unpacked \
+      && install -m 0755 "unpacked/usr/bin/$package" "/oracle/bin/$package" \
+      && rm -rf archive.deb unpacked || exit 1; \
+    done
+
 FROM toolchain AS oracle
 
 COPY --from=build-coreutils /oracle/ /oracle/
@@ -341,6 +365,7 @@ COPY --from=build-binutils /oracle/ /oracle/
 COPY --from=build-tree /oracle/ /oracle/
 COPY --from=build-ripgrep /oracle/ /oracle/
 COPY --from=build-typst /oracle/ /oracle/
+COPY --from=build-archives /oracle/ /oracle/
 
 # Advance only the reviewed PSL data. Keep the compiled clients and their
 # PSL/IDNA libraries byte-identical when adding fixed diagnostic observers.

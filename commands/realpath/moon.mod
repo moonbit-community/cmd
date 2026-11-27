@@ -15,7 +15,7 @@ preferred_target = "wasm"
 description = "realpath command for MoonX."
 
 import {
-  "cli/core@0.11.4",
+  "cli/core@0.11.9",
   "moonbitlang/async@0.22.9",
   "moonbitlang/x@0.5.9",
 }

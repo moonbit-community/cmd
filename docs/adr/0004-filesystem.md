@@ -313,3 +313,21 @@ partially installed file. Truncate can open a path with truncation to zero.
 A positioned last-byte write extends a regular file when the caller controls
 concurrent writers. Arbitrary shrinking, or zeroing an already-checked handle
 after a relative-size calculation, needs a handle resize operation.
+## Archive members
+
+GNU tar and Info-ZIP zip/unzip provide the operation and byte references on Linux.
+Linux, macOS and Windows run the same Wasm command modules. The ustar reader
+checks header sums, sizes, padding and termination. The standard gzip and ZIP
+codecs check compressed data and ZIP checksums within the 64 MiB budget.
+The public async filesystem supplies directory enumeration and exclusive file
+creation. A member can supply regular-file bytes or a directory. Archive modes,
+ownership, timestamps and links do not alter host metadata.
+
+Extraction validates selected names and types before filesystem writes. Names
+must be portable relative paths. Existing parents must be directories when
+queried without following links. Files use exclusive creation. The caller must
+control the destination tree during extraction because pathname checks and
+opens are separate operations. Files completed before a subsequent I/O error
+remain present. Handle-relative no-follow opens would allow extraction in a
+concurrently modified tree. Safe replacement and metadata restoration require
+separate contracts.

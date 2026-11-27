@@ -26,7 +26,8 @@ fn Parser::take(self : Parser) -> String raise TestError {
 ///|
 fn is_unary(op : String) -> Bool {
   [
-    "n", "z", "e", "f", "d", "L", "h", "p", "S", "b", "c", "s", "N", "r", "w", "x",
+    "t", "n", "z", "e", "f", "d", "L", "h", "p", "S", "b", "c", "s", "N", "r", "w",
+    "x",
   ].any(name => metadata_option_matches(name, op))
 }
 
@@ -51,6 +52,21 @@ fn is_binary(op : String) -> Bool {
 ///|
 async fn eval_unary(op : String, value : String) -> Bool {
   match op {
+    "-t" => {
+      let fd = parse_integer(value)
+      guard fd >= 0L && fd <= 2L else {
+        raise TestError("unsupported standard descriptor: '" + value + "'")
+      }
+      @terminal.require_redirected(fd.to_int()) catch {
+        _ =>
+          raise TestError(
+            "unsupported capability: terminal detection for descriptor '" +
+            value +
+            "'",
+          )
+      }
+      false
+    }
     "-n" => value != ""
     "-z" => value == ""
     _ if is_unary(op) => test_file(op, value)

@@ -1,0 +1,7 @@
+import {
+  "cli/tar/internal/driver",
+}
+
+supported_targets = "wasm"
+
+pkgtype(kind: "executable")

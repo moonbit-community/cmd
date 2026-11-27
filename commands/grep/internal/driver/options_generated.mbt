@@ -2,7 +2,7 @@
 
 ///|
 fn metadata_help() -> String {
-  "Usage: grep [-EFGivnclLqHhxwrRbszo] [-A NUM] [-B NUM] [-C NUM] [--include=GLOB] [--exclude=GLOB] [--binary-files=TYPE] [-e PATTERN] [-f FILE] [PATTERN] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n-r and -R recurse without following symbolic links.\n"
+  "Usage: grep [-EFGIaivnclLqHhxwrRbszo] [-A NUM] [-B NUM] [-C NUM] [--include=GLOB] [--exclude=GLOB] [--binary-files=TYPE] [-e PATTERN] [-f FILE] [PATTERN] [FILE...]\n      --help      display this help and exit\n      --version   display version and exit\n-r and -R recurse without following symbolic links.\nC.UTF-8 matches UTF-8 characters, Unicode classes and simple case equivalents.\n"
 }
 
 ///|
@@ -28,6 +28,7 @@ fn option_specs() -> Array[@cli.OptionSpec] {
     @cli.flag("recursive", short='R'),
     @cli.flag("no-messages", short='s'),
     @cli.flag("null-data", short='z'),
+    @cli.flag("without-match", short='I'),
     @cli.flag("text", short='a'),
     @cli.option("after-context", short='A'),
     @cli.option("before-context", short='B'),

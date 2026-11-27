@@ -17,6 +17,7 @@ fn command_options(name : String) -> Array[String] {
         "algorithm", "length", "base64", "raw", "untagged", "tag", "binary", "text",
         "zero", "check", "ignore-missing", "quiet", "status", "strict", "warn",
       ]
+    "clear" => ["terminal", "keep-scrollback"]
     "cmp" => ["bytes", "ignore-initial", "silent", "verbose", "print-bytes"]
     "column" =>
       [
@@ -87,6 +88,7 @@ fn command_options(name : String) -> Array[String] {
         "prefix",
       ]
     "fold" => ["bytes", "characters", "spaces", "width", "version"]
+    "free" => ["bytes", "kibi", "mebi", "gibi", "wide", "total"]
     "grep" =>
       [
         "after-context", "before-context", "basic-regexp", "binary-files", "byte-offset",
@@ -94,8 +96,9 @@ fn command_options(name : String) -> Array[String] {
         "files-without-match", "fixed-strings", "ignore-case", "include", "invert-match",
         "line-number", "line-regexp", "no-filename", "no-messages", "null-data",
         "only-matching", "quiet", "recursive", "regexp", "text", "with-filename",
-        "word-regexp",
+        "without-match", "word-regexp",
       ]
+    "groups" => []
     "gunzip" =>
       [
         "stdout", "decompress", "test", "no-name", "quiet", "fast", "2", "3", "4",
@@ -113,6 +116,8 @@ fn command_options(name : String) -> Array[String] {
         "two-bytes-hex", "one-byte-hex", "length", "skip", "no-squeezing", "format",
         "format-file", "color", "version",
       ]
+    "hostname" => ["short"]
+    "id" => ["user", "group", "groups", "real", "name", "zero"]
     "install" => ["directory", "leading", "mode", "help", "version"]
     "join" =>
       [
@@ -127,6 +132,7 @@ fn command_options(name : String) -> Array[String] {
         "library-path",
       ]
     "jqlog" => ["file", "help"]
+    "kill" => ["list"]
     "ln" =>
       [
         "force", "no-target-directory", "symbolic", "verbose", "interactive", "relative",
@@ -164,6 +170,7 @@ fn command_options(name : String) -> Array[String] {
         "join-blank-lines", "no-renumber", "number-format", "number-separator", "number-width",
         "section-delimiter", "starting-line-number",
       ]
+    "nproc" => ["all", "ignore"]
     "od" =>
       [
         "address-radix", "skip-bytes", "read-bytes", "format", "endian", "width",
@@ -178,6 +185,7 @@ fn command_options(name : String) -> Array[String] {
       ]
     "printenv" => ["null"]
     "printf" => ["help"]
+    "ps" => ["pid", "format"]
     "pwd" => ["logical", "physical"]
     "readlink" =>
       [
@@ -252,10 +260,16 @@ fn command_options(name : String) -> Array[String] {
       [
         "bytes", "follow", "lines", "quiet", "sleep-interval", "verbose", "zero-terminated",
       ]
+    "tar" =>
+      [
+        "create", "list", "extract", "file", "gzip", "to-stdout", "help", "version",
+        "directory",
+      ]
     "tee" => ["append", "output-error"]
     "test" =>
       [
         "expression-language", "file-kinds", "access-checks", "size", "timestamps",
+        "t",
       ]
     "timeout" => ["duration"]
     "touch" =>
@@ -263,6 +277,7 @@ fn command_options(name : String) -> Array[String] {
         "access-time", "date", "modification-time", "no-create", "reference", "stamp",
         "time",
       ]
+    "tput" => ["terminal"]
     "tr" => ["complement", "delete", "squeeze-repeats", "truncate-set1"]
     "tree" =>
       [
@@ -272,11 +287,16 @@ fn command_options(name : String) -> Array[String] {
       ]
     "true" => ["help", "version"]
     "truncate" => ["size", "no-create", "help", "version", "reference"]
+    "tty" => ["silent"]
     "typst" =>
       [
         "input", "format", "root", "creation-timestamp", "pretty", "jobs", "in",
         "field", "one", "ignore-system-fonts", "ignore-embedded-fonts", "pages",
         "ppi", "deps", "no-serve", "timings", "update", "completions",
+      ]
+    "uname" =>
+      [
+        "kernel-name", "nodename", "kernel-release", "kernel-version", "operating-system",
       ]
     "unexpand" => ["all", "first-only", "tabs"]
     "uniq" =>
@@ -285,6 +305,12 @@ fn command_options(name : String) -> Array[String] {
         "skip-chars", "skip-fields", "unique", "zero-terminated",
       ]
     "unlink" => []
+    "unzip" =>
+      [
+        "names", "pipe", "test", "quiet", "never-overwrite", "directory", "help",
+        "version",
+      ]
+    "uptime" => ["pretty"]
     "wc" =>
       [
         "bytes", "chars", "files0-from", "lines", "max-line-length", "total", "words",
@@ -300,6 +326,7 @@ fn command_options(name : String) -> Array[String] {
         "no-cookies", "local-encoding", "config", "no-config", "execute",
       ]
     "which" => ["all", "silent", "version"]
+    "whoami" => []
     "xargs" =>
       [
         "max-args", "max-lines", "max-chars", "eof", "no-run-if-empty", "null", "delimiter",
@@ -315,6 +342,11 @@ fn command_options(name : String) -> Array[String] {
       [
         "stdout", "decompress", "test", "no-name", "quiet", "fast", "2", "3", "4",
         "5", "6", "7", "8", "best",
+      ]
+    "zip" =>
+      [
+        "recursive", "quiet", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "help",
+        "version", "test",
       ]
     _ => abort("unregistered command option declaration")
   }

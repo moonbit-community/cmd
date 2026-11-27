@@ -1,0 +1,7 @@
+import {
+  "cli/free/internal/driver",
+}
+
+supported_targets = "wasm"
+
+pkgtype(kind: "executable")

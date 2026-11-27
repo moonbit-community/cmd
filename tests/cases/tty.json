@@ -1,0 +1,69 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "tty-linux-pty",
+      "command": "tty",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "linux"
+      ]
+    },
+    {
+      "id": "tty-pipe",
+      "command": "tty",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "not a tty\n",
+      "expected_stderr_text": "",
+      "stdin_text": "redirected",
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "tty-silent-pipe",
+      "command": "tty",
+      "args": [
+        "-s"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "stdin_text": "redirected",
+      "host_platforms": [
+        "posix"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "tty-windows-refusal",
+      "command": "tty",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 2,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "tty: descriptor inspection is unavailable\n",
+      "host_platforms": [
+        "windows"
+      ]
+    }
+  ]
+}

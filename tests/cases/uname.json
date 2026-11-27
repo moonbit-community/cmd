@@ -1,0 +1,97 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "uname-fields-linux-reference",
+      "command": "uname",
+      "args": [
+        "-sro"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "linux"
+      ]
+    },
+    {
+      "id": "uname-extra-operand",
+      "command": "uname",
+      "args": [
+        "unexpected"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "uname: unexpected operand: unexpected\n"
+    },
+    {
+      "id": "uname-linux-kernel",
+      "command": "uname",
+      "args": [
+        "-s"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "Linux\n",
+      "expected_stderr_text": "",
+      "host_platforms": [
+        "linux"
+      ],
+      "oracle": true
+    },
+    {
+      "id": "uname-darwin-kernel",
+      "command": "uname",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "Darwin\n",
+      "expected_stderr_text": "",
+      "host_platforms": [
+        "macos"
+      ]
+    },
+    {
+      "id": "uname-windows-kernel",
+      "command": "uname",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "uname: kernel name is unavailable on Windows\n",
+      "host_platforms": [
+        "windows"
+      ]
+    },
+    {
+      "id": "uname-linux-reference",
+      "command": "uname",
+      "args": [
+        "-vrns"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "linux"
+      ]
+    }
+  ]
+}

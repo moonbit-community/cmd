@@ -232,11 +232,25 @@ pub async fn prepare_fixture(
           permission?=file.mode,
         )
     }
-    for (flag, time) in [("-a", file.atime), ("-m", file.mtime)] {
-      if time is Some(time) {
-        guard !(@async.platform is Windows) else {
-          fail("fixed timestamp fixture requires POSIX observer")
-        }
+    if @async.platform is Windows &&
+      (file.atime is Some(_) || file.mtime is Some(_)) {
+      let setup = run(
+        "powershell.exe",
+        [
+          "-NoProfile", "-NonInteractive", "-Command", "$ErrorActionPreference='Stop'; function Utc($value) { [DateTime]::SpecifyKind([DateTime]::ParseExact($value,'yyyyMMddHHmm.ss',[Globalization.CultureInfo]::InvariantCulture),[DateTimeKind]::Utc) }; $p=$env:MOONCMD_TIME_PATH; if ($env:MOONCMD_ATIME) { [IO.File]::SetLastAccessTimeUtc($p,(Utc $env:MOONCMD_ATIME)) }; if ($env:MOONCMD_MTIME) { [IO.File]::SetLastWriteTimeUtc($p,(Utc $env:MOONCMD_MTIME)) }",
+        ],
+        extra_env=Map([
+          ("MOONCMD_TIME_PATH", destination),
+          ("MOONCMD_ATIME", file.atime.unwrap_or("")),
+          ("MOONCMD_MTIME", file.mtime.unwrap_or("")),
+        ]),
+      )
+      guard setup.status == 0 else {
+        fail("fixed timestamp fixture failed: " + @utf8.decode(setup.stderr))
+      }
+    } else {
+      for (flag, time) in [("-a", file.atime), ("-m", file.mtime)] {
+        guard time is Some(time) else { continue }
         let set = run(
           "touch",
           [flag, "-t", time, destination],
