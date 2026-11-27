@@ -27,6 +27,6 @@ moonx cli/id -G
 
 ## Notes
 
-Reads real and effective IDs and supplementary groups from /proc/self/status. Names require an authoritative local files database. The default security-context report and named-user queries are unsupported.
+Linux reads real and effective IDs and supplementary groups from procfs. The default report resolves local account names. It requires matching real/effective groups and either POSIXLY_CORRECT or a kernel without SELinux/SMACK filesystems. Named-user and external directory lookups remain unsupported.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

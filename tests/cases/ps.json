@@ -2,6 +2,24 @@
   "schema": 2,
   "cases": [
     {
+      "id": "ps-fields-linux-reference",
+      "command": "ps",
+      "args": [
+        "-p",
+        "1",
+        "-o",
+        "pid=,ppid=,pgid=,sid=,comm="
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "linux"
+      ]
+    },
+    {
       "id": "ps-extra-operand",
       "command": "ps",
       "args": [

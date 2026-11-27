@@ -13,6 +13,10 @@ async fn run() -> Unit {
     raise Failure::Failure("unexpected operand: " + parsed.operands[0])
   }
   let modes = ["user", "group", "groups"].filter(mode => parsed.contains(mode))
+  if modes.is_empty() && parsed.order.is_empty() {
+    @stdio.stdout.text.write(@report.current(@procfs.credentials()) + "\n")
+    return
+  }
   guard modes is [mode] else {
     raise Failure::Failure("select exactly one of -u, -g or -G")
   }

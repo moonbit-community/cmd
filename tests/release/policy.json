@@ -17,6 +17,7 @@
       "releasable": true,
       "case_ids": [
         "uname-extra-operand",
+        "uname-fields-linux-reference",
         "uname-linux-kernel",
         "uname-darwin-kernel",
         "uname-windows-kernel",
@@ -58,6 +59,7 @@
       "releasable": true,
       "case_ids": [
         "id-extra-operand",
+        "id-fields-linux-reference",
         "id-linux-reference"
       ],
       "oracle_boundary": "Host-dependent observations must share the process, account or kernel namespace. The Linux correctness scenario compares the Wasm command with the host executable."
@@ -147,6 +149,7 @@
       "releasable": true,
       "case_ids": [
         "ps-extra-operand",
+        "ps-fields-linux-reference",
         "ps-no-such-process",
         "ps-linux-reference"
       ],

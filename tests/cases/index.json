@@ -2,6 +2,84 @@
   "schema": 3,
   "entries": [
     {
+      "behavior_id": "case:uname-fields-linux-reference",
+      "command": "uname",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/uname.json",
+      "case_id": "uname-fields-linux-reference",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:uname-fields-linux-reference",
+      "command": "uname",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::uname-fields-linux-reference",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:id-fields-linux-reference",
+      "command": "id",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/id.json",
+      "case_id": "id-fields-linux-reference",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:id-fields-linux-reference",
+      "command": "id",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::id-fields-linux-reference",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:ps-fields-linux-reference",
+      "command": "ps",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/ps.json",
+      "case_id": "ps-fields-linux-reference",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:ps-fields-linux-reference",
+      "command": "ps",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::ps-fields-linux-reference",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
       "behavior_id": "case:uname-linux-reference",
       "command": "uname",
       "status": "supported",

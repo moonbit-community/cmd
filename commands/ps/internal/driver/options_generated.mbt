@@ -2,7 +2,7 @@
 
 ///|
 fn metadata_help() -> String {
-  "Usage: ps -p PID -o comm=\nPrint the command name of a selected Linux process.\n  -p, --pid  Select a positive numeric process ID.\n  -o, --format  Print the process name without a heading.\n      --help      display this help and exit\n      --version   display version and exit\n"
+  "Usage: ps -p PID -o FIELD=\nPrint the command name of a selected Linux process.\n  -p, --pid  Select a positive numeric process ID.\n  -o, --format  Print selected no-heading process fields.\n      --help      display this help and exit\n      --version   display version and exit\n"
 }
 
 ///|

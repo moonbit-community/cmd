@@ -23,6 +23,8 @@ implement a faithful kill command.
 
 ## Command contracts
 
+Selected Linux process columns come from one `/proc/PID/stat` read, with PID width from the kernel PID limit. The default `id` report requires names from authoritative local sources and omits a security context only when the POSIX report or kernel support permits it.
+
 Linux system queries use the procfs/sysfs view of the running Wasm host. Account names require an authoritative local files source. CPU counts use affinity, cgroup v2 quotas and OpenMP settings. Memory and uptime are kernel-wide values. The Linux contracts compare against same-host GNU coreutils, hostname and procps-ng commands so the reference shares credentials and namespaces. Cross-platform identity, NSS, UTS fields, accounting records and process enumeration require additional public APIs. See the [system query profiles](../compatibility.md#system-information).
 
 | Command | Ownership and boundary |

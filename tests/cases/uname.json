@@ -2,6 +2,21 @@
   "schema": 2,
   "cases": [
     {
+      "id": "uname-fields-linux-reference",
+      "command": "uname",
+      "args": [
+        "-sro"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "linux"
+      ]
+    },
+    {
       "id": "uname-extra-operand",
       "command": "uname",
       "args": [

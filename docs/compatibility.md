@@ -12,14 +12,14 @@ test-tool consumers. The execution tools under `tests` and `tools` remain Native
 
 | Command | Supported host observations |
 | --- | --- |
-| [uname](../commands/uname/README.md) | Linux reads the selected kernel fields from procfs. macOS supports the kernel name `Darwin`. Windows kernel fields, machine architecture and the full `-a` form are unavailable. |
+| [uname](../commands/uname/README.md) | Linux reads kernel fields from procfs. `-o` emits the GNU operating-system label on Linux and macOS. macOS also supports the Darwin kernel name. Windows, machine architecture and the full `-a` form are unavailable. |
 | [hostname](../commands/hostname/README.md) | Reads `/proc/sys/kernel/hostname` in the current namespace. Name changes, resolver-derived aliases and other operating systems are unsupported. |
-| [id](../commands/id/README.md) | Reads real and effective IDs and supplementary groups from /proc/self/status. Names require an authoritative local files database. The default security-context report and named-user queries are unsupported. |
+| [id](../commands/id/README.md) | Linux reads real and effective IDs and supplementary groups from procfs. The default report resolves local account names. It requires matching real/effective groups and either POSIXLY_CORRECT or a kernel without SELinux/SMACK filesystems. Named-user and external directory lookups remain unsupported. |
 | [whoami](../commands/whoami/README.md) | Reads process credentials from Linux procfs. Names must resolve from the first configured local files source in /etc/nsswitch.conf. External directory lookups and named operands are unsupported. |
 | [groups](../commands/groups/README.md) | Reads process credentials from Linux procfs. Names must resolve from the first configured local files source in /etc/nsswitch.conf. External directory lookups and named operands are unsupported. |
 | [uptime](../commands/uptime/README.md) | Reads the first value of /proc/uptime, including suspend time. Calendar boot time, load averages and logged-in user counts are outside this profile. |
 | [free](../commands/free/README.md) | Uses a single /proc/meminfo snapshot with MemAvailable and SReclaimable. Reports kernel-wide RAM, including reclaimable slab, and swap. Values are independent of cgroup memory limits. |
-| [ps](../commands/ps/README.md) | Reads /proc/PID/comm in the visible Linux PID namespace. The supported no-heading comm format accepts printable ASCII names. A missing process returns status 1 and empty output. Other formats, selectors and listings are unsupported. |
+| [ps](../commands/ps/README.md) | Reads one `/proc/PID/stat` record for each selection. No-heading fields include `comm`, `pid`, `ppid`, `pgid`, `sid`, `tpgid`, `state`, `nice` and `nlwp`. Repeat `-o FIELD=` or use comma-separated fields. Names must be printable ASCII. A missing process returns status 1 with empty output. |
 | [nproc](../commands/nproc/README.md) | The default follows the current process affinity, OpenMP thread settings and the CPU quota hierarchy on a standard cgroup v2 mount. Realtime scheduling policies ignore quotas. --all counts configured CPU directories from sysfs. Nonstandard cgroup v2 mounts are rejected. |
 
 ## Workspace and published packages

@@ -2,7 +2,7 @@
 
 ///|
 fn metadata_help() -> String {
-  "Usage: id (-u|-g|-G) [-rnz]\nPrint the current process credentials on Linux.\n  -u, --user  Print only the user ID.\n  -g, --group  Print only the group ID.\n  -G, --groups  Print all group IDs.\n  -r, --real  Select the real user or group ID.\n  -n, --name  Print names from the local account database.\n  -z, --zero  Terminate entries with NUL.\n      --help      display this help and exit\n      --version   display version and exit\n"
+  "Usage: id [-u|-g|-G] [-rnz]\nPrint the current process credentials on Linux.\n  -u, --user  Print only the user ID.\n  -g, --group  Print only the group ID.\n  -G, --groups  Print all group IDs.\n  -r, --real  Select the real user or group ID.\n  -n, --name  Print names from the local account database.\n  -z, --zero  Terminate entries with NUL.\n      --help      display this help and exit\n      --version   display version and exit\n"
 }
 
 ///|

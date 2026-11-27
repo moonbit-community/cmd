@@ -16,13 +16,13 @@ moonx cli/ps -p 1 -o comm=
 | Option | Description |
 | --- | --- |
 | `-p VALUE`, `--pid VALUE` | Select a positive numeric process ID. |
-| `-o VALUE`, `--format VALUE` | Print the process name without a heading. |
+| `-o VALUE`, `--format VALUE` | Print selected no-heading process fields. |
 | `--help` | Show help. |
 | `--version` | Show the version. |
 <!-- END GENERATED OPTIONS -->
 
 ## Notes
 
-Reads /proc/PID/comm in the visible Linux PID namespace. The supported no-heading comm format accepts printable ASCII names. A missing process returns status 1 and empty output. Other formats, selectors and listings are unsupported.
+Reads one `/proc/PID/stat` record for each selection. No-heading fields include `comm`, `pid`, `ppid`, `pgid`, `sid`, `tpgid`, `state`, `nice` and `nlwp`. Repeat `-o FIELD=` or use comma-separated fields. Names must be printable ASCII. A missing process returns status 1 with empty output.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "command": "ps",
-  "help": "Usage: ps -p PID -o comm=\nPrint the command name of a selected Linux process.\n  -p, --pid  Select a positive numeric process ID.\n  -o, --format  Print the process name without a heading.\n{{help:help:0}}\n{{help:version:0}}\n",
+  "help": "Usage: ps -p PID -o FIELD=\nPrint the command name of a selected Linux process.\n  -p, --pid  Select a positive numeric process ID.\n  -o, --format  Print selected no-heading process fields.\n{{help:help:0}}\n{{help:version:0}}\n",
   "catalog_options": [
     "pid",
     "format"
@@ -26,7 +26,7 @@
         "--format"
       ],
       "value": "required",
-      "description": "Print the process name without a heading.",
+      "description": "Print selected no-heading process fields.",
       "short": "o",
       "repeatable": true,
       "allow_attached": true

@@ -270,7 +270,10 @@ fn command_options(name : String) -> Array[String] {
         "field", "one", "ignore-system-fonts", "ignore-embedded-fonts", "pages",
         "ppi", "deps", "no-serve", "timings", "update", "completions",
       ]
-    "uname" => ["kernel-name", "nodename", "kernel-release", "kernel-version"]
+    "uname" =>
+      [
+        "kernel-name", "nodename", "kernel-release", "kernel-version", "operating-system",
+      ]
     "unexpand" => ["all", "first-only", "tabs"]
     "uniq" =>
       [

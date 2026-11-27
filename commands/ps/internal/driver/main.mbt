@@ -13,25 +13,18 @@ async fn run() -> Unit {
     raise Failure::Failure("unexpected operand: " + parsed.operands[0])
   }
   guard parsed.values("pid") is [pid_text] &&
-    parsed.values("format") is ["comm="] else {
-    raise Failure::Failure("select one PID with -p PID -o comm=")
+    !parsed.values("format").is_empty() else {
+    raise Failure::Failure("select one PID with -p PID -o FIELD=")
   }
   let pid = @string.parse_uint(pid_text)
   guard pid > 0U else { raise Failure::Failure("PID must be positive") }
   guard @async.platform is Linux else {
     raise Failure::Failure("query requires Linux procfs")
   }
-  let comm = @fs.read_text("/proc/" + pid.to_string() + "/comm") catch {
-    @os_error.OsError(NotFound, ..) => @env.exit(1)
-    err => raise err
+  match @fields.rows(pid, parsed.values("format")) {
+    Some(output) => @stdio.stdout.text.write(output)
+    None => @env.exit(1)
   }
-  guard comm.strip_suffix("\n") is Some(name) &&
-    name.iter().all(ch => ch >= ' ' && ch <= '~') else {
-    raise Failure::Failure(
-      "process name is outside the printable ASCII profile",
-    )
-  }
-  @stdio.stdout.text.write(comm)
 }
 
 ///|

@@ -3,8 +3,7 @@ import {
   "moonbitlang/core/async/stdio",
   "moonbitlang/core/env",
   "moonbitlang/core/async",
-  "moonbitlang/core/async/fs",
-  "moonbitlang/core/async/os_error",
+  "cli/ps/internal/fields",
   "moonbitlang/core/string",
 }
 

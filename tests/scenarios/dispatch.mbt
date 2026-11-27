@@ -57,6 +57,12 @@ pub async fn execute_scenario(
     ),
     () => {
       match fixture.id {
+        "uname-fields-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "id-fields-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "ps-fields-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
         "uname-linux-reference" =>
           system_reference(work, root, fixture.command, fixture.args)
         "hostname-linux-reference" =>
