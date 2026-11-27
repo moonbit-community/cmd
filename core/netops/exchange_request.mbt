@@ -18,7 +18,8 @@ async fn open_transport(target : ParsedUrl, transport : Transport) -> HttpWire {
     created = Some(connection)
     HttpWire::new(connection)
   }) catch {
-    @tls.TlsError(message) => raise transfer_error(TlsFailure, message)
+    @tls.TlsError::_ as error =>
+      raise transfer_error(TlsFailure, error.to_string())
     TransferError(..) as error => raise error
     error =>
       raise transfer_error(
@@ -148,14 +149,13 @@ async fn HttpWire::write_exchange_body(
           )
       }
       defer file.close()
+      let chunks = @stream.ChunkReader::new(file)
       for ;; {
         let timeout = transport.timeout(
           transport.idle_timeout_ms,
           "request body input",
         )
-        let result = @async.with_timeout_opt(timeout, () => {
-          file.read_some(max_len=65536)
-        }) catch {
+        let result = @async.with_timeout_opt(timeout, () => chunks.read()) catch {
           error =>
             raise transfer_error(
               InputFailure,
@@ -169,15 +169,14 @@ async fn HttpWire::write_exchange_body(
         }
       }
     }
-    StdinBody =>
+    StdinBody => {
+      let chunks = @stream.ChunkReader::new(@stdio.stdin)
       for ;; {
         let timeout = transport.timeout(
           transport.idle_timeout_ms,
           "request body input",
         )
-        let result = @async.with_timeout_opt(timeout, () => {
-          @stdio.stdin.read_some(max_len=65536)
-        }) catch {
+        let result = @async.with_timeout_opt(timeout, () => chunks.read()) catch {
           error =>
             raise transfer_error(
               InputFailure,
@@ -190,6 +189,7 @@ async fn HttpWire::write_exchange_body(
           None => raise timeout_error("request body input", timeout)
         }
       }
+    }
   }
   if self.request_remaining is Some(remaining) && remaining != 0L {
     raise transfer_error(
@@ -239,7 +239,7 @@ async fn exchange_request(
       receive_header?,
     )
   }) catch {
-    @io.ReaderClosed =>
+    @io.ReaderError::UnexpectedEof =>
       raise transfer_error(
         if wire.header_bytes == 0L {
           EmptyReplyFailure

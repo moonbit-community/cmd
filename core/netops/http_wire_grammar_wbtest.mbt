@@ -17,7 +17,9 @@ async test "wire chunk extensions preserve BWS quoted values and reject malforme
           extension +
           "\r\nhello\r\n0\r\n\r\n",
         )
-        let received = try read_test_response(server.addr.port()) catch {
+        let received = try
+          read_test_response(server.local_addr().port.to_int())
+        catch {
           TransferError(kind~, context~, ..) => {
             assert_eq(kind, ReceiveFailure)
             assert_eq(
@@ -45,7 +47,9 @@ async test "wire headers reject raw control bytes before trimming HTTP whitespac
           group,
           "HTTP/1.1 200 OK\r\nContent-Length:" + value + "\r\n\r\nabc",
         )
-        let received = try read_test_response(server.addr.port()) catch {
+        let received = try
+          read_test_response(server.local_addr().port.to_int())
+        catch {
           TransferError(kind~, context~, ..) => {
             assert_eq(kind, ReceiveFailure)
             assert_eq(context, Some(failure_context(ResponseHeaders)))
@@ -68,7 +72,7 @@ async test "wire Set-Cookie trailers fail after retaining the delivered payload"
       let server = serve_raw_response(
         group, "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n5\r\nhello\r\n0\r\nSet-Cookie: late=1\r\n\r\n",
       )
-      try read_test_response(server.addr.port()) catch {
+      try read_test_response(server.local_addr().port.to_int()) catch {
         TransferError(kind~, context~, ..) => {
           assert_eq(kind, ReceiveFailure)
           assert_eq(

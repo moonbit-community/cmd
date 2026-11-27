@@ -145,7 +145,7 @@ async fn ResponseScope::read_body(
   let result = @async.with_timeout_opt(timeout, () => {
     self.wire.read_some(max_len~)
   }) catch {
-    @io.ReaderClosed =>
+    @io.ReaderError::UnexpectedEof =>
       return Incomplete(
         match self.wire.body {
           Fixed(_) => FixedPayload

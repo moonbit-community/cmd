@@ -86,10 +86,7 @@ pub fn RecordReader::from_binary(
   reader : &@binary.BinaryReader,
   delimiter~ : Byte = b'\n',
 ) -> RecordReader {
-  let chunks = ChunkReader::{
-    reader,
-    buffer: FixedArray::make(1048576, b'\x00'),
-  }
+  let chunks = ChunkReader::new(reader, size=1048576)
   RecordReader::with_source(() => chunks.read(), delimiter)
 }
 

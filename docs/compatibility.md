@@ -16,7 +16,9 @@ standard library for asynchronous I/O. The base64, cat, column, comm, cut, fold,
 head, join, nl, paste, rev, tr, uniq and wc drivers also use standard binary
 streams. Binary output preserves arbitrary bytes. `env`, `timeout`, `xargs` and
 external commands launched by `sh` use standard async child processes. Shell
-redirections retain the parent-owned pipes until the child exits.
+redirections retain the parent-owned pipes until the child exits. Curl and wget
+use standard async TCP and TLS through `cli/core/netops`. Serve exposes a
+`moonbitlang/core/async/http` request handler.
 Workspace commands use the RC1 runtime entry point and the shared byte-search
 code uses the standard library's experimental SIMD package on Wasm.
 

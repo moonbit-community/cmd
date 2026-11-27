@@ -30,7 +30,7 @@ Record views retain their bytes across subsequent reads.
 | numfmt, quoting | Numeric parsing/formatting and byte/path quoting. |
 | checksum, checksum/cli | Digest algorithms and shared checksum command handling. |
 | gzipops, gzipops/cli | Gzip streams and shared codec command handling. |
-| [netops](netops/README.md) | Scoped HTTP transport, URL, IDNA and public-suffix mechanisms. |
+| [netops](netops/README.md) | HTTP transport over standard async TCP and TLS, URL, IDNA and public-suffix mechanisms. |
 | time_zone | Timezone selection, TZif/POSIX conversion and local-time validation. |
 | process, shell | Standard async child processes, redirection and the supported shell language. |
 

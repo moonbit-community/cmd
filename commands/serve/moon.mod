@@ -15,5 +15,4 @@ preferred_target = "wasm"
 description = "Minimal static HTTP file server for MoonX."
 
 import {
-  "moonbitlang/async@0.22.9",
 }

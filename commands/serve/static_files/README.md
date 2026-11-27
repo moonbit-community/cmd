@@ -4,7 +4,7 @@ Serve independent directory roots through caller-owned Wasm HTTP listeners.
 This public package is part of the unpublished serve candidate.
 
 Import `cli/serve/static_files` as `@static_files` and
-`moonbitlang/async/http` and `moonbitlang/async/socket` for the listener:
+`moonbitlang/core/async/http` and `moonbitlang/core/async/socket` for the listener:
 
 ```moonbit
 async fn main {
@@ -12,7 +12,7 @@ async fn main {
   let docs = @static_files.Directory::Directory("docs/dist")
   let server = @http.Server(@socket.Addr::parse("127.0.0.1:8000"))
   defer server.close()
-  server.run_forever((request, _, connection) => {
+  server.run_forever((request, connection) => {
     if request.path.strip_prefix("/docs/") is Some(path) {
       docs.serve(request, connection, path="/" + path.to_owned())
     } else {

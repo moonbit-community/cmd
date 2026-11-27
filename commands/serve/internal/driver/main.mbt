@@ -48,11 +48,11 @@ pub async fn run_main() -> Unit {
   let args = match command.parse_outcome(argv=@env.args()[1:]) {
     Parsed(args) => args
     Help(text) | Version(text) => {
-      @stdio.stdout.write(text + "\n")
+      @stdio.stdout.text.write(text + "\n")
       return
     }
     Failed(error) => {
-      @stdio.stderr.write(diagnostic(error))
+      @stdio.stderr.text.write(diagnostic(error))
       @env.exit(1)
       return
     }
@@ -66,20 +66,20 @@ pub async fn run_main() -> Unit {
     let files = @static_files.Directory::Directory(root)
     let server = @http.Server(address)
     defer server.close()
-    @stdio.stderr.write(
-      "Serving " + root + " on http://" + server.addr.to_string() + "\n",
+    @stdio.stderr.text.write(
+      "Serving " + root + " on http://" + server.local_addr().to_string() + "\n",
     )
     server.run_forever(
-      (request, _body, connection) => files.serve(request, connection),
+      (request, connection) => files.serve(request, connection),
       max_connections=64,
     )
   } catch {
     UsageError(message) => {
-      @stdio.stderr.write("serve: " + message + "\n")
+      @stdio.stderr.text.write("serve: " + message + "\n")
       @env.exit(1)
     }
     error => {
-      @stdio.stderr.write("serve: " + diagnostic(error) + "\n")
+      @stdio.stderr.text.write("serve: " + diagnostic(error) + "\n")
       @env.exit(1)
     }
   }

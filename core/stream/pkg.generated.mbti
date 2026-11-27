@@ -34,7 +34,7 @@ pub impl @moonbitlang/async/io.Writer for BlockWriter
 pub impl @moonbitlang/core/async/io.BinaryWriter for BlockWriter
 
 type ChunkReader
-pub fn ChunkReader::new(&@moonbitlang/core/async/io.BinaryReader) -> Self
+pub fn ChunkReader::new(&@moonbitlang/core/async/io.BinaryReader, size? : Int32) -> Self
 pub async fn ChunkReader::read(Self) -> Bytes?
 
 #derive(Eq, @debug.Debug)

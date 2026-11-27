@@ -16,7 +16,7 @@ fn normalization_literal(value : StringView) -> String raise {
 
 ///|
 async test "released NFC primitive preserves the complete Unicode 15 corpus" {
-  let bytes = @fs.read_file("netops/fixtures/idna/NormalizationTest.txt").binary()
+  let bytes = @fs.read_binary("netops/fixtures/idna/NormalizationTest.txt")
   assert_eq(
     @crypto.bytes_to_hex_string(@crypto.sha256(bytes)),
     "fb9ac8cc154a80cad6caac9897af55a4e75176af6f4e2bb6edc2bf8b1d57f326",

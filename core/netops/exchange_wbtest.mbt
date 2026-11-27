@@ -57,7 +57,7 @@ async test "response scope exposes the exact incomplete framing boundary and del
           "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n" + body,
         )
         with_response(
-          exchange_test_request(server.addr.port()),
+          exchange_test_request(server.local_addr().port.to_int()),
           exchange_test_transport(),
           scope => {
             let delivered = Buffer()
@@ -102,7 +102,7 @@ async test "incomplete headers expose only complete fields without command accep
         ] {
         let server = serve_raw_response(group, wire)
         with_response(
-          exchange_test_request(server.addr.port()),
+          exchange_test_request(server.local_addr().port.to_int()),
           exchange_test_transport(),
           scope => {
             assert_false(scope.head().complete)
@@ -117,7 +117,7 @@ async test "incomplete headers expose only complete fields without command accep
           "HTTP/1.1 \{code} Result\r\nX-Complete: yes\r\nContent-Len",
         )
         with_response(
-          exchange_test_request(server.addr.port()),
+          exchange_test_request(server.local_addr().port.to_int()),
           exchange_test_transport(),
           scope => {
             let head = scope.head()
@@ -144,20 +144,21 @@ async test "request and header failures retain completed upload byte counts" {
         let server = @socket.TcpServer(@socket.Addr::parse("127.0.0.1:0"))
         group.add_defer(() => server.close())
         let received = group.spawn(() => {
-          let (connection, _) = server.accept()
+          let connection = server.accept()
           defer connection.close()
-          while connection.read_until("\r\n") is Some(line) && line != "" {
+          let text = @io.Utf8Reader(connection)
+          while text.read_until("\r\n") is Some(line) && line != "" {
             ()
           }
           let bytes = connection.read_exactly(3)
           if declared == 3 {
-            connection.write("invalid-status-line\r\n\r\n")
+            connection.write(b"invalid-status-line\r\n\r\n")
           }
-          assert_true(connection.read_some() is None)
+          assert_true(connection.read() is None)
           bytes
         })
         let request = {
-          ..exchange_test_request(server.addr.port()),
+          ..exchange_test_request(server.local_addr().port.to_int()),
           request_method: Post,
           headers: [http_header("Content-Length", declared.to_string())],
           body: BytesBody(b"abc"),
@@ -207,7 +208,7 @@ async test "body read errors retain framing and delivered byte counts" {
         group, "HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n5\r\nhello\r\n0\r\nbad trailer\r\n\r\n",
       )
       with_response(
-        exchange_test_request(server.addr.port()),
+        exchange_test_request(server.local_addr().port.to_int()),
         exchange_test_transport(),
         scope => {
           let body = Buffer()
@@ -253,12 +254,13 @@ async test "response scope closes the connection on return error and cancellatio
         let server = @socket.TcpServer(@socket.Addr::parse("127.0.0.1:0"))
         group.add_defer(() => server.close())
         group.spawn_bg(no_wait=true, () => {
-          server.run_forever((connection, _) => {
-            while connection.read_until("\r\n") is Some(line) && line != "" {
+          server.run_forever(connection => {
+            let text = @io.Utf8Reader(connection)
+            while text.read_until("\r\n") is Some(line) && line != "" {
               ()
             }
             connection.write(b"HTTP/1.1 200 OK\r\nContent-Length: 0\r\n\r\n")
-            assert_true(connection.read_some() is None)
+            assert_true(connection.read() is None)
             closed.val = true
             changed.signal()
           })
@@ -266,7 +268,7 @@ async test "response scope closes the connection on return error and cancellatio
         let task = group.spawn(() => {
           @async.handle_cancellation(() => {
             with_response(
-              exchange_test_request(server.addr.port()),
+              exchange_test_request(server.local_addr().port.to_int()),
               exchange_test_transport(),
               scope => {
                 escaped.val = Some(scope)

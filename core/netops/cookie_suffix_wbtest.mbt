@@ -12,7 +12,7 @@ fn suffix_test_literal(text : StringView) -> String? raise {
 
 ///|
 async test "complete official public suffix corpus keeps independent expectations" {
-  let bytes = @fs.read_file("netops/fixtures/psl/test_psl.txt").binary()
+  let bytes = @fs.read_binary("netops/fixtures/psl/test_psl.txt")
   assert_eq(
     @crypto.bytes_to_hex_string(@crypto.sha256(bytes)),
     "8f50ad958916d6a8f79fba2363501475571acce752757f9126fe9d2f17dd920d",

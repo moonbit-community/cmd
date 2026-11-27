@@ -16,6 +16,8 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 - Migrate eleven command drivers to standard-library asynchronous I/O on MoonBit
   1.0 RC1. These patch versions are development candidates.
+- Move curl and wget transport to standard TCP and TLS and serve to the
+  standard HTTP listener. Preserve the clients’ byte-level HTTP framing.
 - Use standard child processes for env, timeout, xargs and shell redirections.
 - Migrate fourteen stream consumers to standard binary readers and writers,
   preserving bounded reads, record ownership and partial-write behavior.

@@ -25,8 +25,11 @@ struct ChunkReader {
 }
 
 ///|
-pub fn ChunkReader::new(reader : &@binary.BinaryReader) -> ChunkReader {
-  { reader, buffer: FixedArray::make(chunk_size, b'\x00'), }
+pub fn ChunkReader::new(
+  reader : &@binary.BinaryReader,
+  size~ : Int32 = chunk_size,
+) -> ChunkReader {
+  { reader, buffer: FixedArray::make(size.max(1), b'\x00'), }
 }
 
 ///|

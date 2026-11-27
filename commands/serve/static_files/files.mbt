@@ -117,7 +117,7 @@ async fn empty_response(
 /// operations and cannot prevent hostile concurrent filesystem replacement.
 pub async fn Directory::serve(
   self : Directory,
-  request : @http.Request,
+  request : @http.RequestHeader,
   connection : @http.ServerConnection,
   path? : String,
 ) -> Unit {
@@ -182,9 +182,8 @@ pub async fn Directory::serve(
   let bytes = buffer.unsafe_reinterpret_as_bytes()
   let mut remaining = size
   while remaining > 0 {
-    let n = file.read(
-      buffer,
-      max_len=remaining.min(buffer.length().to_int64()).to_int(),
+    let n = file.read_into(
+      buffer.mut_view(end=remaining.min(buffer.length().to_int64()).to_int()),
     )
     guard n > 0 else { fail("file shortened during response") }
     connection.write(bytes[:n])
