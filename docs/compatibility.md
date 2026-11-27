@@ -197,11 +197,17 @@ On a NUL-containing file, `--binary-files=without-match` returned 1 and
 binary-policy checks left stdout and stderr empty. The Wasm commands matched
 these outputs and statuses for files, redirected handles and pipes.
 
-With a named input, Windows MSVC ripgrep 15.1.0 and Wasm `rg -a --crlf`
-matched the end-of-line anchor before both CRLF and LF and preserved the
-selected input bytes. On a redirected file or pipe, upstream detects stdin
-automatically. Wasm requires the explicit `-` operand and returns 2 if it
-is omitted.
+MSYS2 GNU diffutils 3.12 and Wasm `diff -a --strip-trailing-cr` ignored
+CRLF versus LF on otherwise identical lines and reported a changed line
+after Ctrl-Z. For a named first input, a redirected handle and a pipe, stdout
+was `4c4\n< OLD\n---\n> NEW\n`, stderr was empty and the status was 1.
+
+Windows MSVC ripgrep 15.1.0 and Wasm `rg -a --crlf 'TAG$'` matched before
+CRLF, LF and a lone CR. Both returned the original selected bytes, empty
+stderr and status 0 for a named file and for a redirected file or pipe with
+the explicit `-` operand. When that operand is omitted, native ripgrep still
+reads the redirected input. Wasm returns 2 with an empty stdout and a
+diagnostic requesting an explicit input. [Implicit input tracking](https://github.com/moonbit-community/cmd/issues/183)
 
 - **Text and numbers:** most traditional text commands use C-locale byte
   semantics. This includes cut, tr and sort. For wc, fold, expand, unexpand and
