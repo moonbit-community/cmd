@@ -60,7 +60,7 @@
     {
       "name": "cat",
       "package_name": "cli/cat",
-      "version": "0.2.8",
+      "version": "0.2.9",
       "published": false,
       "compare_profile": "gnu",
       "supported_options": [
@@ -3151,6 +3151,7 @@
     "awk-pipe-reader-rejected",
     "awk-pipe-writer-rejected",
     "cat-fixed-mtime-hardlink",
+    "cat-show-ends-split-crlf",
     "checksum-md5sum-mismatch",
     "checksum-sha1sum-version",
     "checksum-sha512sum-check",
