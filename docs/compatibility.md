@@ -134,7 +134,7 @@ identify the principal refusals and platform differences.
 | [tac](../commands/tac/README.md) | Reverse records with fixed or regex separators. | Regex mode uses whole-input memory; stdin may need temporary storage. |
 | [tail](../commands/tail/README.md) | Line/byte suffixes, start positions, headers and descriptor following. | No rotation-aware -F. |
 | [tee](../commands/tee/README.md) | Multiple output sinks, append and explicit output-error policies. | Default SIGPIPE behavior is unavailable. |
-| [test](../commands/test/README.md) | Argument-count-sensitive string/integer/file predicates and Boolean forms. | Unavailable terminal, owner, mode and identity predicates reject. |
+| [test](../commands/test/README.md) | String/integer/file predicates, Boolean forms and POSIX `-ef` identity comparison. | Windows `-ef` and unavailable terminal, owner and mode predicates reject. |
 | [timeout](../commands/timeout/README.md) | Local-only child deadline and exit-status mapping. | Unpublished; no process-group or signal-option profile. |
 | [touch](../commands/touch/README.md) | Create missing files or skip them with -c. | No timestamp updates; existing files fail. |
 | [tr](../commands/tr/README.md) | Byte translation, deletion, squeezing, complement and truncation. | C-locale byte semantics. |

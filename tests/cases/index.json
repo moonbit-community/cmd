@@ -497,6 +497,84 @@
       "case_id": ""
     },
     {
+      "behavior_id": "case:test-ef-hardlink",
+      "command": "test",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/test.json",
+      "case_id": "test-ef-hardlink",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:test-ef-symlink",
+      "command": "test",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/test.json",
+      "case_id": "test-ef-symlink",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:test-ef-equal-content",
+      "command": "test",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/test.json",
+      "case_id": "test-ef-equal-content",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:test-ef-dangling",
+      "command": "test",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/test.json",
+      "case_id": "test-ef-dangling",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:test-ef-missing",
+      "command": "test",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/test.json",
+      "case_id": "test-ef-missing",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:test-ef-windows",
+      "command": "test",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/test.json",
+      "case_id": "test-ef-windows",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": ""
+    },
+    {
       "behavior_id": "case:wget-exit-network-before-http",
       "command": "wget",
       "status": "supported",
