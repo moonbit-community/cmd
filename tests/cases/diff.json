@@ -16,7 +16,7 @@
         "windows"
       ],
       "timeout_ms": 120000,
-      "source_version": "MSYS2 GNU diffutils on windows-2025; executable version retained with raw stream receipts.",
+      "source_version": "MSYS2 GNU diffutils 3.12-1 on windows-2025, archive SHA-256 checked during setup",
       "diagnostic_reason": "Compare raw streams and status for named files, redirected files and pipes with mixed line endings, NUL, invalid UTF-8 and Ctrl-Z."
     },
     {
