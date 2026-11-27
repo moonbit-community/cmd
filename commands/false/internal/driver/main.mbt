@@ -3,12 +3,12 @@
 pub async fn run_main() -> Unit {
   let args = @env.args()[1:]
   if args.length() == 1 && args[0] == "--help" {
-    @stdio.stdout.write(metadata_help())
+    @stdio.stdout.text.write(metadata_help())
     return
   }
   if args.length() == 1 && args[0] == "--version" {
-    @stdio.stdout.write("false \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("false \{MODULE_VERSION}\n")
     return
   }
-  @sys.exit(1)
+  @env.exit(1)
 }

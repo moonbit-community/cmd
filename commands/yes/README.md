@@ -27,4 +27,6 @@ Print y followed by a newline by default, or join supplied arguments with spaces
 
 - Exact host broken-pipe signal behavior is not claimed.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

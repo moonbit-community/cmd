@@ -256,27 +256,27 @@ fn iso_format(
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("date \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("date \{MODULE_VERSION}\n")
     return
   }
   let parsed = @cli.parse(normalize_args(@env.args()[1:]), option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
-      @stdio.stderr.write("date: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("date: \{message}: '\{option}'\n")
+      @env.exit(1)
       return
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write(metadata_help())
+    @stdio.stdout.text.write(metadata_help())
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("date \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("date \{MODULE_VERSION}\n")
     return
   }
   if parsed.contains("rfc-email") && parsed.contains("iso") {
-    @stdio.stderr.write("date: conflicting output formats\n")
-    @sys.exit(1)
+    @stdio.stderr.text.write("date: conflicting output formats\n")
+    @env.exit(1)
     return
   }
   if parsed.operands.length() > 1 ||
@@ -285,8 +285,10 @@ pub async fn run_main() -> Unit {
       !parsed.operands.is_empty() &&
       (parsed.contains("rfc-email") || parsed.contains("iso"))
     ) {
-    @stdio.stderr.write("date: extra operand or conflicting output formats\n")
-    @sys.exit(1)
+    @stdio.stderr.text.write(
+      "date: extra operand or conflicting output formats\n",
+    )
+    @env.exit(1)
     return
   }
   let (instant, abbreviation) = try {
@@ -304,13 +306,13 @@ pub async fn run_main() -> Unit {
     (value, zone.abbreviation(value.to_unix_second()))
   } catch {
     DateError(message) => {
-      @stdio.stderr.write("date: \{message}\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("date: \{message}\n")
+      @env.exit(1)
       return
     }
     err => {
-      @stdio.stderr.write("date: \{err}\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("date: \{err}\n")
+      @env.exit(1)
       return
     }
   }
@@ -319,8 +321,8 @@ pub async fn run_main() -> Unit {
   } else if parsed.contains("iso") {
     iso_format(parsed.last_value("iso").unwrap_or(DEFAULT_ISO), instant) catch {
       DateError(message) => {
-        @stdio.stderr.write("date: \{message}\n")
-        @sys.exit(1)
+        @stdio.stderr.text.write("date: \{message}\n")
+        @env.exit(1)
         return
       }
     }
@@ -329,16 +331,16 @@ pub async fn run_main() -> Unit {
   } else if parsed.operands.is_empty() {
     "%a %b %e %H:%M:%S %Z %Y"
   } else {
-    @stdio.stderr.write("date: extra operand\n")
-    @sys.exit(1)
+    @stdio.stderr.text.write("date: extra operand\n")
+    @env.exit(1)
     return
   }
   let rendered = format_date(instant, format, abbreviation~) catch {
     DateError(message) => {
-      @stdio.stderr.write("date: \{message}\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("date: \{message}\n")
+      @env.exit(1)
       return
     }
   }
-  @stdio.stdout.write(rendered + "\n")
+  @stdio.stdout.text.write(rendered + "\n")
 }

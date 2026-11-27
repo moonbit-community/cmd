@@ -28,4 +28,6 @@ Print one result per operand. A name without a directory component produces a do
 
 - Paths are handled lexically, without resolving symbolic links or checking existence.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

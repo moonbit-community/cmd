@@ -31,4 +31,6 @@ Join arguments with spaces and append a newline by default. -n omits the newline
 - POSIXLY_CORRECT enables escapes; only an initial -n permits option parsing in that mode.
 - -- is printed literally. --help and --version are metadata only when used alone; use printf for unambiguous option-like text.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

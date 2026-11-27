@@ -14,7 +14,7 @@ let command : @argparse.Command = @argparse.Command(
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("printenv \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("printenv \{MODULE_VERSION}\n")
     return
   }
   let args = @env.args()[1:]
@@ -44,14 +44,14 @@ pub async fn run_main() -> Unit {
           )
         _ => (text, "")
       }
-      @stdio.stderr.write("printenv: \{message}: '\{option}'\n")
-      @sys.exit(2)
+      @stdio.stderr.text.write("printenv: \{message}: '\{option}'\n")
+      @env.exit(2)
       return
     }
   }
   let operands = parsed.values.get("operands").unwrap_or([])
   if parsed.flags.contains("help") {
-    @stdio.stdout.write(metadata_help())
+    @stdio.stdout.text.write(metadata_help())
     return
   }
   let names = operands
@@ -61,17 +61,17 @@ pub async fn run_main() -> Unit {
   let mut missing = false
   if names.is_empty() {
     for name, value in environment {
-      @stdio.stdout.write("\{name}=\{value}\{separator}")
+      @stdio.stdout.text.write("\{name}=\{value}\{separator}")
     }
   } else {
     for name in names {
       match environment.get(name) {
-        Some(value) => @stdio.stdout.write(value + separator)
+        Some(value) => @stdio.stdout.text.write(value + separator)
         None => missing = true
       }
     }
   }
   if missing {
-    @sys.exit(1)
+    @env.exit(1)
   }
 }

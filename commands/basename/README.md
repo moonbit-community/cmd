@@ -30,4 +30,6 @@ A second operand removes a literal suffix. Use -a for multiple names; -s also en
 
 - Paths are handled lexically; files do not need to exist.
 
+Build from source with the MoonBit 1.0 RC1 toolchain.
+
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

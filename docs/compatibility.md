@@ -10,9 +10,9 @@ test-tool consumers. The execution tools under `tests` and `tools` remain Native
 
 ## Workspace and published packages
 
-The workspace supports the MoonBit 2026-11-17 toolchain. Buffer capacity labels,
-explicit trait calls and integer parsing use its current APIs; numeric input
-grammar, output and exit-status behavior remain unchanged.
+The workspace targets MoonBit 1.0 RC1 (2026-11-26). The basename, date, dirname,
+echo, false, printenv, printf, pwd, sleep, true and yes commands use the
+standard library for asynchronous I/O. Binary output preserves arbitrary bytes.
 
 Use `moonx cli/<command>` for published commands. `timeout` is local-only;
 its README shows the repository invocation. Module versions come from

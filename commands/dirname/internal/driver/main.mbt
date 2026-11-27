@@ -48,7 +48,7 @@ fn dir_name(path : String) -> String {
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("dirname \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("dirname \{MODULE_VERSION}\n")
     return
   }
   let args = @env.args()[1:]
@@ -78,24 +78,24 @@ pub async fn run_main() -> Unit {
           )
         _ => (text, "")
       }
-      @stdio.stderr.write("dirname: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("dirname: \{message}: '\{option}'\n")
+      @env.exit(1)
       return
     }
   }
   if parsed.flags.contains("help") {
-    @stdio.stdout.write(metadata_help())
+    @stdio.stdout.text.write(metadata_help())
     return
   }
   let operands = parsed.values.get("operands").unwrap_or([])
   let zero = parsed.flags.contains("zero")
   if operands.is_empty() {
-    @stdio.stderr.write("dirname: missing operand\n")
-    @sys.exit(1)
+    @stdio.stderr.text.write("dirname: missing operand\n")
+    @env.exit(1)
     return
   }
   let separator = if zero { "\u0000" } else { "\n" }
   for path in operands {
-    @stdio.stdout.write(dir_name(path) + separator)
+    @stdio.stdout.text.write(dir_name(path) + separator)
   }
 }

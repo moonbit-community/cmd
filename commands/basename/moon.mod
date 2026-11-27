@@ -1,6 +1,6 @@
 name = "cli/basename"
 
-version = "0.2.6"
+version = "0.2.7"
 
 readme = "README.md"
 
@@ -16,6 +16,4 @@ description = "basename command for MoonX."
 
 import {
   "cli/core@0.11.1",
-  "moonbitlang/async@0.22.9",
-  "moonbitlang/x@0.5.7",
 }

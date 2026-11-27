@@ -1,6 +1,5 @@
 import {
   "cli/sleep/internal/driver",
-  "moonbitlang/async",
 }
 
 supported_targets = "wasm"

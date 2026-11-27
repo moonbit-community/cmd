@@ -15,23 +15,23 @@ fn valid_logical_path(path : String) -> Bool {
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("pwd \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("pwd \{MODULE_VERSION}\n")
     return
   }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
-      @stdio.stderr.write("pwd: \{message}: '\{option}'\n")
-      @sys.exit(1)
+      @stdio.stderr.text.write("pwd: \{message}: '\{option}'\n")
+      @env.exit(1)
       return
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write(metadata_help())
+    @stdio.stdout.text.write(metadata_help())
     return
   }
   if !parsed.operands.is_empty() {
-    @stdio.stderr.write("pwd: ignoring non-option arguments\n")
+    @stdio.stderr.text.write("pwd: ignoring non-option arguments\n")
   }
   let logical = match parsed.last_occurrence(["logical", "physical"]) {
     Some("logical") => true
@@ -39,8 +39,8 @@ pub async fn run_main() -> Unit {
     _ => @env.get_env_var("POSIXLY_CORRECT") is Some(_)
   }
   guard @env.current_dir() is Some(current) else {
-    @stdio.stderr.write("pwd: cannot determine current directory\n")
-    @sys.exit(1)
+    @stdio.stderr.text.write("pwd: cannot determine current directory\n")
+    @env.exit(1)
     return
   }
   let selected = if logical {
@@ -59,11 +59,11 @@ pub async fn run_main() -> Unit {
   } else {
     @fs.realpath(current) catch {
       err => {
-        @stdio.stderr.write("pwd: \{err}\n")
-        @sys.exit(1)
+        @stdio.stderr.text.write("pwd: \{err}\n")
+        @env.exit(1)
         return
       }
     }
   }
-  @stdio.stdout.write(selected + "\n")
+  @stdio.stdout.text.write(selected + "\n")
 }

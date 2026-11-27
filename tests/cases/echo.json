@@ -51,7 +51,7 @@
       "coverage": [
         "version"
       ],
-      "expected_stdout_text": "echo 0.2.5\n",
+      "expected_stdout_text": "echo 0.2.6\n",
       "expected_stderr_text": "",
       "source_version": "workspace cli/echo@0.2.4 metadata contract",
       "aliases": [
@@ -449,7 +449,7 @@
       "coverage": [
         "version"
       ],
-      "expected_stdout_text": "echo 0.2.5\n",
+      "expected_stdout_text": "echo 0.2.6\n",
       "expected_stderr_text": "",
       "source_version": "workspace cli/echo@0.2.4 metadata contract",
       "aliases": [],
