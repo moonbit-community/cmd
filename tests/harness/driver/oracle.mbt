@@ -306,47 +306,22 @@ async fn run_case(
       first_byte_difference(candidate_stderr, oracle_stderr),
     )
   }
-  // Compare modes before granting read access to this test's declared
-  // unreadable inputs. Then compare every surviving file's bytes as usual.
-  let unreadable = fixture.files.filter(file => file.readable == Some(false))
-  if !unreadable.is_empty() {
-    let dimensions = fixture.observe.unwrap_or([]).copy()
-    if !dimensions.contains("mode") {
-      dimensions.push("mode")
-    }
-    let candidate_metadata = snapshot(
-      candidate_root,
-      observe=dimensions,
-      content=false,
-    )
-    let oracle_metadata = snapshot(
-      oracle_root,
-      observe=dimensions,
-      content=false,
-    )
-    if !snapshots_equal(candidate_metadata, oracle_metadata) {
-      failures.push(
-        "\{fixture.id}: filesystem metadata differs before content observation",
-      )
-    }
-    for file in unreadable {
-      for tree in [candidate_root, oracle_root] {
-        let path = @path.Path(tree).join(Path(file.path)).to_string()
-        if @fs.exists(path) &&
-          @fs.kind(path, follow_symlink=false) is Regular &&
-          !@fs.can_read(path) {
-          @fs.chmod(path, 0o600)
-        }
-      }
-    }
+  let unreadable_inputs = fixture.files
+    .filter(file => file.readable == Some(false))
+    .map(file => file.path)
+  let dimensions = fixture.observe.unwrap_or([]).copy()
+  if !unreadable_inputs.is_empty() && !dimensions.contains("mode") {
+    dimensions.push("mode")
   }
   let candidate_files = snapshot(
     candidate_root,
-    observe=fixture.observe.unwrap_or([]),
+    observe=dimensions,
+    unreadable_inputs~,
   )
   let oracle_files = snapshot(
     oracle_root,
-    observe=fixture.observe.unwrap_or([]),
+    observe=dimensions,
+    unreadable_inputs~,
   )
   if !snapshots_equal(candidate_files, oracle_files) {
     failures.push(
