@@ -471,12 +471,7 @@ pub async fn run_main() -> Unit {
               cursor.sources.status
             } else {
               match err {
-                @json.InvalidChar(_, _)
-                | @json.InvalidEof
-                | @json.InvalidNumber(_, _)
-                | @json.InvalidIdentEscape(_)
-                | @json.DepthLimitExceeded
-                | @utf8.Malformed(_) => 4
+                @utf8.Malformed(_) => 4
                 _ => 5
               }
             },
