@@ -54,7 +54,7 @@ fn functional_workload_errors(
     if !@harness.safe_relative_path(row.id) || ids.contains(row.id) {
       errors.push("unsafe or duplicate workload ID: " + row.id)
     }
-    ids.add(row.id)
+    ids.insert(row.id)
     if row.command.is_empty() || row.reference_behavior_id.is_empty() {
       errors.push("missing command or behavior reference: " + row.id)
     }

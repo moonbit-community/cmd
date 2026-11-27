@@ -20,7 +20,7 @@ async fn functional_inventory(
           manifest.workloads.any(row => row.command == name) else {
           fail("unknown, empty or duplicate benchmark command: " + name)
         }
-        seen.add(name)
+        seen.insert(name)
       }
       manifest.workloads.filter(row => seen.contains(row.command))
     }

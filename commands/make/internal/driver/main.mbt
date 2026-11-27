@@ -141,7 +141,7 @@ async fn lookup_variable(
         }
         raise MakeError("recursive variable '\{name}' references itself")
       }
-      state.active.add(name)
+      state.active.insert(name)
       defer state.active.remove(name)
       expand(value, variables, automatic, depth + 1, cwd~, exported~, state~)
     }
@@ -934,7 +934,7 @@ async fn run(arguments : Array[String]) -> Unit {
     serial_children: true,
   }
   for name in ["SHELL", ".SHELLFLAGS", "MAKE"] {
-    database.exported.defaults.add(name)
+    database.exported.defaults.insert(name)
   }
   if original_environment.contains("SHELL") {
     database.exported.remove("SHELL")

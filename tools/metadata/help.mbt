@@ -39,7 +39,7 @@ fn validate_help(metadata : Metadata) -> Unit raise {
     guard !variants.contains((variant.command, variant.long)) else {
       fail("duplicate help variant")
     }
-    variants.add((variant.command, variant.long))
+    variants.insert((variant.command, variant.long))
     ignore(render_help_text(metadata, variant.text))
   }
 }

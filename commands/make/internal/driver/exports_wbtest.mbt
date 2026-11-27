@@ -65,7 +65,7 @@ async test "default export names and builtins differ from explicit or inherited 
   for name in ["A", "_A0", "0A", "A.B", "A-B", "é", "BUILTIN", "INHERITED"] {
     database.variables[name] = { value: name, immediate: true, }
   }
-  database.exported.defaults.add("BUILTIN")
+  database.exported.defaults.insert("BUILTIN")
   database.exported.add("INHERITED")
   parse_makefile("export\n", database, ".", 0)
   let environment = command_environment(database)

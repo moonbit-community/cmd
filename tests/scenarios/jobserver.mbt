@@ -101,7 +101,7 @@ async fn make_fifo_scenario(root : String, work : String) -> Unit {
         })
         let selected = ready[0]
         @fs.write_file(directory + "/" + selected + ".ack", "ack")
-        acknowledged.add(selected)
+        acknowledged.insert(selected)
         while !@fs.exists(directory + "/" + selected + ".done") {
           @async.sleep(5)
         }

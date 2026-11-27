@@ -85,7 +85,7 @@ async fn FontConfig::merge_config(
   if self.config_files.contains(canonical) {
     return true
   }
-  self.config_files.add(canonical)
+  self.config_files.insert(canonical)
   let data = @fs.read_file(config_path).binary() catch { _ => return false }
   let text = @utf8.decode(data) catch { _ => return false }
   let doc = @xml.Document::parse_with_options(text, {

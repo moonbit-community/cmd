@@ -86,7 +86,7 @@ async test "unique corpus execution and original name obligations are exact" {
     assert_eq(group.fixture.name, group.names[0])
     for name in group.names {
       assert_false(names.contains(name))
-      names.add(name)
+      names.insert(name)
     }
   }
   assert_eq(names.length(), 751)

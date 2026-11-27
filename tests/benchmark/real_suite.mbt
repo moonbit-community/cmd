@@ -264,13 +264,13 @@ fn real_suite_errors(
         targets.contains(input.target) {
         errors.push("unsafe or duplicate real input target: " + row.id)
       }
-      targets.add(input.target)
+      targets.insert(input.target)
       if originals.contains(input.source.path) {
         errors.push(
           "real collection repeats the same original source: " + row.id,
         )
       }
-      originals.add(input.source.path)
+      originals.insert(input.source.path)
     }
     let facets : Set[String] = Set([])
     for facet in row.facets.unwrap_or([]) {
@@ -282,7 +282,7 @@ fn real_suite_errors(
         facets.contains(facet) {
         errors.push("unknown or duplicate real facet: " + row.id + ":" + facet)
       }
-      facets.add(facet)
+      facets.insert(facet)
     }
     for source in real_sources(row) {
       match records.get(source.path) {
@@ -311,7 +311,7 @@ fn real_suite_errors(
     if command.is_empty() || commands.contains(command) {
       errors.push("empty or duplicate real coverage command")
     }
-    commands.add(command)
+    commands.insert(command)
     let selected = rows.filter(row => row.command == command)
     let disposition = real_text(real_field(spec, "disposition"))
     if disposition == "not-timed" {

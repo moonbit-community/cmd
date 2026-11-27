@@ -425,7 +425,7 @@ fn runtime_unique_keys(text : String) -> Bool raise {
           if keys.contains(key) {
             return false
           }
-          keys.add(key)
+          keys.insert(key)
         }
       }
       _ => index += 1

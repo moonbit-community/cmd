@@ -303,7 +303,7 @@ async fn main {
           )
         }
       }
-      registered.add(id)
+      registered.insert(id)
     }
   }
   let commands = command_inventory(baseline)

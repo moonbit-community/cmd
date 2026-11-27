@@ -113,18 +113,18 @@ fn oracle_impact(
     if parts.length() >= 3 &&
       parts[0] == "commands" &&
       commands.contains(parts[1]) {
-      selected.add(parts[1])
+      selected.insert(parts[1])
       // jqlog resolves the jq engine from the same command module. Include its
       // consumer for source, package configuration and dependency changes.
       if parts[1] == "jq" && commands.contains("jqlog") {
-        selected.add("jqlog")
+        selected.insert("jqlog")
       }
       continue
     }
     if parts is ["tests", "cases", file] && file.has_suffix(".json") {
       let command = file[:file.length() - 5].to_owned()
       if commands.contains(command) {
-        selected.add(command)
+        selected.insert(command)
         continue
       }
     }
@@ -133,9 +133,9 @@ fn oracle_impact(
     })
     if !owners.is_empty() {
       for fixture in owners {
-        selected.add(fixture.command)
+        selected.insert(fixture.command)
         for command in fixture.related_commands.unwrap_or([]) {
-          selected.add(command)
+          selected.insert(command)
         }
       }
       continue
@@ -252,7 +252,7 @@ async fn validate_case_inputs(
       guard @harness.safe_relative_path(path) && !seen.contains(path) else {
         fail(fixture.id + ": invalid fixture input: " + path)
       }
-      seen.add(path)
+      seen.insert(path)
       guard @fs.exists(workspace_path(root, path)) else {
         fail(fixture.id + ": missing fixture input: " + path)
       }

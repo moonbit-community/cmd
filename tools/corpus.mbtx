@@ -252,7 +252,7 @@ async fn main {
         "invalid, duplicate, oversized or undocumented source: " + source.path,
       )
     }
-    paths.add(source.path)
+    paths.insert(source.path)
     match unique.get(source.sha256) {
       Some(bytes) =>
         assert_eq(bytes, source.bytes, msg="one identity has conflicting sizes")

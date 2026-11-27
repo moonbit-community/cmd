@@ -34,7 +34,7 @@ async fn main {
       !seen.contains(command) else {
       fail("unknown, empty or duplicate resource command: " + command)
     }
-    seen.add(command)
+    seen.insert(command)
   }
   let sizes : Array[Int64] = []
   for

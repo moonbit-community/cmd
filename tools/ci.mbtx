@@ -60,7 +60,7 @@ fn selection_required(selection : Json, commit : String) -> Bool raise {
     guard id is String(id) && id != "" && !seen.contains(id) else {
       fail("invalid selected case ID")
     }
-    seen.add(id)
+    seen.insert(id)
   }
   guard scope != "none" ||
     reason == "no functional changes" ||
@@ -101,7 +101,7 @@ fn checked_inventory(
       digest.length() == 64 else {
       fail("invalid build inventory")
     }
-    seen.add(path)
+    seen.insert(path)
     result.push((path, digest))
   }
   guard seen.length() == paths.length() else {

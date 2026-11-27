@@ -376,7 +376,7 @@ async fn expand_config_into(
             )
           }
           let parsed = @cli.parse(output, option_specs())
-          file_headers.add(parsed.values("header").length())
+          file_headers.insert(parsed.values("header").length())
           output.append(["--header", line])
         }
       } else if name == "--config" || name == "-K" {
