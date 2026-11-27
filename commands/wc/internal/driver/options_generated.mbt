@@ -2,7 +2,7 @@
 
 ///|
 fn metadata_help() -> String {
-  "Usage: wc [-lwcmL] [--files0-from=FILE] [--total=WHEN] [FILE...]\n      --total=WHEN  print totals: auto (default), always, only, never\n      --help      display this help and exit\n      --version   display version and exit\nCounting uses the fixed C byte profile; -m counts every byte.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n"
+  "Usage: wc [-lwcmL] [--files0-from=FILE] [--total=WHEN] [FILE...]\n      --total=WHEN  print totals: auto (default), always, only, never\n      --help      display this help and exit\n      --version   display version and exit\nIn C.UTF-8, -m counts valid UTF-8 characters and -L counts display cells.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n"
 }
 
 ///|

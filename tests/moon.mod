@@ -15,7 +15,7 @@ preferred_target = "native"
 description = "Unified compatibility, policy, and pinned-oracle runner for the cmd workspace."
 
 import {
-  "cli/core@0.11.4",
+  "cli/core@0.11.5",
   "moonbitlang/async@0.22.9",
   "moonbitlang/x@0.5.7",
 }

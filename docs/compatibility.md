@@ -65,7 +65,7 @@ identify the principal refusals and platform differences.
 | [chmod](../commands/chmod/README.md) | POSIX numeric modes and closed symbolic assignments on regular files. | No Windows, reference or incremental symbolic modes. |
 | [cksum](../commands/cksum/README.md) | POSIX CRC and selected digest families; modern digest manifests. | No legacy-algorithm manifest checks; raw output is single-input. |
 | [cmp](../commands/cmp/README.md) | Byte comparison with skip/limit, quiet and list modes. | C-byte diagnostics. |
-| [column](../commands/column/README.md) | Grid/table layout, ANSI-aware width and temporary spooling. | No automatic terminal width or full util-linux grammar. |
+| [column](../commands/column/README.md) | Grid/table layout, C.UTF-8 cell widths, ANSI-aware table fields and temporary spooling. | No automatic terminal width or full util-linux grammar. |
 | [comm](../commands/comm/README.md) | Three-column sorted comparison, order checks, custom delimiters and totals. | C-locale byte ordering. |
 | [cp](../commands/cp/README.md) | New file/tree copies with --no-preserve=mode; explicit skip policies. | No mode-preserving, archive or existing-file replacement copies. |
 | [csplit](../commands/csplit/README.md) | Numeric/regex splits, repeats, suffixes and fragment cleanup. | No overwrite; Windows path-name and temporary-storage boundaries. |
@@ -76,12 +76,12 @@ identify the principal refusals and platform differences.
 | [dirname](../commands/dirname/README.md) | Lexical parent paths for multiple operands; NUL-separated output. | No physical path resolution. |
 | [echo](../commands/echo/README.md) | Argument joining, byte escapes and POSIXLY_CORRECT behavior. | No ordinary -- terminator; metadata options are standalone-only. |
 | [env](../commands/env/README.md) | Environment listing/replacement, unset, chdir and split-string child launch. | Launcher permissions and supported split grammar. |
-| [expand](../commands/expand/README.md) | Tab expansion with fixed/custom stops and initial-only mode. | C-byte column semantics. |
+| [expand](../commands/expand/README.md) | Tab expansion with fixed/custom stops and initial-only mode. | C-byte and C.UTF-8 cell positions. |
 | [expr](../commands/expr/README.md) | Integer/string expressions and BRE matching/captures. | Finite expression grammar and C-byte semantics. |
 | [false](../commands/false/README.md) | Silent status 1. | Standalone metadata options exit 0. |
 | [find](../commands/find/README.md) | Traversal, name/path/type/size/time/access predicates and selected actions. | Limited action grammar and filesystem identity/owner metadata. |
 | [fmt](../commands/fmt/README.md) | Paragraph reflow, goal/width, indentation, prefixes and spacing modes. | C-locale bytes. |
-| [fold](../commands/fold/README.md) | Byte/control-column wrapping and whitespace breaks. | C-locale width. |
+| [fold](../commands/fold/README.md) | Byte/control-column wrapping and whitespace breaks. | C-byte and C.UTF-8 scalar widths. |
 | [grep](../commands/grep/README.md) | BRE/ERE/literal search, context, recursion and binary policies. | C-byte matching and ASCII case folding. |
 | [gunzip](../commands/gunzip/README.md) | Streaming multi-member gzip decompression and integrity checks. | Partial output on corruption; named-file metadata/replacement limits. |
 | [gzip](../commands/gzip/README.md) | Streaming gzip levels 1–9 and checked multi-member decompression. | Named compression requires -nc; no saved metadata or file replacement. |
@@ -130,10 +130,10 @@ identify the principal refusals and platform differences.
 | [tree](../commands/tree/README.md) | Text/JSON/HTML trees, filtering, pruning, limits and supported sizes. | Link leaves; no target display/mode colors; platform size boundaries. |
 | [true](../commands/true/README.md) | Silent status 0. | Standalone metadata options are handled separately. |
 | [typst](../commands/typst/README.md) | Compilation/export, watch, eval/query, fonts, config and local templates. | Local packages, one thread, lexical paths; no network/self-update/HTML server. |
-| [unexpand](../commands/unexpand/README.md) | Leading/all-blank tab conversion with custom stops. | C-byte column semantics. |
+| [unexpand](../commands/unexpand/README.md) | Leading/all-blank tab conversion with custom stops. | C-byte and C.UTF-8 cell positions. |
 | [uniq](../commands/uniq/README.md) | Adjacent deduplication, counts, groups and selected comparison fields. | No global deduplication; C-locale bytes. |
 | [unlink](../commands/unlink/README.md) | One file or symlink removal. | No directories or multiple operands. |
-| [wc](../commands/wc/README.md) | Counts, C-byte display width, totals and NUL-separated file lists. | -m is not Unicode character counting; stdin position boundary. |
+| [wc](../commands/wc/README.md) | Counts, C/C.UTF-8 character and display widths, totals and NUL-separated file lists. | Stdin position boundary. |
 | [wget](../commands/wget/README.md) | HTTP(S) downloads, Basic auth, cookies, config, retry and resume. | No FTP/mirroring/HSTS; stdin authentication replay unavailable. |
 | [which](../commands/which/README.md) | PATH/direct executable lookup, all matches and quiet mode. | No shell aliases, functions or builtins. |
 | [xargs](../commands/xargs/README.md) | Argument batching, replacement, delimiters, confirmation and concurrency. | Host argument transport and process permissions. |
@@ -151,7 +151,9 @@ prefixes and queries. CLI arguments and single-directory serving are unchanged.
 ## Shared boundaries
 
 - **Text and numbers:** most traditional text commands use C-locale byte
-  semantics. This includes wc character counting, cut, tr, grep and sort.
+  semantics. This includes cut, tr, grep and sort. For wc, fold, expand, unexpand and
+  column, C.UTF-8 or C.utf8 in the first nonempty LC_ALL, LC_CTYPE or LANG
+  selects Unicode 16.0 scalar widths with narrow ambiguous characters.
   The Unicode regex profile in rg and JSON string handling in jq are separate.
   Numeric tools with extended-precision formatting use the documented fixed
   Linux amd64 profile, not an arbitrary host ABI.

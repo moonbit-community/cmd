@@ -14,7 +14,7 @@ pub fn Separator::observe_fields(
   let mut column = 0
   for span = self.next_field(data, 0)
       span.present
-      span = self.next_field(data, span.end + 1) {
+      span = self.next_field(data, span.next) {
     plan = observe_field(
       widths,
       data,
@@ -23,6 +23,7 @@ pub fn Separator::observe_fields(
       column,
       plan,
       capacity,
+      self.profile,
     )
     column += 1
   }
@@ -39,8 +40,9 @@ fn observe_field(
   column : Int32,
   plan : @buffer.Buffer?,
   budget : Int32,
+  profile : @textwidth.Profile,
 ) -> @buffer.Buffer? {
-  let width = table_width(data[start:end])
+  let width = table_width(data[start:end], profile)
   while widths.length() <= column {
     widths.push(0)
   }

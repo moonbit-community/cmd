@@ -182,6 +182,10 @@ priv enum Target {
 }
 
 ///|
+/// Extract regular files and directories in a caller-controlled tree. Directory
+/// checks and subsequent opens use separate path operations. The caller must
+/// prevent other processes from replacing paths during extraction. An I/O
+/// error can leave files already created in the destination.
 pub async fn extract(
   members : ArrayView[Member],
   root : String,

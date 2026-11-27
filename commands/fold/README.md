@@ -20,7 +20,7 @@ Wrap at 80 columns by default. -s prefers whitespace breaks; -b counts raw bytes
 | Option | Description |
 | --- | --- |
 | `-b`, `--bytes` | count bytes rather than columns |
-| `-c`, `--characters` | count characters in the C-locale byte profile |
+| `-c`, `--characters` | count characters in the selected locale profile |
 | `-s`, `--spaces` | break after the last available blank |
 | `-w VALUE`, `--width VALUE` | Set the output width. Default: `80`. |
 | `--help` | Show help. |
@@ -29,7 +29,7 @@ Wrap at 80 columns by default. -s prefers whitespace breaks; -b counts raw bytes
 
 ## Notes
 
-- Default column handling recognizes byte-level tabs and control characters, not Unicode display width.
+- With C.UTF-8, fold measures scalar display widths and preserves UTF-8 character boundaries in all counting modes.
 
 Build from source with the MoonBit 1.0 RC1 toolchain.
 

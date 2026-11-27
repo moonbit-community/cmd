@@ -15,5 +15,5 @@ preferred_target = "wasm"
 description = "Create, list and extract uncompressed or gzip-compressed ustar archives."
 
 import {
-  "cli/core@0.11.4",
+  "cli/core@0.11.5",
 }

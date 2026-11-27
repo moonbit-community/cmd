@@ -15,5 +15,5 @@ preferred_target = "wasm"
 description = "List, verify and extract stored or deflated ZIP entries."
 
 import {
-  "cli/core@0.11.4",
+  "cli/core@0.11.5",
 }

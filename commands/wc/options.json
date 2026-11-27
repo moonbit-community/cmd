@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "command": "wc",
-  "help": "Usage: wc [-lwcmL] [--files0-from=FILE] [--total=WHEN] [FILE...]\n{{help:total:0}}\n{{help:help:0}}\n{{help:version:0}}\nCounting uses the fixed C byte profile; -m counts every byte.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
+  "help": "Usage: wc [-lwcmL] [--files0-from=FILE] [--total=WHEN] [FILE...]\n{{help:total:0}}\n{{help:help:0}}\n{{help:version:0}}\nIn C.UTF-8, -m counts valid UTF-8 characters and -L counts display cells.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n",
   "catalog_options": [
     "bytes",
     "chars",
@@ -28,7 +28,7 @@
     {
       "short": "w",
       "name": "words",
-      "description": "Count C-byte words.",
+      "description": "Count whitespace-delimited words.",
       "aliases": [
         "-w",
         "--words"
@@ -40,7 +40,7 @@
     {
       "short": "c",
       "name": "bytes",
-      "description": "Count bytes; both are identical in this profile.",
+      "description": "Count input bytes.",
       "aliases": [
         "-c",
         "--bytes"
@@ -52,7 +52,7 @@
     {
       "short": "m",
       "name": "chars",
-      "description": "Count bytes; both are identical in this profile.",
+      "description": "Count characters in the selected locale profile.",
       "aliases": [
         "-m",
         "--chars"
@@ -64,7 +64,7 @@
     {
       "short": "L",
       "name": "max-line-length",
-      "description": "Report maximum C-profile display width.",
+      "description": "Report maximum line display width.",
       "aliases": [
         "-L",
         "--max-line-length"
