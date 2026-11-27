@@ -57,6 +57,30 @@ pub async fn execute_scenario(
     ),
     () => {
       match fixture.id {
+        "uname-fields-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "id-fields-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "ps-fields-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "uname-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "hostname-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "id-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "whoami-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "groups-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "uptime-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "free-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "ps-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "nproc-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
         "serve-static" => serve_static_scenario(root, work, false)
         "serve-policy" => serve_static_scenario(root, work, true)
         "typst-artifacts" => typst_artifacts_scenario(root, work)

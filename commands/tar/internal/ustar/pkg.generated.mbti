@@ -1,0 +1,19 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/tar/internal/ustar"
+
+import {
+  "cli/core/archivefs",
+}
+
+// Values
+pub fn read(BytesView) -> Array[@archivefs.Member] raise
+
+pub fn write(ArrayView[@archivefs.Member]) -> Bytes raise
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits

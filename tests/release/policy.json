@@ -2,6 +2,178 @@
   "schema": 1,
   "commands": [
     {
+      "name": "uname",
+      "package_name": "cli/uname",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "help",
+        "kernel-name",
+        "kernel-release",
+        "kernel-version",
+        "nodename",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "uname-extra-operand",
+        "uname-fields-linux-reference",
+        "uname-linux-kernel",
+        "uname-darwin-kernel",
+        "uname-windows-kernel",
+        "uname-linux-reference"
+      ]
+    },
+    {
+      "name": "hostname",
+      "package_name": "cli/hostname",
+      "compare_profile": "contract",
+      "supported_options": [
+        "help",
+        "short",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "hostname-extra-operand",
+        "hostname-linux-reference"
+      ],
+      "oracle_boundary": "Host-dependent observations must share the process, account or kernel namespace. The Linux correctness scenario compares the Wasm command with the host executable."
+    },
+    {
+      "name": "id",
+      "package_name": "cli/id",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "group",
+        "groups",
+        "help",
+        "name",
+        "real",
+        "user",
+        "version",
+        "zero"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "id-extra-operand",
+        "id-fields-linux-reference",
+        "id-linux-reference"
+      ],
+      "oracle_boundary": "Host-dependent observations must share the process, account or kernel namespace. The Linux correctness scenario compares the Wasm command with the host executable."
+    },
+    {
+      "name": "whoami",
+      "package_name": "cli/whoami",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "help",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "whoami-extra-operand",
+        "whoami-linux-reference"
+      ],
+      "oracle_boundary": "Host-dependent observations must share the process, account or kernel namespace. The Linux correctness scenario compares the Wasm command with the host executable."
+    },
+    {
+      "name": "groups",
+      "package_name": "cli/groups",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "help",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "groups-extra-operand",
+        "groups-linux-reference"
+      ],
+      "oracle_boundary": "Host-dependent observations must share the process, account or kernel namespace. The Linux correctness scenario compares the Wasm command with the host executable."
+    },
+    {
+      "name": "uptime",
+      "package_name": "cli/uptime",
+      "compare_profile": "contract",
+      "supported_options": [
+        "help",
+        "pretty",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "uptime-extra-operand",
+        "uptime-linux-reference"
+      ],
+      "oracle_boundary": "Host-dependent observations must share the process, account or kernel namespace. The Linux correctness scenario compares the Wasm command with the host executable."
+    },
+    {
+      "name": "free",
+      "package_name": "cli/free",
+      "compare_profile": "contract",
+      "supported_options": [
+        "bytes",
+        "gibi",
+        "help",
+        "kibi",
+        "mebi",
+        "total",
+        "version",
+        "wide"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "free-extra-operand",
+        "free-linux-reference"
+      ],
+      "oracle_boundary": "Host-dependent observations must share the process, account or kernel namespace. The Linux correctness scenario compares the Wasm command with the host executable."
+    },
+    {
+      "name": "ps",
+      "package_name": "cli/ps",
+      "compare_profile": "contract",
+      "supported_options": [
+        "format",
+        "help",
+        "pid",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "ps-extra-operand",
+        "ps-fields-linux-reference",
+        "ps-no-such-process",
+        "ps-linux-reference"
+      ],
+      "oracle_boundary": "Host-dependent observations must share the process, account or kernel namespace. The Linux correctness scenario compares the Wasm command with the host executable."
+    },
+    {
+      "name": "nproc",
+      "package_name": "cli/nproc",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "all",
+        "help",
+        "ignore",
+        "version"
+      ],
+      "policy_sensitive": false,
+      "releasable": true,
+      "case_ids": [
+        "nproc-extra-operand",
+        "nproc-openmp-limit",
+        "nproc-linux-reference"
+      ]
+    },
+    {
       "name": "timeout",
       "package_name": "cli/timeout",
       "compare_profile": "gnu",
@@ -5167,6 +5339,106 @@
         "serve-failure-diagnostic-source-name"
       ],
       "oracle_boundary": "Project-specific server; the pinned oracle has no corresponding executable or upstream contract."
+    },
+    {
+      "name": "tar",
+      "package_name": "cli/tar",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "create",
+        "list",
+        "extract",
+        "file",
+        "gzip",
+        "to-stdout",
+        "help",
+        "version",
+        "directory"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "archive-tar-version",
+        "archive-tar-gzip-list",
+        "archive-tar-pipe-selected",
+        "archive-tar-extract-directory",
+        "archive-tar-create-gzip",
+        "archive-tar-stdout",
+        "archive-tar-stdin",
+        "archive-tar-existing-output",
+        "archive-tar-existing-member",
+        "archive-tar-invalid",
+        "archive-tar-help",
+        "archive-tar-linked-parent"
+      ]
+    },
+    {
+      "name": "zip",
+      "package_name": "cli/zip",
+      "compare_profile": "info-zip",
+      "supported_options": [
+        "recursive",
+        "quiet",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "help",
+        "version",
+        "test"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "archive-zip-version",
+        "archive-zip-verify-system",
+        "archive-zip-deflate",
+        "archive-zip-directory",
+        "archive-zip-refuse-update",
+        "archive-zip-deflate-1",
+        "archive-zip-deflate-2",
+        "archive-zip-deflate-3",
+        "archive-zip-deflate-4",
+        "archive-zip-deflate-5",
+        "archive-zip-deflate-6",
+        "archive-zip-deflate-7",
+        "archive-zip-deflate-8",
+        "archive-zip-help",
+        "archive-zip-linked-operand"
+      ]
+    },
+    {
+      "name": "unzip",
+      "package_name": "cli/unzip",
+      "compare_profile": "info-zip",
+      "supported_options": [
+        "names",
+        "pipe",
+        "test",
+        "quiet",
+        "never-overwrite",
+        "directory",
+        "help",
+        "version"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "archive-unzip-version",
+        "archive-unzip-names",
+        "archive-unzip-binary-pipe",
+        "archive-unzip-extract",
+        "archive-unzip-skip-existing",
+        "archive-unzip-crc",
+        "archive-unzip-invalid",
+        "archive-unzip-help"
+      ]
     }
   ]
 }

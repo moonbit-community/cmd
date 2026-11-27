@@ -442,6 +442,579 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
+      "behavior_id": "case:uname-fields-linux-reference",
+      "command": "uname",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/uname.json",
+      "case_id": "uname-fields-linux-reference",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:uname-fields-linux-reference",
+      "command": "uname",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::uname-fields-linux-reference",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:id-fields-linux-reference",
+      "command": "id",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/id.json",
+      "case_id": "id-fields-linux-reference",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:id-fields-linux-reference",
+      "command": "id",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::id-fields-linux-reference",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:ps-fields-linux-reference",
+      "command": "ps",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/ps.json",
+      "case_id": "ps-fields-linux-reference",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "scenario:ps-fields-linux-reference",
+      "command": "ps",
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "source": "tests/scenarios/dispatch.mbt::ps-fields-linux-reference",
+      "case_id": "",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:uname-linux-reference",
+      "command": "uname",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/uname.json",
+      "case_id": "uname-linux-reference",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:hostname-linux-reference",
+      "command": "hostname",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/hostname.json",
+      "case_id": "hostname-linux-reference",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:id-linux-reference",
+      "command": "id",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/id.json",
+      "case_id": "id-linux-reference",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:whoami-linux-reference",
+      "command": "whoami",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/whoami.json",
+      "case_id": "whoami-linux-reference",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:groups-linux-reference",
+      "command": "groups",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/groups.json",
+      "case_id": "groups-linux-reference",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:uptime-linux-reference",
+      "command": "uptime",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/uptime.json",
+      "case_id": "uptime-linux-reference",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:free-linux-reference",
+      "command": "free",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/free.json",
+      "case_id": "free-linux-reference",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:ps-linux-reference",
+      "command": "ps",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/ps.json",
+      "case_id": "ps-linux-reference",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:nproc-linux-reference",
+      "command": "nproc",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/nproc.json",
+      "case_id": "nproc-linux-reference",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "status": "supported",
+      "implementation": "json-case",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "",
+      "behavior_id": "case:uname-extra-operand",
+      "command": "uname",
+      "source": "tests/cases/uname.json",
+      "case_id": "uname-extra-operand"
+    },
+    {
+      "status": "supported",
+      "implementation": "json-case",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "pinned-oracle-v1",
+      "behavior_id": "case:uname-linux-kernel",
+      "command": "uname",
+      "source": "tests/cases/uname.json",
+      "case_id": "uname-linux-kernel"
+    },
+    {
+      "status": "supported",
+      "implementation": "json-case",
+      "aliases": [],
+      "platforms": [
+        "macos"
+      ],
+      "oracle_profile": "",
+      "behavior_id": "case:uname-darwin-kernel",
+      "command": "uname",
+      "source": "tests/cases/uname.json",
+      "case_id": "uname-darwin-kernel"
+    },
+    {
+      "status": "supported",
+      "implementation": "json-case",
+      "aliases": [],
+      "platforms": [
+        "windows"
+      ],
+      "oracle_profile": "",
+      "behavior_id": "case:uname-windows-kernel",
+      "command": "uname",
+      "source": "tests/cases/uname.json",
+      "case_id": "uname-windows-kernel"
+    },
+    {
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "",
+      "behavior_id": "scenario:uname-linux-reference",
+      "command": "uname",
+      "source": "tests/scenarios/dispatch.mbt::uname-linux-reference",
+      "case_id": ""
+    },
+    {
+      "status": "supported",
+      "implementation": "metadata-probe",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "",
+      "behavior_id": "metadata:uname",
+      "command": "uname",
+      "source": "tests/harness/driver/metadata.mbt",
+      "case_id": ""
+    },
+    {
+      "status": "supported",
+      "implementation": "json-case",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "",
+      "behavior_id": "case:hostname-extra-operand",
+      "command": "hostname",
+      "source": "tests/cases/hostname.json",
+      "case_id": "hostname-extra-operand"
+    },
+    {
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "",
+      "behavior_id": "scenario:hostname-linux-reference",
+      "command": "hostname",
+      "source": "tests/scenarios/dispatch.mbt::hostname-linux-reference",
+      "case_id": ""
+    },
+    {
+      "status": "supported",
+      "implementation": "metadata-probe",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "",
+      "behavior_id": "metadata:hostname",
+      "command": "hostname",
+      "source": "tests/harness/driver/metadata.mbt",
+      "case_id": ""
+    },
+    {
+      "status": "supported",
+      "implementation": "json-case",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "",
+      "behavior_id": "case:id-extra-operand",
+      "command": "id",
+      "source": "tests/cases/id.json",
+      "case_id": "id-extra-operand"
+    },
+    {
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "",
+      "behavior_id": "scenario:id-linux-reference",
+      "command": "id",
+      "source": "tests/scenarios/dispatch.mbt::id-linux-reference",
+      "case_id": ""
+    },
+    {
+      "status": "supported",
+      "implementation": "metadata-probe",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "",
+      "behavior_id": "metadata:id",
+      "command": "id",
+      "source": "tests/harness/driver/metadata.mbt",
+      "case_id": ""
+    },
+    {
+      "status": "supported",
+      "implementation": "json-case",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "",
+      "behavior_id": "case:whoami-extra-operand",
+      "command": "whoami",
+      "source": "tests/cases/whoami.json",
+      "case_id": "whoami-extra-operand"
+    },
+    {
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "",
+      "behavior_id": "scenario:whoami-linux-reference",
+      "command": "whoami",
+      "source": "tests/scenarios/dispatch.mbt::whoami-linux-reference",
+      "case_id": ""
+    },
+    {
+      "status": "supported",
+      "implementation": "metadata-probe",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "",
+      "behavior_id": "metadata:whoami",
+      "command": "whoami",
+      "source": "tests/harness/driver/metadata.mbt",
+      "case_id": ""
+    },
+    {
+      "status": "supported",
+      "implementation": "json-case",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "",
+      "behavior_id": "case:groups-extra-operand",
+      "command": "groups",
+      "source": "tests/cases/groups.json",
+      "case_id": "groups-extra-operand"
+    },
+    {
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "",
+      "behavior_id": "scenario:groups-linux-reference",
+      "command": "groups",
+      "source": "tests/scenarios/dispatch.mbt::groups-linux-reference",
+      "case_id": ""
+    },
+    {
+      "status": "supported",
+      "implementation": "metadata-probe",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "",
+      "behavior_id": "metadata:groups",
+      "command": "groups",
+      "source": "tests/harness/driver/metadata.mbt",
+      "case_id": ""
+    },
+    {
+      "status": "supported",
+      "implementation": "json-case",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "",
+      "behavior_id": "case:uptime-extra-operand",
+      "command": "uptime",
+      "source": "tests/cases/uptime.json",
+      "case_id": "uptime-extra-operand"
+    },
+    {
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "",
+      "behavior_id": "scenario:uptime-linux-reference",
+      "command": "uptime",
+      "source": "tests/scenarios/dispatch.mbt::uptime-linux-reference",
+      "case_id": ""
+    },
+    {
+      "status": "supported",
+      "implementation": "metadata-probe",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "",
+      "behavior_id": "metadata:uptime",
+      "command": "uptime",
+      "source": "tests/harness/driver/metadata.mbt",
+      "case_id": ""
+    },
+    {
+      "status": "supported",
+      "implementation": "json-case",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "",
+      "behavior_id": "case:free-extra-operand",
+      "command": "free",
+      "source": "tests/cases/free.json",
+      "case_id": "free-extra-operand"
+    },
+    {
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "",
+      "behavior_id": "scenario:free-linux-reference",
+      "command": "free",
+      "source": "tests/scenarios/dispatch.mbt::free-linux-reference",
+      "case_id": ""
+    },
+    {
+      "status": "supported",
+      "implementation": "metadata-probe",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "",
+      "behavior_id": "metadata:free",
+      "command": "free",
+      "source": "tests/harness/driver/metadata.mbt",
+      "case_id": ""
+    },
+    {
+      "status": "supported",
+      "implementation": "json-case",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "",
+      "behavior_id": "case:ps-extra-operand",
+      "command": "ps",
+      "source": "tests/cases/ps.json",
+      "case_id": "ps-extra-operand"
+    },
+    {
+      "status": "supported",
+      "implementation": "json-case",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "",
+      "behavior_id": "case:ps-no-such-process",
+      "command": "ps",
+      "source": "tests/cases/ps.json",
+      "case_id": "ps-no-such-process"
+    },
+    {
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "",
+      "behavior_id": "scenario:ps-linux-reference",
+      "command": "ps",
+      "source": "tests/scenarios/dispatch.mbt::ps-linux-reference",
+      "case_id": ""
+    },
+    {
+      "status": "supported",
+      "implementation": "metadata-probe",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "",
+      "behavior_id": "metadata:ps",
+      "command": "ps",
+      "source": "tests/harness/driver/metadata.mbt",
+      "case_id": ""
+    },
+    {
+      "status": "supported",
+      "implementation": "json-case",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "",
+      "behavior_id": "case:nproc-extra-operand",
+      "command": "nproc",
+      "source": "tests/cases/nproc.json",
+      "case_id": "nproc-extra-operand"
+    },
+    {
+      "status": "supported",
+      "implementation": "json-case",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1",
+      "behavior_id": "case:nproc-openmp-limit",
+      "command": "nproc",
+      "source": "tests/cases/nproc.json",
+      "case_id": "nproc-openmp-limit"
+    },
+    {
+      "status": "supported",
+      "implementation": "stateful-scenario",
+      "aliases": [],
+      "platforms": [
+        "linux"
+      ],
+      "oracle_profile": "",
+      "behavior_id": "scenario:nproc-linux-reference",
+      "command": "nproc",
+      "source": "tests/scenarios/dispatch.mbt::nproc-linux-reference",
+      "case_id": ""
+    },
+    {
+      "status": "supported",
+      "implementation": "metadata-probe",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "",
+      "behavior_id": "metadata:nproc",
+      "command": "nproc",
+      "source": "tests/harness/driver/metadata.mbt",
+      "case_id": ""
+    },
+    {
       "behavior_id": "case:wc-width-c-counts",
       "command": "wc",
       "status": "supported",
@@ -48990,6 +49563,428 @@
       "case_id": "serve-failure-diagnostic-source-name",
       "aliases": [],
       "platforms": [],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "metadata:tar",
+      "command": "tar",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "metadata-probe",
+      "source": "tests/harness/driver/metadata.mbt",
+      "case_id": "",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-tar-version",
+      "command": "tar",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/tar.json",
+      "case_id": "archive-tar-version",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-tar-gzip-list",
+      "command": "tar",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/tar.json",
+      "case_id": "archive-tar-gzip-list",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:archive-tar-pipe-selected",
+      "command": "tar",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/tar.json",
+      "case_id": "archive-tar-pipe-selected",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:archive-tar-extract-directory",
+      "command": "tar",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/tar.json",
+      "case_id": "archive-tar-extract-directory",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:archive-tar-create-gzip",
+      "command": "tar",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/tar.json",
+      "case_id": "archive-tar-create-gzip",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-tar-stdout",
+      "command": "tar",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/tar.json",
+      "case_id": "archive-tar-stdout",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-tar-stdin",
+      "command": "tar",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/tar.json",
+      "case_id": "archive-tar-stdin",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-tar-existing-output",
+      "command": "tar",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/tar.json",
+      "case_id": "archive-tar-existing-output",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-tar-existing-member",
+      "command": "tar",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/tar.json",
+      "case_id": "archive-tar-existing-member",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-tar-invalid",
+      "command": "tar",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/tar.json",
+      "case_id": "archive-tar-invalid",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-tar-help",
+      "command": "tar",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/tar.json",
+      "case_id": "archive-tar-help",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "metadata:zip",
+      "command": "zip",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "metadata-probe",
+      "source": "tests/harness/driver/metadata.mbt",
+      "case_id": "",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-zip-version",
+      "command": "zip",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/zip.json",
+      "case_id": "archive-zip-version",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-zip-verify-system",
+      "command": "zip",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/zip.json",
+      "case_id": "archive-zip-verify-system",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:archive-zip-deflate",
+      "command": "zip",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/zip.json",
+      "case_id": "archive-zip-deflate",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-zip-directory",
+      "command": "zip",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/zip.json",
+      "case_id": "archive-zip-directory",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-zip-refuse-update",
+      "command": "zip",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/zip.json",
+      "case_id": "archive-zip-refuse-update",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-zip-deflate-1",
+      "command": "zip",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/zip.json",
+      "case_id": "archive-zip-deflate-1",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-zip-deflate-2",
+      "command": "zip",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/zip.json",
+      "case_id": "archive-zip-deflate-2",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-zip-deflate-3",
+      "command": "zip",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/zip.json",
+      "case_id": "archive-zip-deflate-3",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-zip-deflate-4",
+      "command": "zip",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/zip.json",
+      "case_id": "archive-zip-deflate-4",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-zip-deflate-5",
+      "command": "zip",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/zip.json",
+      "case_id": "archive-zip-deflate-5",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-zip-deflate-6",
+      "command": "zip",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/zip.json",
+      "case_id": "archive-zip-deflate-6",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-zip-deflate-7",
+      "command": "zip",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/zip.json",
+      "case_id": "archive-zip-deflate-7",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-zip-deflate-8",
+      "command": "zip",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/zip.json",
+      "case_id": "archive-zip-deflate-8",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-zip-help",
+      "command": "zip",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/zip.json",
+      "case_id": "archive-zip-help",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "metadata:unzip",
+      "command": "unzip",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "metadata-probe",
+      "source": "tests/harness/driver/metadata.mbt",
+      "case_id": "",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-unzip-version",
+      "command": "unzip",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/unzip.json",
+      "case_id": "archive-unzip-version",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-unzip-names",
+      "command": "unzip",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/unzip.json",
+      "case_id": "archive-unzip-names",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:archive-unzip-binary-pipe",
+      "command": "unzip",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/unzip.json",
+      "case_id": "archive-unzip-binary-pipe",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:archive-unzip-extract",
+      "command": "unzip",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/unzip.json",
+      "case_id": "archive-unzip-extract",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:archive-unzip-skip-existing",
+      "command": "unzip",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/unzip.json",
+      "case_id": "archive-unzip-skip-existing",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:archive-unzip-crc",
+      "command": "unzip",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/unzip.json",
+      "case_id": "archive-unzip-crc",
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:archive-unzip-invalid",
+      "command": "unzip",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/unzip.json",
+      "case_id": "archive-unzip-invalid",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-unzip-help",
+      "command": "unzip",
+      "status": "supported",
+      "aliases": [],
+      "platforms": [],
+      "implementation": "json-case",
+      "source": "tests/cases/unzip.json",
+      "case_id": "archive-unzip-help",
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-tar-linked-parent",
+      "command": "tar",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/tar.json",
+      "case_id": "archive-tar-linked-parent",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:archive-zip-linked-operand",
+      "command": "zip",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/zip.json",
+      "case_id": "archive-zip-linked-operand",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
       "oracle_profile": ""
     }
   ]

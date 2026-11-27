@@ -24,7 +24,10 @@ async test "case subsets resolve and launch only their selected commands" {
       related_commands: Some(@catalog.commands().map(contract => contract.name)),
     },
   ])
-  assert_eq(cohort.length(), 81)
+  assert_eq(
+    cohort.length(),
+    @catalog.commands().filter(@catalog.releasable).length(),
+  )
   assert_true(!cohort.contains("timeout"))
   try published_case_commands([{ ..fixture, command: "timeout", }]) catch {
     _ => ()

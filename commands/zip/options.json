@@ -1,0 +1,255 @@
+{
+  "schema": 1,
+  "command": "zip",
+  "help": "Usage: zip [-q0-9r] ARCHIVE FILE...\n{{help:recursive:0}}\n{{help:quiet:0}}\n{{help:0:0}}\n{{help:1:0}}\n{{help:2:0}}\n{{help:3:0}}\n{{help:4:0}}\n{{help:5:0}}\n{{help:6:0}}\n{{help:7:0}}\n{{help:8:0}}\n{{help:9:0}}\n{{help:test:0}}\n{{help:help:0}}\n{{help:version:0}}\n\nCreate new archives of regular files and directories, up to 64 MiB. Use -T to test an existing archive.\n",
+  "catalog_options": [
+    "recursive",
+    "quiet",
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "help",
+    "version",
+    "test"
+  ],
+  "options": [
+    {
+      "name": "recursive",
+      "aliases": [
+        "-r"
+      ],
+      "value": "none",
+      "description": "Include directory contents recursively.",
+      "short": "r",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -r  Include directory contents recursively."
+      ]
+    },
+    {
+      "name": "quiet",
+      "aliases": [
+        "-q"
+      ],
+      "value": "none",
+      "description": "Suppress progress messages.",
+      "short": "q",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -q  Suppress progress messages."
+      ]
+    },
+    {
+      "name": "0",
+      "aliases": [
+        "-0"
+      ],
+      "value": "none",
+      "description": "Store entries without compression.",
+      "short": "0",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -0  Store entries without compression."
+      ]
+    },
+    {
+      "name": "1",
+      "aliases": [
+        "-1"
+      ],
+      "value": "none",
+      "description": "Use Deflate compression level 1.",
+      "short": "1",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -1  Use Deflate compression level 1."
+      ]
+    },
+    {
+      "name": "2",
+      "aliases": [
+        "-2"
+      ],
+      "value": "none",
+      "description": "Use Deflate compression level 2.",
+      "short": "2",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -2  Use Deflate compression level 2."
+      ]
+    },
+    {
+      "name": "3",
+      "aliases": [
+        "-3"
+      ],
+      "value": "none",
+      "description": "Use Deflate compression level 3.",
+      "short": "3",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -3  Use Deflate compression level 3."
+      ]
+    },
+    {
+      "name": "4",
+      "aliases": [
+        "-4"
+      ],
+      "value": "none",
+      "description": "Use Deflate compression level 4.",
+      "short": "4",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -4  Use Deflate compression level 4."
+      ]
+    },
+    {
+      "name": "5",
+      "aliases": [
+        "-5"
+      ],
+      "value": "none",
+      "description": "Use Deflate compression level 5.",
+      "short": "5",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -5  Use Deflate compression level 5."
+      ]
+    },
+    {
+      "name": "6",
+      "aliases": [
+        "-6"
+      ],
+      "value": "none",
+      "description": "Use Deflate compression level 6.",
+      "short": "6",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -6  Use Deflate compression level 6."
+      ]
+    },
+    {
+      "name": "7",
+      "aliases": [
+        "-7"
+      ],
+      "value": "none",
+      "description": "Use Deflate compression level 7.",
+      "short": "7",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -7  Use Deflate compression level 7."
+      ]
+    },
+    {
+      "name": "8",
+      "aliases": [
+        "-8"
+      ],
+      "value": "none",
+      "description": "Use Deflate compression level 8.",
+      "short": "8",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -8  Use Deflate compression level 8."
+      ]
+    },
+    {
+      "name": "9",
+      "aliases": [
+        "-9"
+      ],
+      "value": "none",
+      "description": "Use Deflate compression level 9.",
+      "short": "9",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -9  Use Deflate compression level 9."
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show command help.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  --help  Show command help."
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show the package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  --version  Show the package version."
+      ]
+    },
+    {
+      "name": "test",
+      "aliases": [
+        "-T"
+      ],
+      "value": "none",
+      "description": "Verify an existing or newly created archive.",
+      "short": "T",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -T  Verify an existing or newly created archive."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "recursive",
+        "quiet",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "help",
+        "version",
+        "test"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "nproc-extra-operand",
+      "command": "nproc",
+      "args": [
+        "unexpected"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "nproc: unexpected operand: unexpected\n"
+    },
+    {
+      "id": "nproc-openmp-limit",
+      "command": "nproc",
+      "args": [
+        "--ignore=1"
+      ],
+      "files": [],
+      "environment": {
+        "OMP_NUM_THREADS": "5",
+        "OMP_THREAD_LIMIT": "3"
+      },
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "2\n",
+      "expected_stderr_text": "",
+      "oracle": true
+    },
+    {
+      "id": "nproc-linux-reference",
+      "command": "nproc",
+      "args": [
+        "--all"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "linux"
+      ]
+    }
+  ]
+}

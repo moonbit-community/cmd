@@ -49,6 +49,7 @@ fn real_sources(row : FunctionalWorkload) -> Array[NaturalSource] {
 ///|
 fn real_command_scope() -> Set[String] {
   Set([
+    "uname", "hostname", "id", "whoami", "groups", "uptime", "free", "ps", "nproc",
     "base32", "base64", "basename", "cat", "chmod", "cksum", "cmp", "column", "comm",
     "cp", "csplit", "curl", "cut", "date", "diff", "dirname", "echo", "env", "expand",
     "expr", "false", "find", "fmt", "fold", "grep", "gunzip", "gzip", "head", "hexdump",
@@ -57,16 +58,18 @@ fn real_command_scope() -> Set[String] {
     "rg", "rm", "rmdir", "sed", "seq", "serve", "sh", "sha1sum", "sha256sum", "sha512sum",
     "sleep", "sort", "split", "strings", "tac", "tail", "tee", "test", "timeout",
     "touch", "tr", "tree", "true", "typst", "unexpand", "uniq", "unlink", "wc", "wget",
-    "which", "xargs", "xxd", "yes", "zcat",
+    "which", "xargs", "xxd", "yes", "zcat", "tar", "zip", "unzip",
   ])
 }
 
 ///|
 fn real_untimed_scope() -> Set[String] {
   Set([
+    "uname", "hostname", "id", "whoami", "groups", "uptime", "free", "ps", "nproc",
     "basename", "date", "dirname", "echo", "env", "expr", "false", "jqlog", "mkdir",
     "mktemp", "printenv", "printf", "pwd", "realpath", "rmdir", "serve", "sleep",
-    "timeout", "touch", "true", "typst", "unlink", "which", "yes",
+    "timeout", "touch", "true", "typst", "unlink", "which", "yes", "tar", "zip",
+    "unzip",
   ])
 }
 
@@ -389,7 +392,7 @@ fn real_suite_errors(
   }
   if commands != real_command_scope() {
     errors.push(
-      "real coverage must account for every command in the reviewed82-command scope",
+      "real coverage must account for every command in the reviewed command scope",
     )
   }
   errors

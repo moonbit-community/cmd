@@ -15,6 +15,6 @@ preferred_target = "wasm"
 description = "grep command for MoonX."
 
 import {
-  "cli/core@0.11.5",
+  "cli/core@0.11.7",
   "moonbitlang/x@0.5.9",
 }

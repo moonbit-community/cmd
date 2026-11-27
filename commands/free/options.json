@@ -1,0 +1,129 @@
+{
+  "schema": 1,
+  "command": "free",
+  "help": "Usage: free [-bkmgwt]\nPrint Linux system RAM and swap statistics.\n  -b, --bytes  Print bytes.\n  -k, --kibi  Print kibibytes.\n  -m, --mebi  Print mebibytes.\n  -g, --gibi  Print gibibytes.\n  -w, --wide  Show buffers and cache separately.\n  -t, --total  Include RAM and swap totals.\n{{help:help:0}}\n{{help:version:0}}\n",
+  "catalog_options": [
+    "bytes",
+    "kibi",
+    "mebi",
+    "gibi",
+    "wide",
+    "total"
+  ],
+  "options": [
+    {
+      "name": "bytes",
+      "aliases": [
+        "-b",
+        "--bytes"
+      ],
+      "value": "none",
+      "description": "Print bytes.",
+      "short": "b",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "kibi",
+      "aliases": [
+        "-k",
+        "--kibi"
+      ],
+      "value": "none",
+      "description": "Print kibibytes.",
+      "short": "k",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "mebi",
+      "aliases": [
+        "-m",
+        "--mebi"
+      ],
+      "value": "none",
+      "description": "Print mebibytes.",
+      "short": "m",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "gibi",
+      "aliases": [
+        "-g",
+        "--gibi"
+      ],
+      "value": "none",
+      "description": "Print gibibytes.",
+      "short": "g",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "wide",
+      "aliases": [
+        "-w",
+        "--wide"
+      ],
+      "value": "none",
+      "description": "Show buffers and cache separately.",
+      "short": "w",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "total",
+      "aliases": [
+        "-t",
+        "--total"
+      ],
+      "value": "none",
+      "description": "Include RAM and swap totals.",
+      "short": "t",
+      "repeatable": true,
+      "allow_attached": false
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show the version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "bytes",
+        "kibi",
+        "mebi",
+        "gibi",
+        "wide",
+        "total",
+        "help",
+        "version"
+      ]
+    }
+  ]
+}
