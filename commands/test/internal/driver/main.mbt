@@ -44,7 +44,8 @@ fn is_binary(op : String) -> Bool {
   op == "-gt" ||
   op == "-ge" ||
   op == "-nt" ||
-  op == "-ot"
+  op == "-ot" ||
+  metadata_option_matches("ef", op)
 }
 
 ///|
@@ -113,6 +114,15 @@ async fn eval_binary(left : String, op : String, right : String) -> Bool {
     "-le" => parse_integer(left) <= parse_integer(right)
     "-gt" => parse_integer(left) > parse_integer(right)
     "-ge" => parse_integer(left) >= parse_integer(right)
+    "-ef" => {
+      guard !(@async.platform is Windows) else {
+        raise TestError(
+          "unsupported capability: comparable Windows file identities",
+        )
+      }
+      guard predicate_identity(left) is Some(id) else { return false }
+      predicate_identity(right) == Some(id)
+    }
     "-nt" =>
       match (optional_mtime(left), optional_mtime(right)) {
         (Some(left), Some(right)) => @fsops.compare_timestamps(left, right) > 0

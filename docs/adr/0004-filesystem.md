@@ -17,7 +17,8 @@ observers, private APIs and FFI do not expand the product's capabilities.
 no-follow identities to decide equal-time `-i` and `-u` on POSIX. Windows
 retains the refusal because the public API cannot verify that the volume uses
 NTFS. These path observations do not make a subsequent rename atomic with
-respect to the identity check.
+respect to the identity check. POSIX `test -ef` follows both final links and
+compares the two observations, returning false for a failed path lookup.
 
 ## Mutation and identity boundaries
 

@@ -38,7 +38,8 @@ Use `--help` for the complete option list.
 
 Build from source with the MoonBit 1.0 RC1 toolchain.
 
-- Supports strings, Int64 integers and available file/access/size/time predicates. Terminal, ownership and unavailable mode/identity queries are unsupported.
+- On Linux and macOS, `test FILE1 -ef FILE2` follows symbolic links and compares file identities. Missing files and dangling links yield status 1. Windows rejects this comparison because the volume type cannot be verified.
+- Supports strings, Int64 integers and available file/access/size/time predicates. Terminal, ownership and unavailable mode queries are unsupported.
 - Unary -a is a project alias for file existence.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.
