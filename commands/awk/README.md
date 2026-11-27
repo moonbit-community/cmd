@@ -34,7 +34,7 @@ and files. Repeated -e and -f fragments run in command-line order. An
 assignment operand applies when that position in ARGV is reached.
 
 Ordinary LF records stream from standard input and files. Custom RS, CSV and
-main-input getline use the interpreter's pull reader. This reader consumes
+main-input getline and dynamic getline file names use the interpreter's pull reader. This reader consumes
 named files in chunks and buffers standard input. Program text and input must
 be valid UTF-8. The interpreter enforces its record, string and execution
 budgets. Local file redirection supports reading, truncation, append and close.

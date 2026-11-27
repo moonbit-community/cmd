@@ -17,6 +17,8 @@
       "policy_sensitive": true,
       "releasable": true,
       "case_ids": [
+        "awk-dynamic-getline-with-main-stdin",
+        "awk-dynamic-getline-from-stdin",
         "awk-rules-fields-and-counters",
         "awk-default-action-regex",
         "awk-function-array-and-next",

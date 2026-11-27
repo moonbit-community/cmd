@@ -27,6 +27,14 @@
   "correctness_only_command_count": 2,
   "commands": [
     {
+      "command": "awk",
+      "disposition": "not-timed",
+      "reason": "The pattern-action profile has executable record, evaluator and file I/O contracts. A representative timing corpus has not been calibrated.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
       "command": "uname",
       "disposition": "not-timed",
       "reason": "Small host query whose result depends on kernel state; validated against same-host observations.",
