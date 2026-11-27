@@ -15,5 +15,5 @@ preferred_target = "wasm"
 description = "Print the current Linux network node name."
 
 import {
-  "cli/core@0.11.6",
+  "cli/core@0.11.10",
 }

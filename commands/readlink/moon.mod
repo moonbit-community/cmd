@@ -15,5 +15,5 @@ preferred_target = "wasm"
 description = "Resolve paths using GNU readlink canonicalization modes."
 
 import {
-  "cli/core@0.11.9",
+  "cli/core@0.11.10",
 }

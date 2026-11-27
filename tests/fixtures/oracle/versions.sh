@@ -19,6 +19,7 @@ strings --version | head -n1
 tree --version | head -n1
 find --version | head -n1
 xargs --version | head -n1
+awk --version | head -n1
 grep --version | head -n1
 rg --version | head -n1
 typst --version

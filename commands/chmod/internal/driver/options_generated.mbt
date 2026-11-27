@@ -2,7 +2,7 @@
 
 ///|
 fn metadata_help() -> String {
-  "Usage: chmod [-R] [-v] MODE FILE...\n      --help      display this help and exit\n      --version   display version and exit\nWindows permission changes and --reference are unsupported. Symbolic assignments must cover u/g/o explicitly and apply only to regular files.\n       chmod [-R] [-v] --reference=RFILE FILE...\nMODE may be numeric or a complete symbolic '=' assignment such as a=rwx or u=rw,g=r,o=.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n"
+  "Usage: chmod [-R] [-v] MODE FILE...\n      --help      display this help and exit\n      --version   display version and exit\nWindows permission changes and --reference are unsupported. Regular-file symbolic modes require explicit classes and a result independent of the old bits.\n       chmod [-R] [-v] --reference=RFILE FILE...\nMODE may be numeric or symbolic, for example a=rw,u+x or u=rw,g=u,o=.\nOrdinary option/operand errors exit 1; documented capability refusals retain their own status.\n"
 }
 
 ///|

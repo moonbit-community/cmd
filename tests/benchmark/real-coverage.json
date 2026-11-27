@@ -27,6 +27,14 @@
   "correctness_only_command_count": 2,
   "commands": [
     {
+      "command": "awk",
+      "disposition": "not-timed",
+      "reason": "The pattern-action profile has executable record, evaluator and file I/O contracts. A representative timing corpus has not been calibrated.",
+      "required_modes": [],
+      "required_facets": [],
+      "local_case_ids": []
+    },
+    {
       "command": "clear",
       "disposition": "not-timed",
       "reason": "Short capability or descriptor query with byte-exact correctness checks.",
@@ -4032,5 +4040,5 @@
       ]
     }
   ],
-  "not_timed_command_count": 46
+  "not_timed_command_count": 47
 }

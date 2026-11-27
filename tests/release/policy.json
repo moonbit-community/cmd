@@ -85,6 +85,64 @@
       ]
     },
     {
+      "name": "awk",
+      "package_name": "cli/awk",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "assign",
+        "csv",
+        "field-separator",
+        "file",
+        "help",
+        "source",
+        "version"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "awk-dynamic-getline-with-main-stdin",
+        "awk-dynamic-getline-from-stdin",
+        "awk-rules-fields-and-counters",
+        "awk-default-action-regex",
+        "awk-function-array-and-next",
+        "awk-field-rebuild",
+        "awk-range",
+        "awk-multiple-files-assignment",
+        "awk-mutable-argv",
+        "awk-nextfile",
+        "awk-exit-with-end",
+        "awk-program-files-and-source",
+        "awk-option-order",
+        "awk-custom-rs",
+        "awk-paragraphs",
+        "awk-getline-main",
+        "awk-getline-redirect",
+        "awk-redirection-close-append",
+        "awk-stderr-before-exit",
+        "awk-utf8-fields",
+        "awk-stdin-script-with-file",
+        "awk-environment",
+        "awk-cr-preserved",
+        "awk-cli-double-dash",
+        "awk-subst-match",
+        "awk-invalid-program",
+        "awk-invalid-utf8",
+        "awk-pipe-writer-rejected",
+        "awk-pipe-reader-rejected",
+        "awk-system-rejected",
+        "awk-invalid-variable",
+        "awk-missing-program",
+        "awk-unknown-option",
+        "awk-csv-multiline",
+        "awk-file-argument-after-script",
+        "awk-regexp-rs",
+        "awk-utf8-bom",
+        "awk-read-and-write-same-program",
+        "awk-version",
+        "awk-help"
+      ]
+    },
+    {
       "name": "uname",
       "package_name": "cli/uname",
       "compare_profile": "gnu",
@@ -372,6 +430,8 @@
         "o9-sysv",
         "o9-sysv-zero",
         "p0-cksum-stdin",
+        "cksum-posix-default-marker",
+        "cksum-windows-checksum-modes",
         "release-metadata-cksum-help",
         "release-metadata-cksum-version"
       ]
@@ -934,6 +994,12 @@
         "phase4-chmod-numeric",
         "release-metadata-chmod-help",
         "p8-chmod-symbolic-assignment",
+        "chmod-symbolic-increments",
+        "chmod-symbolic-copy",
+        "chmod-symbolic-conditional",
+        "chmod-symbolic-subtract-copy",
+        "chmod-symbolic-depends",
+        "chmod-symbolic-subtract-mixed",
         "release-metadata-chmod-version",
         "compat-text-chmod-reference-rejected",
         "compat-filesystem-windows-chmod-boundary",
@@ -1025,7 +1091,8 @@
       "compare_profile": "gnu",
       "supported_options": [
         "help",
-        "version"
+        "version",
+        "remove-destination"
       ],
       "policy_sensitive": true,
       "releasable": true,
@@ -1052,7 +1119,23 @@
         "f17-cp-alias-dereference-command-line",
         "f17-cp-suffix-value-short",
         "f17-cp-suffix-value-long",
-        "f17-cp-literal-internal-looking-operand"
+        "f17-cp-literal-internal-looking-operand",
+        "cp-remove-detach-regular",
+        "cp-remove-source-hardlink",
+        "cp-remove-same-name",
+        "cp-remove-destination-link",
+        "cp-remove-dangling-link",
+        "cp-remove-source-link-to-target",
+        "cp-remove-source-link",
+        "cp-remove-link-self",
+        "cp-remove-missing-source",
+        "cp-remove-directory-link",
+        "cp-remove-literal-directory-link",
+        "cp-remove-no-clobber",
+        "cp-remove-windows",
+        "cp-remove-interactive",
+        "cp-remove-unreadable",
+        "cp-remove-parent-alias"
       ]
     },
     {
@@ -2531,6 +2614,8 @@
       "case_ids": [
         "p8-mv-update-none",
         "phase4-mv-regular",
+        "mv-no-copy-rename",
+        "mv-no-copy-cross-device",
         "repair-fs-mv-backup",
         "repair-fs-mv-same-path",
         "release-metadata-mv-help",
@@ -3054,6 +3139,8 @@
       "policy_sensitive": false,
       "releasable": true,
       "case_ids": [
+        "sha256sum-posix-default-marker",
+        "sha256sum-windows-checksum-modes",
         "release-metadata-sha256sum-help",
         "compat-stdin-sha256sum",
         "compat-text-sha256sum-ignore-missing",
@@ -3246,6 +3333,8 @@
       "case_ids": [
         "compat-catalog-line-260",
         "compat-tail-follow-name-boundary",
+        "tail-name-rotation",
+        "tail-name-windows",
         "compat-tail-follow-stdin",
         "compat-tail-infinite-interval",
         "compat-tail-interval-without-follow",
@@ -4418,6 +4507,8 @@
         "o9-sum-status-warn",
         "o9-sum-status-wrong",
         "o9-sum-tag-escaped",
+        "md5sum-posix-default-marker",
+        "md5sum-windows-checksum-modes",
         "release-metadata-md5sum-help"
       ]
     },
@@ -4441,6 +4532,8 @@
         "checksum-sha1sum-wrong-length",
         "checksum-sha1sum-zero-check",
         "o9-sha1sum-tag",
+        "sha1sum-posix-default-marker",
+        "sha1sum-windows-checksum-modes",
         "release-metadata-sha1sum-help"
       ]
     },
@@ -4462,6 +4555,8 @@
         "checksum-sha512sum-stdin",
         "checksum-sha512sum-version",
         "o9-sha512sum-tag",
+        "sha512sum-posix-default-marker",
+        "sha512sum-windows-checksum-modes",
         "release-metadata-sha512sum-help"
       ]
     },
@@ -4716,6 +4811,10 @@
         "patch-context-output-stdout",
         "patch-reverse-output-stdout",
         "patch-existing-write-boundary",
+        "patch-default-reject-hardlink",
+        "patch-default-reject-symlink",
+        "patch-default-reject-file",
+        "patch-default-reject-directory",
         "patch-unsafe-path-boundary",
         "patch-create-null",
         "patch-delete-null",
@@ -5546,8 +5645,10 @@
         "fs-df-capacity",
         "fs-df-other-host",
         "fs-df-help",
-        "fs-df-version"
-      ]
+        "fs-df-version",
+        "fs-df-proc-host"
+      ],
+      "oracle_boundary": "Mount targets depend on the mount namespace. Compare the target field with GNU df on the same Linux host."
     },
     {
       "name": "du",

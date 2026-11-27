@@ -31,7 +31,35 @@ async fn copy_regular_file(
       raise @fsops.FsOpError("unsupported destination type: '\{destination}'")
     None => ()
   }
-  let input = @fs.open(source, mode=ReadOnly)
+  copy_new_file(source, destination)
+}
+
+///|
+priv suberror RemoveDestinationError {
+  RemoveDestinationError(String)
+}
+
+///|
+async fn copy_new_file(
+  source : String,
+  destination : String,
+  removed~ : Bool = false,
+  verbose~ : Bool = false,
+) -> Bool {
+  if verbose {
+    @stdio.stdout.write("'\{source}' -> '\{destination}'\n")
+  }
+  let input = @fs.open(source, mode=ReadOnly) catch {
+    @os_error.OSError(_) as err if removed && err.is_ENOENT() =>
+      raise RemoveDestinationError(
+        "cannot open '\{source}' for reading: No such file or directory",
+      )
+    @os_error.OSError(_) as err if removed && err.is_EACCES() =>
+      raise RemoveDestinationError(
+        "cannot open '\{source}' for reading: Permission denied",
+      )
+    error => raise error
+  }
   defer input.close()
   let output = @fs.open(
     destination,
@@ -46,6 +74,75 @@ async fn copy_regular_file(
     output.write(bytes[:count])
   }
   true
+}
+
+///|
+async fn distinct_entries(source : String, destination : String) -> Bool {
+  let src_parent = @fsops.dirname(source)
+  let dst_parent = @fsops.dirname(destination)
+  guard @xfs.identity(src_parent) is Some(left) &&
+    @xfs.identity(dst_parent) is Some(right) else {
+    raise @fsops.FsOpError("cannot identify the containing directories")
+  }
+  if left != right {
+    return true
+  }
+  let src_name = @fsops.basename(source)
+  let dst_name = @fsops.basename(destination)
+  if src_name == dst_name {
+    return false
+  }
+  // Case-folding and Unicode normalization can map different spellings to one
+  // entry. Require both names in the parent before detaching a hard-link alias.
+  let names = @fs.readdir(src_parent, include_hidden=true)
+  names.contains(src_name) && names.contains(dst_name)
+}
+
+///|
+async fn copy_removing_destination(
+  source : String,
+  destination : String,
+  traversal : LinkTraversal,
+  verbose~ : Bool,
+) -> Bool {
+  guard copy_source_kind(source, traversal, true) is Regular else {
+    raise @fsops.FsOpError("--remove-destination requires a regular source")
+  }
+  guard @fsops.kind_if_exists(destination) is Some(kind) else {
+    return copy_new_file(source, destination, verbose~)
+  }
+  guard !@platform.is_windows() else {
+    raise @fsops.FsOpError(
+      "removing existing destination entries requires POSIX file identity",
+    )
+  }
+  match kind {
+    Regular => {
+      guard @xfs.identity(source, follow_symlink=true) is Some(src_id) &&
+        @xfs.identity(destination, follow_symlink=false) is Some(dst_id) else {
+        raise @fsops.FsOpError("file identity unavailable")
+      }
+      if src_id == dst_id &&
+        (
+          @fs.kind(source, follow_symlink=false) is SymLink ||
+          !distinct_entries(source, destination)
+        ) {
+        raise RemoveDestinationError(
+          "'\{source}' and '\{destination}' are the same file",
+        )
+      }
+    }
+    SymLink => ()
+    _ =>
+      raise @fsops.FsOpError(
+        "expected a regular destination file or symbolic link",
+      )
+  }
+  @xfs.remove_file(destination)
+  if verbose {
+    @stdio.stdout.write("removed '\{destination}'\n")
+  }
+  copy_new_file(source, destination, removed=true, verbose~)
 }
 
 ///|

@@ -436,6 +436,7 @@ pub async fn snapshot(
   preserve_identity~ : Bool = false,
   stat_path~ : String = "stat",
   readlink_path~ : String = "readlink",
+  unreadable_inputs~ : ArrayView[String] = [],
 ) -> Array[SnapshotEntry] {
   let entries : Array[SnapshotEntry] = []
   snapshot_into(root, "", entries, observe, stat_path, readlink_path)
@@ -444,10 +445,21 @@ pub async fn snapshot(
   for index in 0..<entries.length() {
     let entry = entries[index]
     if content && entry.kind == "file" {
-      let content = @fs.read_file(
-        @path.Path(root).join(Path(entry.path)).to_string(),
-        sync_timestamp=baseline && observe.contains("atime"),
-      ).binary()
+      let path = @path.Path(root).join(Path(entry.path)).to_string()
+      let sync_timestamp = baseline && observe.contains("atime")
+      let content = @fs.read_file(path, sync_timestamp~).binary() catch {
+        @os_error.OSError(_) as err if err.is_EACCES() &&
+          unreadable_inputs.contains(entry.path) => {
+          guard entry.metadata.get("mode") is Some(octal) else {
+            fail("reading a locked fixture requires its observed POSIX mode")
+          }
+          let mode = @string.parse_int(octal, radix=8)
+          @fs.chmod(path, mode | 0o400)
+          defer @async.protect_from_cancel(() => @fs.chmod(path, mode))
+          @fs.read_file(path, sync_timestamp~).binary()
+        }
+        error => raise error
+      }
       entries[index] = { ..entry, content, }
     }
   }

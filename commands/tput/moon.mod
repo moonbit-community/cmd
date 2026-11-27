@@ -15,5 +15,5 @@ preferred_target = "wasm"
 description = "Query or expand a compiled terminal capability."
 
 import {
-  "cli/core@0.11.8",
+  "cli/core@0.11.10",
 }

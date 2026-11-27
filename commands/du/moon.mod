@@ -16,5 +16,5 @@ description = "Summarize apparent bytes or inode counts in filesystem trees."
 
 import {
   "moonbitlang/x@0.5.9",
-  "cli/core@0.11.3",
+  "cli/core@0.11.10",
 }

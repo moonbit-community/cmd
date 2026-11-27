@@ -3,6 +3,7 @@
 ///|
 fn command_options(name : String) -> Array[String] {
   match name {
+    "awk" => ["field-separator", "assign", "file", "source", "csv"]
     "base32" => ["decode", "ignore-garbage", "wrap"]
     "base64" => ["decode", "ignore-garbage", "wrap"]
     "basename" => ["multiple", "suffix", "zero"]
@@ -33,6 +34,7 @@ fn command_options(name : String) -> Array[String] {
         "archive", "force", "no-clobber", "no-target-directory", "no-preserve", "preserve",
         "recursive", "verbose", "interactive", "update", "update-mode", "backup",
         "backup-control", "suffix", "dereference-command-line", "dereference", "no-dereference",
+        "remove-destination",
       ]
     "csplit" =>
       [
@@ -161,8 +163,8 @@ fn command_options(name : String) -> Array[String] {
     "mktemp" => ["directory", "quiet", "suffix", "tmpdir"]
     "mv" =>
       [
-        "force", "no-clobber", "no-target-directory", "verbose", "interactive", "update",
-        "update-mode", "backup", "backup-control", "suffix",
+        "no-copy", "force", "no-clobber", "no-target-directory", "verbose", "interactive",
+        "update", "update-mode", "backup", "backup-control", "suffix",
       ]
     "nl" =>
       [
@@ -258,7 +260,8 @@ fn command_options(name : String) -> Array[String] {
     "tac" => ["before", "regex", "separator"]
     "tail" =>
       [
-        "bytes", "follow", "lines", "quiet", "sleep-interval", "verbose", "zero-terminated",
+        "bytes", "follow", "follow-name", "lines", "quiet", "sleep-interval", "verbose",
+        "zero-terminated",
       ]
     "tar" =>
       [

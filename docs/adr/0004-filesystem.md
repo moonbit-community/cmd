@@ -20,6 +20,12 @@ NTFS. These path observations do not make a subsequent rename atomic with
 respect to the identity check. POSIX `test -ef` follows both final links and
 compares the two observations, returning false for a failed path lookup.
 
+POSIX `tail -F` compares the current pathname with the identity of its open
+regular file. A replacement starts at offset zero and a missing name remains
+eligible for retry. Polling can miss versions that appear and disappear between
+observations. The host open API has no nonblocking flag for a concurrent
+substitution of a FIFO; this profile covers rotation among regular files.
+
 ## Mutation and identity boundaries
 
 Serve decodes URL paths once and rejects traversal, invalid UTF-8, control bytes
@@ -63,7 +69,7 @@ directory operations supported on Wasm, plus race regressions.
 
 | Operation | Supported behavior and deliberate limit | Condition for expansion |
 | --- | --- | --- |
-| cp | New destinations with --no-preserve=mode follow umask. Default preservation and existing-file overwrite refuse; no-clobber/update skips remain. | Public mode, identity and handle operations; alias and partial-effect tests |
+| cp | New destinations with --no-preserve=mode follow umask. Explicit --remove-destination detaches a single POSIX regular file or link. Default preservation and ordinary existing-file overwrite refuse; no-clobber/update skips remain. | Public mode, identity and handle operations; alias and partial-effect tests |
 | mv | Rename entries with ordered backup/prompt/update effects. Do not delete a remaining source to manufacture success; EXDEV has no copy/delete fallback. Equal-time interactive/older-only cases require comparable entry identities. | Identity and metadata-preserving fallback; link, time, mode and race tests |
 | touch | Create missing files; -c skips missing files. Existing timestamp updates refuse without changing content. | Public timestamp setter and preserved-content observations |
 | patch | Offset/fuzz, mixed hunk results, new rejects, stdout/dry-run and selected create/delete. Existing target, named-output and reject replacement refuse. | Mode-preserving replacement and safe reject identity/truncation |
@@ -126,6 +132,12 @@ claim. This diagnostic repair ships in ln 0.2.6 and does not strengthen the file
 transaction guarantee. Reconsider cancellation rollback only with a public API
 that establishes commit state and handle-relative identity.
 
+GNU mv 9.11 preserves an explicit backup at its backup name when a final
+`--no-copy` rename fails. On Linux, compare the source and its hard link,
+the destination or backup's original identity, mode, content, and mtime across
+an actual workspace-to-tmpfs move. Default moves still restore backups on a
+failed rename. Metadata-preserving copy and source removal remain open in #143.
+
 Windows Wasm source symlink/junction moves and destination-link backups reject
 before prompting or mutation. No-clobber/update-none skips remain; regular
 sources replacing destination links without backup have separate positive
@@ -147,6 +159,18 @@ simplified core layout without restoring a compatibility package or requiring
 an unrelated core publication. Revisit the adapter when a deliberate release
 updates this command's dependency coordinate. Mode tests retain the numeric
 boundaries and symbolic interpretation, while filesystem scenarios own effects.
+
+GNU patch 2.8 replaces the default reject directory entry by rename. Stage
+its bytes in the destination directory's filesystem, install the completed
+file, and keep its handle for later hunks with the same reject name. This
+preserves other hard links and symbolic-link referents. An explicit reject
+name has different semantics. GNU truncates the existing file with no-follow
+and preserves its inode and mode. That case still requires a public operation.
+
+For regular files, symbolic chmod evaluates explicit-class expressions over
+the possible initial modes before mutating a path. A fixed result permits
+class copies, incremental clauses, special bits and conditional execute.
+Expressions whose result depends on the file still require a public mode read.
 
 | Area | Current choice and limitation |
 | --- | --- |
@@ -313,6 +337,15 @@ partially installed file. Truncate can open a path with truncation to zero.
 A positioned last-byte write extends a regular file when the caller controls
 concurrent writers. Arbitrary shrinking, or zeroing an already-checked handle
 after a relative-size calculation, needs a handle resize operation.
+GNU cp checks source metadata before removing the destination, then opens the
+source and creates the destination exclusively. Distinct hard links can be
+detached. When both names resolve to the same regular inode, the parent
+identity and directory entries distinguish a second name from alternative
+spellings of the same name. The latter refuse before removal. A symlink
+source followed to its own symlink destination can disappear between removal
+and open. A missing source before removal preserves the old destination.
+The caller must control the destination namespace throughout the operation.
+
 ## Archive members
 
 GNU tar and Info-ZIP zip/unzip provide the operation and byte references on Linux.

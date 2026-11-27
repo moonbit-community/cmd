@@ -77,7 +77,11 @@ fn count_newlines(chunk : Bytes, delimiter~ : Byte = b'\n') -> Int32 {
 
 ///|
 /// Stream file bytes in [start, end) to stdout in fixed-size chunks.
-async fn stream_range(file : @fs.File, start : Int64, end : Int64) -> Unit {
+async fn stream_range(
+  read_at : async (Int32, Int64) -> Bytes,
+  start : Int64,
+  end : Int64,
+) -> Unit {
   let mut pos = start
   while pos < end {
     let len = if end - pos < CHUNK_SIZE.to_int64() {
@@ -85,7 +89,7 @@ async fn stream_range(file : @fs.File, start : Int64, end : Int64) -> Unit {
     } else {
       CHUNK_SIZE
     }
-    @stdio.stdout.write(file.read_exactly_at(len, position=pos))
+    @stdio.stdout.write(read_at(len, pos))
     pos += len.to_int64()
   }
 }
@@ -95,18 +99,18 @@ async fn stream_range(file : @fs.File, start : Int64, end : Int64) -> Unit {
 /// scanning backward (or forward for +K) in fixed-size chunks, then stream
 /// it out. Memory stays bounded by the chunk size for any file size.
 async fn tail_file(
-  file : @fs.File,
+  size : Int64,
+  read_at : async (Int32, Int64) -> Bytes,
   spec : CountSpec,
   bytes_mode : Bool,
   delimiter~ : Byte = b'\n',
 ) -> Int64 {
-  let size = file.size()
   if bytes_mode {
     let start : Int64 = match spec {
       Last(n) => if n >= size { 0 } else { size - n }
       FromStart(k) => if k - 1 > size { size } else { k - 1 }
     }
-    stream_range(file, start, size)
+    stream_range(read_at, start, size)
     return size
   }
   match spec {
@@ -125,7 +129,7 @@ async fn tail_file(
         } else {
           CHUNK_SIZE
         }
-        let chunk = file.read_exactly_at(len, position=pos - len.to_int64())
+        let chunk = read_at(len, pos - len.to_int64())
         let mut idx = chunk.length() - 1
         if at_file_end && chunk[idx] == delimiter {
           // The trailing newline terminates the last line rather than
@@ -146,12 +150,12 @@ async fn tail_file(
         }
         pos -= len.to_int64()
       }
-      stream_range(file, start, size)
+      stream_range(read_at, start, size)
       size
     }
     FromStart(k) => {
       if k <= 1 {
-        stream_range(file, 0, size)
+        stream_range(read_at, 0, size)
         return size
       }
       // Scan forward for the (k-1)-th newline, then stream the rest.
@@ -163,12 +167,12 @@ async fn tail_file(
         } else {
           CHUNK_SIZE
         }
-        let chunk = file.read_exactly_at(len, position=pos)
+        let chunk = read_at(len, pos)
         for i in 0..<chunk.length() {
           if chunk[i] == delimiter {
             seen += 1
             if seen == k - 1 {
-              stream_range(file, pos + i.to_int64() + 1, size)
+              stream_range(read_at, pos + i.to_int64() + 1, size)
               return size
             }
           }
@@ -337,7 +341,7 @@ pub async fn run_main() -> Unit {
   }
   let quiet = parsed.contains("quiet")
   let verbose = parsed.contains("verbose")
-  let follow = parsed.contains("follow")
+  let follow = parsed.last_occurrence(["follow", "follow-name"])
   let delimiter = if parsed.contains("zero-terminated") {
     b'\x00'
   } else {
@@ -371,6 +375,22 @@ pub async fn run_main() -> Unit {
   let files = parsed.operands
   let sources = if files.is_empty() { ["-"] } else { files }
   let show_headers = (sources.length() > 1 || verbose) && !quiet
+  if follow == Some("follow-name") {
+    if @async.platform is Windows || sources.contains("-") {
+      @stdio.stderr.write(
+        if sources.contains("-") {
+          "tail: cannot follow '-' by name\n"
+        } else {
+          "tail: unsupported capability: comparable Windows file identities\n"
+        },
+      )
+      @env.exit(1)
+    }
+    follow_names(
+      sources, spec, bytes_mode, delimiter, interval_ms, show_headers,
+    )
+    return
+  }
   let mut failed = false
   let follow_states : Array[FollowFile] = []
   for index, path in sources {
@@ -386,8 +406,14 @@ pub async fn run_main() -> Unit {
         let file = @fs.open(path, mode=ReadOnly)
         errdefer file.close()
         if file.kind() is Regular {
-          let offset = tail_file(file, spec, bytes_mode, delimiter~)
-          if follow {
+          let offset = tail_file(
+            file.size(),
+            (n, pos) => file.read_exactly_at(n, position=pos),
+            spec,
+            bytes_mode,
+            delimiter~,
+          )
+          if follow is Some(_) {
             follow_states.push({
               file,
               name: path,
@@ -410,7 +436,7 @@ pub async fn run_main() -> Unit {
       }
     }
   }
-  if follow && !follow_states.is_empty() {
+  if !follow_states.is_empty() {
     follow_files(follow_states, interval_ms, show_headers, sources.length() - 1)
   }
   if failed {

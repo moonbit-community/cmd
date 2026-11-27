@@ -15,5 +15,5 @@ preferred_target = "wasm"
 description = "Print the number of Linux processing units."
 
 import {
-  "cli/core@0.11.6",
+  "cli/core@0.11.10",
 }

@@ -15,5 +15,5 @@ preferred_target = "wasm"
 description = "Create ZIP archives containing files and directories."
 
 import {
-  "cli/core@0.11.5",
+  "cli/core@0.11.10",
 }

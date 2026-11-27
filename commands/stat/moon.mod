@@ -15,5 +15,5 @@ preferred_target = "wasm"
 description = "Print selected GNU stat fields for filesystem entries."
 
 import {
-  "cli/core@0.11.3",
+  "cli/core@0.11.10",
 }

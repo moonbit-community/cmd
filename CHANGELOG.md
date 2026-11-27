@@ -14,15 +14,24 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 ## 2026-11-28
 
+- Add POSIX single-file `cp --remove-destination --no-preserve=mode` with hard-link, symbolic-link and failure-side-effect checks.
+
 - Add Wasm tput, clear, redirected-input tty, signal-name lookup and the standalone test -t redirection predicate.
+- Add an unpublished Wasm awk command for UTF-8 records, pattern-action programs and local file redirection.
+
 - Add C.UTF-8 matching to grep and apply GNU uppercase byte order in join -i.
 - Extend the system-query profiles with the local identity report, GNU operating-system label and process table fields.
 
 - Add Wasm development profiles for uname, hostname, id, whoami, groups, nproc, ps, uptime and free.
 - Add C.UTF-8 character counting and display widths to wc, fold, expand, unexpand and column.
+- Add regular-file name following and rotation recovery to POSIX `tail -F`
+  in the development version.
 - Correct cat -E rendering of CRLF across input boundaries.
 
 - Add POSIX file identity comparisons to the development version of `test`.
+- Match GNU patch when replacing a default reject file in the development version.
+- Expand regular-file symbolic permission expressions in the development version of `chmod`.
+- Support explicit rename-only moves with `mv --no-copy` in development.
 - Use the Windows GNU default binary marker for untagged checksum records.
 
 ## 2026-11-27

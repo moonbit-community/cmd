@@ -306,13 +306,22 @@ async fn run_case(
       first_byte_difference(candidate_stderr, oracle_stderr),
     )
   }
+  let unreadable_inputs = fixture.files
+    .filter(file => file.readable == Some(false))
+    .map(file => file.path)
+  let dimensions = fixture.observe.unwrap_or([]).copy()
+  if !unreadable_inputs.is_empty() && !dimensions.contains("mode") {
+    dimensions.push("mode")
+  }
   let candidate_files = snapshot(
     candidate_root,
-    observe=fixture.observe.unwrap_or([]),
+    observe=dimensions,
+    unreadable_inputs~,
   )
   let oracle_files = snapshot(
     oracle_root,
-    observe=fixture.observe.unwrap_or([]),
+    observe=dimensions,
+    unreadable_inputs~,
   )
   if !snapshots_equal(candidate_files, oracle_files) {
     failures.push(

@@ -29,6 +29,11 @@ pub(all) enum Detail {
 }
 
 ///|
+pub(all) suberror WalkError {
+  UnreadableDirectory
+}
+
+///|
 pub async fn measure(
   operands : ArrayView[String],
   detail~ : Detail,
@@ -45,7 +50,7 @@ pub async fn measure(
   let seen : Array[@xfs.FileIdentity] = []
   let ancestors : Array[@xfs.FileIdentity] = []
   async fn visit(path : String, is_operand : Bool) -> Int64 {
-    let (kind, own, children, identity) = try {
+    let (kind, own, identity) = try {
       let kind = @fs.kind(path, follow_symlink=follow)
       if windows && kind is Directory && (!count_links || follow) {
         raise Failure("Windows directory traversal requires -l without -L")
@@ -74,12 +79,7 @@ pub async fn measure(
         // GNU du counts only entries with a usable POSIX st_size.
         0L
       }
-      let children = if kind is Directory {
-        @fs.readdir(path, include_hidden=true)
-      } else {
-        []
-      }
-      (kind, own, children, identity)
+      (kind, own, identity)
     } catch {
       error => {
         report(path, error)
@@ -93,6 +93,16 @@ pub async fn measure(
     if kind is Directory {
       if follow && identity is Some(id) {
         ancestors.push(id)
+      }
+      let children = @fs.readdir(path, include_hidden=true) catch {
+        @os_error.OsError(AccessDenied, ..) => {
+          report(path, UnreadableDirectory)
+          []
+        }
+        error => {
+          report(path, error)
+          []
+        }
       }
       for name in children {
         let child = (if path.has_suffix("/") { path } else { path + "/" }) +

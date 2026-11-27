@@ -62,6 +62,14 @@ pub fn commands() -> Array[CommandContract] {
       0, 1, 2,
     ]),
     contract("kill", Extended, NoInput, LineStream, [], exit_codes=[0, 1]),
+    contract(
+      "awk",
+      Restricted,
+      FileOrStdin,
+      ByteStream,
+      [FileRead, FileWrite],
+      exit_codes=[0, 2],
+    ),
     contract("uname", Extended, NoInput, LineStream, [FileRead], exit_codes=[
       0, 1,
     ]),

@@ -178,6 +178,7 @@ pub fn oracle_profile_errors(profile : OracleProfile) -> Array[String] {
       ("TREE", "tree v"),
       ("FINDUTILS", "find (GNU findutils) "),
       ("FINDUTILS", "xargs (GNU findutils) "),
+      ("GAWK", "GNU Awk "),
       ("GREP", "grep (GNU grep) "),
       ("RIPGREP", "ripgrep "),
       ("TYPST", "typst "),

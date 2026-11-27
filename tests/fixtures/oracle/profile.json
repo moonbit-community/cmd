@@ -7,8 +7,8 @@
   "image_digest": "",
   "versions": "",
   "versions_sha256": "",
-  "dockerfile_sha256": "f8168e6c1e3bbc64529d6baedee0da0085c33adb13b5ebb3c2840d2f1b53bcbe",
-  "versions_script_sha256": "6251a5b78ea1a11cc7424358889fdfb52c7123833acb4954ab71fe2abff51a2e",
+  "dockerfile_sha256": "b68e75c220f4e63fc075186824dbe85b7816acb094c066303404b09f51b87a2d",
+  "versions_script_sha256": "ddf99487e5c47ace31bce21b8d462aa2d635353b8b5cf54768a0de4a94c5b4ed",
   "sources": [],
   "binding_status": "unsealed: verify recipe bytes inside the exact image and the complete executable inventory before sealing"
 }

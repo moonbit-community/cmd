@@ -5,6 +5,7 @@ import {
 import {
   "cli/core/cli",
   "cli/core/fsops",
+  "cli/core/tempio",
   "moonbitlang/async/fs",
   "moonbitlang/async/stdio",
   "moonbitlang/core/env",

@@ -1,8 +1,13 @@
 import {
   "moonbitlang/core/async/fs",
+  "moonbitlang/core/async/os_error",
   "moonbitlang/core/string",
   "moonbitlang/x/fs" @xfs,
   "cli/core/platform",
 }
 
 supported_targets = "wasm"
+
+import {
+  "moonbitlang/core/async",
+} for "wbtest"

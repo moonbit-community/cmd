@@ -80,8 +80,8 @@ identify the principal refusals and platform differences.
 
 | Command | Supported behavior | Limits |
 | --- | --- | --- |
-| [df](../commands/df/README.md) | Linux mount source, type and mount point for named paths. | Requires procfs. Capacity needs filesystem statistics. |
-| [du](../commands/du/README.md) | Recursive apparent bytes and inode counts, per-file or summary output, rounded units, totals and POSIX duplicate suppression. | Allocated sizes unavailable. Windows trees require physical traversal and -l. |
+| [df](../commands/df/README.md) | Linux mount source, type and mount point for named paths with GNU field widths. | Requires procfs. Capacity needs filesystem statistics. |
+| [du](../commands/du/README.md) | Recursive apparent bytes and inode counts, including unreadable directory entries, per-file or summary output, rounded units, totals and POSIX duplicate suppression. | Allocated sizes unavailable. Windows trees require physical traversal and -l. |
 | [stat](../commands/stat/README.md) | File types, names, entry sizes, integer timestamps and dereference. | Requires a selected format. macOS directory size is unavailable. |
 | [readlink](../commands/readlink/README.md) | Existing, all-but-last and missing-component canonicalization, NUL and no-newline output. | Stored targets and unresolved symbolic links need readlink. |
 | [install](../commands/install/README.md) | POSIX file installation, including unlinking and recreating distinct regular destinations, numeric modes and directories. | Caller-controlled directories. Equal or unavailable identities, destination links and Windows modes excluded. |
@@ -89,16 +89,17 @@ identify the principal refusals and platform differences.
 | [tar](../commands/tar/README.md) | GNU tar create, list, extract and stdout profiles for ustar and gzip. | UTF-8 names, regular files and directories, fixed archive metadata, new files only. |
 | [zip](../commands/zip/README.md) | Info-ZIP recursive archive creation, stored entries and Deflate levels 1–9. | New archives, relative names, synthetic metadata. |
 | [unzip](../commands/unzip/README.md) | Info-ZIP name listing, verification, stdout and named-directory extraction. | Exact selections, regular files and directories, no overwrite or metadata restoration. |
+| [awk](../commands/awk/README.md) | GNU Awk 5.4.1 profile for UTF-8 records, fields, EREs, functions, arrays, printf, local getline and file redirection. | Ordinary LF input streams. Custom record separators, CSV and getline with main or dynamic input buffer standard input. Process pipes and system() report status 2. |
 | [base32](../commands/base32/README.md) | RFC 4648 Base32 encoding and decoding; wrapping and garbage filtering. | Uppercase alphabet; decoding retains the whole input. |
 | [base64](../commands/base64/README.md) | Streaming Base64 encoding and decoding; wrapping and garbage filtering. | Standard alphabet and canonical tail bits; malformed padding fails. |
 | [basename](../commands/basename/README.md) | Lexical basename and literal suffix removal; multiple and NUL-separated output. | No filesystem lookup. |
 | [cat](../commands/cat/README.md) | Streaming concatenation, line numbering and visible byte formatting. | Byte-oriented display; -u has no effect. |
-| [chmod](../commands/chmod/README.md) | POSIX numeric modes and closed symbolic assignments on regular files. | No Windows, reference or incremental symbolic modes. |
+| [chmod](../commands/chmod/README.md) | POSIX numeric modes and symbolic expressions with a known final regular-file mode. | Omitted classes, results depending on the old mode, reference modes and Windows remain unsupported. |
 | [cksum](../commands/cksum/README.md) | POSIX CRC and selected digest families; modern digest manifests. | No legacy-algorithm manifest checks; raw output is single-input. |
 | [cmp](../commands/cmp/README.md) | Byte comparison with skip/limit, quiet and list modes. | C-byte diagnostics. |
 | [column](../commands/column/README.md) | Grid/table layout, C.UTF-8 cell widths, ANSI-aware table fields and temporary spooling. | No automatic terminal width or full util-linux grammar. |
 | [comm](../commands/comm/README.md) | Three-column sorted comparison, order checks, custom delimiters and totals. | C and C.UTF-8 byte ordering. |
-| [cp](../commands/cp/README.md) | New file/tree copies with --no-preserve=mode; explicit skip policies. | No mode-preserving, archive or existing-file replacement copies. |
+| [cp](../commands/cp/README.md) | New file/tree copies and explicit skip policies. Single-source POSIX --remove-destination detaches a regular file or symlink with --no-preserve=mode. | Caller-controlled directory required. Ordinary in-place overwrite, metadata preservation, backups and recursive detachment are unavailable. |
 | [csplit](../commands/csplit/README.md) | Numeric/regex splits, repeats, suffixes and fragment cleanup. | No overwrite; Windows path-name and temporary-storage boundaries. |
 | [curl](../commands/curl/README.md) | HTTP(S), Basic auth, cookies, redirects, retry, upload and resume. | No other protocols/non-Basic auth; finite config/IRI/Cookie profile. |
 | [cut](../commands/cut/README.md) | Byte/field selection, complement, delimiters and NUL records. | No multibyte character selection. |
@@ -127,11 +128,11 @@ identify the principal refusals and platform differences.
 | [md5sum](../commands/md5sum/README.md) | Streaming MD5 and checksum manifest verification. | Binary/text modes do not translate bytes. |
 | [mkdir](../commands/mkdir/README.md) | Multiple directories, parents and supported POSIX leaf modes. | No Windows mode setting or complete umask/parent-mode parity. |
 | [mktemp](../commands/mktemp/README.md) | Exclusive temporary files/directories with templates and suffixes. | No unsafe dry-run names. |
-| [mv](../commands/mv/README.md) | Rename, overwrite/update selection and simple or numbered backups. | No cross-filesystem fallback; Windows link restrictions; equal-time `-i` / `-u` use file identities on POSIX. |
+| [mv](../commands/mv/README.md) | Rename, --no-copy, overwrite/update selection and simple or numbered backups. A failed --no-copy rename retains the backup at its backup name. | No cross-filesystem fallback; Windows link restrictions; equal-time `-i` / `-u` use file identities on POSIX. |
 | [nl](../commands/nl/README.md) | Page/section numbering, regex selection, width and separators. | Byte-oriented matching and delimiters. |
 | [od](../commands/od/README.md) | Typed byte dumps, offsets, widths and limits. | Fixed Linux numeric profile; C locale. |
 | [paste](../commands/paste/README.md) | Parallel/serial joining, delimiter cycles and NUL records. | Byte delimiters. |
-| [patch](../commands/patch/README.md) | Unified/context hunks, offsets, fuzz, reverse, dry runs and rejects. | No existing-file rewriting or named --output; no extended binary formats. |
+| [patch](../commands/patch/README.md) | Unified/context hunks, offsets, fuzz, reverse, dry runs and replacement of default reject files. | Explicit reject output requires a new file. No existing-file rewriting, named --output or extended binary formats. |
 | [printenv](../commands/printenv/README.md) | All or selected environment values; NUL output. | Launcher-visible environment only. |
 | [printf](../commands/printf/README.md) | Format reuse, numeric conversions, byte escapes and shell quoting. | Fixed numeric/C-locale profile. |
 | [pwd](../commands/pwd/README.md) | Physical or validated logical working-directory paths. | Invalid logical PWD falls back to the runtime directory. |
@@ -152,7 +153,7 @@ identify the principal refusals and platform differences.
 | [split](../commands/split/README.md) | Line/byte/record/chunk splitting, suffixes and shell filters. | No existing-output replacement; spooling and child permissions may apply. |
 | [strings](../commands/strings/README.md) | Printable 7-bit/8-bit runs, minimum lengths, offsets and names. | No wide encodings, Unicode classes or object-section parsing. |
 | [tac](../commands/tac/README.md) | Reverse records with fixed or regex separators. | Regex mode uses whole-input memory; stdin may need temporary storage. |
-| [tail](../commands/tail/README.md) | Line/byte suffixes, start positions, headers and descriptor following. | No rotation-aware -F. |
+| [tail](../commands/tail/README.md) | Line/byte suffixes, start positions, headers, descriptor following and POSIX regular-file name following with `-F`. | Windows name following requires comparable file identities. |
 | [tee](../commands/tee/README.md) | Multiple output sinks, append and explicit output-error policies. | Default SIGPIPE behavior is unavailable. |
 | [test](../commands/test/README.md) | String/integer/file predicates, Boolean forms and POSIX `-ef` identity comparison. | Windows `-ef` and unavailable terminal, owner and mode predicates reject. |
 | [timeout](../commands/timeout/README.md) | Local-only child deadline and exit-status mapping. | Unpublished; no process-group or signal-option profile. |

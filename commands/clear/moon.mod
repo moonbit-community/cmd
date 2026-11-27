@@ -15,5 +15,5 @@ preferred_target = "wasm"
 description = "Emit the clear sequence from a compiled terminal description."
 
 import {
-  "cli/core@0.11.8",
+  "cli/core@0.11.10",
 }

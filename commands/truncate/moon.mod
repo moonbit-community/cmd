@@ -15,5 +15,5 @@ preferred_target = "wasm"
 description = "Set the length of regular files using supported filesystem operations."
 
 import {
-  "cli/core@0.11.3",
+  "cli/core@0.11.10",
 }

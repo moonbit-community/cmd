@@ -28,13 +28,15 @@ Copying requires --no-preserve=mode. Recursive copies check the source tree befo
 | `-v`, `--verbose` | Show copied paths. |
 | `--help` | Show help. |
 | `--version` | Show the version. |
+| `--remove-destination` | Unlink an existing POSIX destination before copying a regular source. |
 <!-- END GENERATED OPTIONS -->
 
 Use `--help` for the complete option list.
 
 ## Notes
 
-- Existing-file replacement, default mode preservation and archive copies are unsupported. Parsed -f, -i and backup options do not enable these operations.
+- With `--remove-destination --no-preserve=mode`, one regular source can replace a regular destination or symbolic link on POSIX. The destination directory must remain under the caller's control. Existing aliases keep the old file. After unlinking, a source-open failure leaves the destination absent and a copy failure can leave a partial file.
+- A regular source and the same directory entry are rejected. Distinct hard-link entries may be detached. An explicit target-directory symlink is followed unless `-T` selects the link itself. Interactive, backup and recursive removal profiles are unsupported.
 - Source-link traversal must be selected explicitly where needed. Cycles and destinations inside the source are rejected.
 
 Build from source with the MoonBit 1.0 RC1 toolchain.

@@ -23,6 +23,8 @@ moonx cli/df --output=source .
 
 ## Notes
 
+The source column uses GNU's 14-character minimum when another column follows.
+
 Linux --output=source,fstype,target reads /proc/self/mountinfo. Choose one or more unique columns and supply at least one path. Capacity, allocation and non-Linux mounts require a filesystem-statistics API. Mounted-path and label output currently requires printable ASCII for column alignment. Ambiguous stacked mounts fail.
 
 See the [compatibility guide](../../docs/compatibility.md).

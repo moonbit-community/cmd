@@ -11,6 +11,7 @@ pub async fn execute_scenario(
   // after success as well as failure; a suite-level pass is not that evidence.
   let retain_success = retain_success ||
     @network.supports(fixture.id) ||
+    fixture.id == "mv-no-copy-cross-device" ||
     fixture.id.has_suffix("-windows-checksum-modes") ||
     fixture.id.has_suffix("-windows-text-modes")
   let report_id = "scenario:" + fixture.id
@@ -60,6 +61,7 @@ pub async fn execute_scenario(
     ),
     () => {
       match fixture.id {
+        "mv-no-copy-cross-device" => mv_cross_device_scenario(root, work)
         "grep-windows-text-modes"
         | "cat-windows-text-modes"
         | "diff-windows-text-modes"
@@ -79,6 +81,8 @@ pub async fn execute_scenario(
         "uname-fields-linux-reference" =>
           system_reference(work, root, fixture.command, fixture.args)
         "id-fields-linux-reference" =>
+          system_reference(work, root, fixture.command, fixture.args)
+        "fs-df-proc-host" =>
           system_reference(work, root, fixture.command, fixture.args)
         "ps-fields-linux-reference" =>
           system_reference(work, root, fixture.command, fixture.args)
@@ -317,6 +321,21 @@ pub async fn execute_scenario(
         "network-refusal-recovery" => refused_retry_scenario(root, work)
         "network-option-effects" => network_options_scenario(root, work)
         "tail-follow-interval" => follow_interval_scenario(root, work)
+        "tail-name-rotation" => {
+          @filesystem.check_tail_rotation(
+            @harness.command_program(),
+            @harness.command_args(root, "tail", []),
+            work,
+          )
+          if oracle_image is Some(image) {
+            @filesystem.check_helper_oracle(
+              work + "/oracle",
+              image,
+              mode="tail-rotation",
+              command="tail",
+            )
+          }
+        }
         "stream-failure-prefixes" => failure_prefix_scenario(root, work)
         "ls-link-facets" => link_dereference_scenario(root, work)
         "network-auth-cookie" => network_cli_scenario(root, work, oracle_image?)
