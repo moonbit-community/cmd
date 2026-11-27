@@ -15,7 +15,7 @@
       },
       "normalizations": [],
       "expected_status": 0,
-      "expected_stdout_text": "Filesystem Type Mounted on\nproc       proc /proc\n",
+      "expected_stdout_text": "Filesystem     Type Mounted on\nproc           proc /proc/sysrq-trigger\n",
       "expected_stderr_text": "",
       "comparison": "contract",
       "coverage": [
