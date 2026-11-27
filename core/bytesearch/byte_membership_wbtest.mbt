@@ -6,7 +6,7 @@ test "shared SIMD membership is exact for every singleton byte" {
     let prepared = ByteMembership::new(members)
     members[selected] = false
     for group in 0..<16 {
-      let mask = prepared.mask(@v128.v128_load(hay, group * 16))
+      let mask = prepared.mask(@simd.v128_load(hay, group * 16))
       let expected = if selected / 16 == group {
         1 << (selected % 16)
       } else {

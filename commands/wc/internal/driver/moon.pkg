@@ -7,9 +7,13 @@ import {
   "moonbitlang/async/stdio",
   "moonbitlang/core/env",
   "moonbitlang/core/encoding/utf8",
-  "moonbitlang/core/v128",
+  "moonbitlang/core/simd",
   "moonbitlang/x/sys",
 }
+
+options(
+  "allow-experimental-packages": [ "moonbitlang/core/simd" ],
+)
 
 warnings = "-alert_experimental"
 
