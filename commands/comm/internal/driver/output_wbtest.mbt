@@ -1,10 +1,34 @@
 ///|
 priv struct CommOutput {
+  controller : @io.BinaryWriterController
   bytes : Array[Byte]
 }
 
 ///|
-impl @io.Writer for CommOutput with fn write_once(self, bytes, offset~, len~) {
+impl @io.BinaryWriter for CommOutput
+
+///|
+impl @io.BinaryWriterImpl for CommOutput with fn name(_) {
+  "CommOutput"
+}
+
+///|
+impl @io.BinaryWriterImpl for CommOutput with fn get_controller(self) {
+  self.controller
+}
+
+///|
+impl @io.BinaryWriterImpl for CommOutput with fn flush_partial_data(_) {
+  ()
+}
+
+///|
+impl @io.BinaryWriterImpl for CommOutput with fn raw_write_impl(
+  self,
+  bytes,
+  offset~,
+  len~,
+) {
   for i in offset..<(offset + len) {
     self.bytes.push(bytes[i])
   }
@@ -23,7 +47,10 @@ async test "comm columns suppression and totals retain record separators" {
       writer.write(if zero { b"b\x00c" } else { b"b\nc" })
     })
     defer right.close()
-    let output : CommOutput = { bytes: [], }
+    let output : CommOutput = {
+      controller: @io.BinaryWriterController(),
+      bytes: [],
+    }
     merge_readers(
       left,
       right,
@@ -56,7 +83,10 @@ async test "comm retains the merged prefix when a later read fails" {
   defer left.close()
   let right = @io.MemoryReader(writer => writer.write(b"one\n"))
   defer right.close()
-  let output : CommOutput = { bytes: [], }
+  let output : CommOutput = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+  }
   let failed = try {
     merge_readers(
       left,
@@ -118,7 +148,10 @@ async test "comm borrowed merge preserves fragmented duplicates and suppression"
         (if h2 { "" } else { p2 + "c\n" }) +
         (if h1 { "" } else { "d\n" }) +
         "2:2:2:total\n"
-      let output : CommOutput = { bytes: [], }
+      let output : CommOutput = {
+        controller: @io.BinaryWriterController(),
+        bytes: [],
+      }
       merge_readers(left, right, h1, h2, h3, 1, b'\n', ":", true, writer=output)
       assert_eq(Bytes::from_array(output.bytes), @utf8.encode(expected))
     }
@@ -127,11 +160,30 @@ async test "comm borrowed merge preserves fragmented duplicates and suppression"
 
 ///|
 priv struct CommFailOutput {
+  controller : @io.BinaryWriterController
   bytes : Array[Byte]
 }
 
 ///|
-impl @io.Writer for CommFailOutput with fn write_once(
+impl @io.BinaryWriter for CommFailOutput
+
+///|
+impl @io.BinaryWriterImpl for CommFailOutput with fn name(_) {
+  "CommFailOutput"
+}
+
+///|
+impl @io.BinaryWriterImpl for CommFailOutput with fn get_controller(self) {
+  self.controller
+}
+
+///|
+impl @io.BinaryWriterImpl for CommFailOutput with fn flush_partial_data(_) {
+  ()
+}
+
+///|
+impl @io.BinaryWriterImpl for CommFailOutput with fn raw_write_impl(
   self,
   bytes,
   offset~,
@@ -153,7 +205,10 @@ async test "comm oversized record output failure does not replay queued bytes" {
   defer left.close()
   let right = @io.MemoryReader(_ => ())
   defer right.close()
-  let output : CommFailOutput = { bytes: [], }
+  let output : CommFailOutput = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+  }
   let failed = try {
     merge_readers(
       left,

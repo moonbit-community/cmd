@@ -60,7 +60,9 @@ async test "column ingest bounds independent data and index batches and defers o
 ///|
 async test "column ingest retains complete batches before an input failure" {
   let source = @io.MemoryReader(writer => {
-    writer.write("a:b\n".repeat(5000) + " \t\nlast\u0000hidden\npartial")
+    @io.Utf8Writer(writer).write(
+      "a:b\n".repeat(5000) + " \t\nlast\u0000hidden\npartial",
+    )
     @async.sleep(1)
     fail("fixture batched input failure")
   })

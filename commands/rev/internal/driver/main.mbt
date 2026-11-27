@@ -17,7 +17,7 @@ priv suberror InvalidCRecord {
 
 ///|
 priv struct RevOutput {
-  writer : &@io.Writer
+  writer : &@io.BinaryWriter
   buffer : FixedArray[Byte]
   mut length : Int32
   mut pending : (BytesView, Bool, Int32)?
@@ -104,7 +104,7 @@ fn help_message() -> String {
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("rev \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("rev \{MODULE_VERSION}\n")
     return
   }
   let parsed = command.parse(argv=@env.args()[1:], env=Map([])) catch {
@@ -132,21 +132,21 @@ pub async fn run_main() -> Unit {
           )
         _ => (text, "")
       }
-      @stdio.stderr.write("rev: \{message}: '\{option}'\n")
+      @stdio.stderr.text.write("rev: \{message}: '\{option}'\n")
       @env.exit(1)
       return
     }
   }
   let operands = parsed.values.get("operands").unwrap_or([])
   if parsed.flags.contains("help") {
-    @stdio.stdout.write(help_message() + "\n")
+    @stdio.stdout.text.write(help_message() + "\n")
     return
   }
   if operands.is_empty() {
     let lines = Ref(0L)
     reverse_reader(@stdio.stdin, lines) catch {
       error => {
-        @stdio.stderr.write(
+        @stdio.stderr.text.write(
           "rev: stdin: " +
           lines.val.to_string() +
           ": " +
@@ -167,7 +167,7 @@ pub async fn run_main() -> Unit {
       opened = true
       defer file.close()
       if file.kind() == @fs.FileKind::Directory {
-        @stdio.stderr.write("rev: " + path + ": 0: Is a directory\n")
+        @stdio.stderr.text.write("rev: " + path + ": 0: Is a directory\n")
         status = 1
       } else {
         reverse_reader(file, lines)
@@ -179,7 +179,7 @@ pub async fn run_main() -> Unit {
         } else {
           "rev: cannot open " + path + ": "
         }
-        @stdio.stderr.write(prefix + error_message(error) + "\n")
+        @stdio.stderr.text.write(prefix + error_message(error) + "\n")
         status = 1
       }
     }
@@ -191,11 +191,11 @@ pub async fn run_main() -> Unit {
 
 ///|
 async fn reverse_reader(
-  reader : &@io.Reader,
+  reader : &@io.BinaryReader,
   count : Ref[Int64],
-  writer~ : &@io.Writer = @stdio.stdout,
+  writer~ : &@io.BinaryWriter = @stdio.stdout,
 ) -> Unit {
-  let lines = @stream.RecordReader::new(reader)
+  let lines = @stream.RecordReader::from_binary(reader)
   let output : RevOutput = {
     writer,
     buffer: FixedArray::make(65536, b'\x00'),
@@ -241,14 +241,15 @@ async fn reverse_reader(
 
 ///|
 fn error_message(error : Error) -> String {
+  let error = @stream.transport_cause(error)
   match error {
     InvalidCRecord => "Invalid or incomplete multibyte or wide character"
-    @os_error.OSError(code, ..) as error =>
-      if error.is_ENOENT() {
+    @os_error.OsError(kind, raw_code=code, ..) =>
+      if kind is NotFound {
         "No such file or directory"
-      } else if error.is_EACCES() {
+      } else if kind is AccessDenied {
         "Permission denied"
-      } else if error.is_ENOTDIR() {
+      } else if kind is NotDirectory {
         "Not a directory"
       } else if !@platform.is_windows() && code == 21 {
         "Is a directory"

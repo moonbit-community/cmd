@@ -33,7 +33,7 @@ fn spaces(width : Int32) -> String {
 // Deferred output remains cancellable if the downstream writer stalls.
 #warnings("-cancellable_defer")
 async fn process_reader(
-  reader : &@io.Reader,
+  reader : &@io.BinaryReader,
   header_style : String,
   body_style : String,
   footer_style : String,
@@ -48,11 +48,11 @@ async fn process_reader(
   section_delimiter : String,
   section : Ref[Int32],
   blank_run : Ref[Int32],
-  writer~ : &@io.Writer = @stdio.stdout,
+  writer~ : &@io.BinaryWriter = @stdio.stdout,
 ) -> Unit {
-  let output = @stream.BlockWriter::new(writer)
+  let output = @stream.BlockWriter::from_binary(writer)
   defer output.flush()
-  let scanner = @stream.RecordReader::new(reader)
+  let scanner = @stream.RecordReader::from_binary(reader)
   let state : Numbering = {
     header_style,
     body_style,
@@ -88,19 +88,19 @@ async fn process_reader(
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("nl \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("nl \{MODULE_VERSION}\n")
     return
   }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
-      @stdio.stderr.write("nl: \{message}: '\{option}'\n")
+      @stdio.stderr.text.write("nl: \{message}: '\{option}'\n")
       @env.exit(1)
       return
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write(metadata_help())
+    @stdio.stdout.text.write(metadata_help())
     return
   }
   let body_style = parsed
@@ -120,7 +120,9 @@ pub async fn run_main() -> Unit {
     ] {
     let (label, style) = entry
     if !(style is ("a" | "t" | "n")) {
-      @stdio.stderr.write("nl: invalid \{label} numbering style: '\{style}'\n")
+      @stdio.stderr.text.write(
+        "nl: invalid \{label} numbering style: '\{style}'\n",
+      )
       @env.exit(1)
       return
     }
@@ -130,7 +132,7 @@ pub async fn run_main() -> Unit {
     .unwrap_or(DEFAULT_NUMBER_WIDTH)
   let width = @string.parse_int(width_text) catch {
     _ => {
-      @stdio.stderr.write(
+      @stdio.stderr.text.write(
         "nl: invalid line number field width: '\{width_text}'\n",
       )
       @env.exit(1)
@@ -138,7 +140,7 @@ pub async fn run_main() -> Unit {
     }
   }
   if width < 1 {
-    @stdio.stderr.write(
+    @stdio.stderr.text.write(
       "nl: invalid line number field width: '\{width_text}'\n",
     )
     @env.exit(1)
@@ -152,7 +154,7 @@ pub async fn run_main() -> Unit {
     .unwrap_or(DEFAULT_STARTING_LINE_NUMBER)
   let starting_number = @string.parse_int(starting_text) catch {
     _ => {
-      @stdio.stderr.write(
+      @stdio.stderr.text.write(
         "nl: invalid starting line number: '\{starting_text}'\n",
       )
       @env.exit(1)
@@ -164,7 +166,7 @@ pub async fn run_main() -> Unit {
     .unwrap_or(DEFAULT_LINE_INCREMENT)
   let increment = @string.parse_int(increment_text) catch {
     _ => {
-      @stdio.stderr.write(
+      @stdio.stderr.text.write(
         "nl: invalid line number increment: '\{increment_text}'\n",
       )
       @env.exit(1)
@@ -176,7 +178,7 @@ pub async fn run_main() -> Unit {
     .unwrap_or(DEFAULT_JOIN_BLANK_LINES)
   let join_blank_lines = @string.parse_int(join_blank_text) catch {
     _ => {
-      @stdio.stderr.write(
+      @stdio.stderr.text.write(
         "nl: invalid blank-line group size: '\{join_blank_text}'\n",
       )
       @env.exit(1)
@@ -184,7 +186,7 @@ pub async fn run_main() -> Unit {
     }
   }
   if join_blank_lines < 1 {
-    @stdio.stderr.write(
+    @stdio.stderr.text.write(
       "nl: invalid blank-line group size: '\{join_blank_text}'\n",
     )
     @env.exit(1)
@@ -194,7 +196,9 @@ pub async fn run_main() -> Unit {
     .last_value("number-format")
     .unwrap_or(DEFAULT_NUMBER_FORMAT)
   if !(number_format is ("ln" | "rn" | "rz")) {
-    @stdio.stderr.write("nl: invalid line number format: '\{number_format}'\n")
+    @stdio.stderr.text.write(
+      "nl: invalid line number format: '\{number_format}'\n",
+    )
     @env.exit(1)
     return
   }
@@ -229,7 +233,7 @@ pub async fn run_main() -> Unit {
       }
     } catch {
       err => {
-        @stdio.stderr.write("nl: \{err}\n")
+        @stdio.stderr.text.write("nl: \{@stream.transport_cause(err)}\n")
         failed = true
         continue
       }

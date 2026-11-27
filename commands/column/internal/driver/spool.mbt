@@ -24,7 +24,7 @@ async fn PageCache::get(self : PageCache, page : Int64, size : Int64) -> Bytes {
   }
   let position = page * self.page_size.to_int64()
   let length = (size - position).min(self.page_size.to_int64()).to_int()
-  let bytes = self.file.read_exactly_at(length, position~)
+  let bytes = self.file.at(position).read_exactly(length)
   if self.pages.length() < self.capacity {
     self.pages.push((page, bytes))
   } else {
@@ -98,8 +98,8 @@ async fn with_snapshot(
       capacity: 16,
       next_page: 0,
     },
-    data_writer: @stream.BlockWriter::new(data),
-    index_writer: @stream.BlockWriter::new(index),
+    data_writer: @stream.BlockWriter::from_binary(data),
+    index_writer: @stream.BlockWriter::from_binary(index),
     table,
     separator: @layout.Separator::new(separator),
     widths: [],
@@ -121,12 +121,12 @@ fn index_number(bytes : Bytes, offset : Int32) -> Int64 {
 }
 
 ///|
-async fn Snapshot::consume(self : Snapshot, input : &@io.Reader) -> Unit {
-  let scanner = @stream.RecordReader::new(input)
+async fn Snapshot::consume(self : Snapshot, input : &@io.BinaryReader) -> Unit {
+  let scanner = @stream.RecordReader::from_binary(input)
   let pending = SpoolBatch::new()
   for ;; {
     let records = scanner.next_batch() catch {
-      err => raise InputError(err.to_string())
+      err => raise InputError(@stream.transport_cause(err).to_string())
     }
     guard records is Some(records) else { break }
     while !self.stage_records(records, pending) {
@@ -192,7 +192,7 @@ async fn Snapshot::line(self : Snapshot, record : Int64) -> String {
 ///|
 async fn Snapshot::render_grid(
   self : Snapshot,
-  output : &@io.Writer,
+  output : &@io.BinaryWriter,
   width : Int32,
   fill_rows : Bool,
 ) -> Unit {
@@ -221,16 +221,16 @@ async fn Snapshot::render_grid(
       }
       if column > 0 {
         while (position / 8 + 1) * 8 <= end_column {
-          output.write("\t")
+          output.write(b"\t")
           position = (position / 8 + 1) * 8
         }
         end_column += stride
       }
       let line = self.line(index)
-      output.write(line)
+      output.write(@utf8.encode(line))
       position += @layout.display_width(line).to_int64()
     }
-    output.write("\n")
+    output.write(b"\n")
   }
 }
 
@@ -248,7 +248,7 @@ async fn run_layout(
     if paths.is_empty() {
       snapshot.consume(@stdio.stdin) catch {
         InputError(message) => {
-          @stdio.stderr.write("column: \{message}\n")
+          @stdio.stderr.text.write("column: \{message}\n")
           failed = true
         }
         err => raise err
@@ -258,7 +258,7 @@ async fn run_layout(
         // util-linux treats '-' as a filename; omitted operands select stdin.
         let file = @fs.open(path, mode=ReadOnly) catch {
           err => {
-            @stdio.stderr.write("column: \{path}: \{err}\n")
+            @stdio.stderr.text.write("column: \{path}: \{err}\n")
             failed = true
             continue
           }
@@ -266,7 +266,7 @@ async fn run_layout(
         defer file.close()
         snapshot.consume(file) catch {
           InputError(message) => {
-            @stdio.stderr.write("column: \{path}: \{message}\n")
+            @stdio.stderr.text.write("column: \{path}: \{message}\n")
             failed = true
           }
           err => raise err
@@ -274,7 +274,7 @@ async fn run_layout(
       }
     }
     snapshot.finish()
-    let output = @io.BufferedWriter::new(@stdio.stdout, size=65536)
+    let output = @io.BufferedWriter(@stdio.stdout, size=65536)
     if table {
       snapshot.render_table(output, output_separator)
     } else {

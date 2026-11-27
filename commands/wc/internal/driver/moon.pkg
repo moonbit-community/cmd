@@ -1,10 +1,11 @@
 import {
   "cli/core/bytesearch",
+  "cli/core/stream",
   "moonbitlang/core/argparse",
-  "moonbitlang/async/fs" @async_fs,
-  "moonbitlang/async/io",
-  "moonbitlang/async/os_error",
-  "moonbitlang/async/stdio",
+  "moonbitlang/core/async/fs" @async_fs,
+  "moonbitlang/core/async/io",
+  "moonbitlang/core/async/os_error",
+  "moonbitlang/core/async/stdio",
   "moonbitlang/core/env",
   "moonbitlang/core/encoding/utf8",
   "moonbitlang/core/simd",
@@ -18,10 +19,6 @@ options(
   "allow-experimental-packages": [ "moonbitlang/core/simd" ],
 )
 
-import {
-  "cli/core/stream",
-} for "wbtest"
-
 rule(
   name: "gen_version",
   command: "moonx moonbit-community/gen_version@0.0.2 -o $output",
@@ -30,5 +27,5 @@ rule(
 dev_build(rule: "gen_version", input: "../../moon.mod", output: "version.mbt")
 
 import {
-  "moonbitlang/async",
+  "moonbitlang/core/async",
 } for "wbtest"

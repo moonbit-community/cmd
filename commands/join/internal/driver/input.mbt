@@ -8,8 +8,11 @@ priv struct Input {
 }
 
 ///|
-fn Input::new(reader : &@io.Reader, delimiter : Byte) -> Input {
-  { records: @stream.RecordReader::new(reader, delimiter~), batch: None, }
+fn Input::new(reader : &@io.BinaryReader, delimiter : Byte) -> Input {
+  {
+    records: @stream.RecordReader::from_binary(reader, delimiter~),
+    batch: None,
+  }
 }
 
 ///|

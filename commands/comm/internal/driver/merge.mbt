@@ -14,9 +14,9 @@ priv struct CommInput {
 }
 
 ///|
-fn CommInput::new(reader : &@io.Reader, delimiter : Byte) -> CommInput {
+fn CommInput::new(reader : &@io.BinaryReader, delimiter : Byte) -> CommInput {
   {
-    records: @stream.RecordReader::new(reader, delimiter~),
+    records: @stream.RecordReader::from_binary(reader, delimiter~),
     batch: None,
     current: None,
     previous: None,

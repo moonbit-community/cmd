@@ -1,7 +1,10 @@
 ///|
 fn diagnostic(error : Error) -> String {
   match error {
-    Failure(message) => "Failure(" + message.strip_prefix("internal/driver/").unwrap_or(message[:]).to_owned() + ")"
+    Failure(message) =>
+      "Failure(" +
+      message.strip_prefix("internal/driver/").unwrap_or(message[:]).to_owned() +
+      ")"
     _ => error.to_string()
   }
 }

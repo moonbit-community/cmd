@@ -75,8 +75,9 @@ fn FoldState::feed(self : FoldState, data : Bytes) -> Bytes {
 }
 
 ///|
-async fn fold_stream(reader : &@io.Reader, state : FoldState) -> Unit {
-  while @stream.read_chunk(reader) is Some(chunk) {
+async fn fold_stream(reader : &@io.BinaryReader, state : FoldState) -> Unit {
+  let chunks = @stream.ChunkReader::new(reader)
+  while chunks.read() is Some(chunk) {
     @stdio.stdout.write(state.feed(chunk))
   }
   @stdio.stdout.write(Bytes::from_array(state.pending))

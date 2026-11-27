@@ -22,8 +22,8 @@ fn comm_record(prefix : Bytes, line : Bytes, delimiter : Byte) -> Bytes {
 // Deferred output remains cancellable if the downstream writer stalls.
 #warnings("-cancellable_defer")
 async fn merge_readers(
-  reader1 : &@io.Reader,
-  reader2 : &@io.Reader,
+  reader1 : &@io.BinaryReader,
+  reader2 : &@io.BinaryReader,
   hide1 : Bool,
   hide2 : Bool,
   hide3 : Bool,
@@ -31,7 +31,7 @@ async fn merge_readers(
   record_delimiter : Byte,
   column_delimiter : String,
   total : Bool,
-  writer~ : &@io.Writer = @stdio.stdout,
+  writer~ : &@io.BinaryWriter = @stdio.stdout,
 ) -> Unit {
   let left = CommInput::new(reader1, record_delimiter)
   let right = CommInput::new(reader2, record_delimiter)
@@ -56,10 +56,10 @@ async fn merge_readers(
     count3: 0,
     output: @buffer.Buffer(capacity=65536),
   }
-  defer @stream.flush_buffer(writer, merger.output)
+  defer @stream.flush_binary(writer, merger.output)
   for ;; {
     let action = merger.pump()
-    @stream.flush_buffer(writer, merger.output)
+    @stream.flush_binary(writer, merger.output)
     match action {
       Read(input) => {
         input.batch = input.records.next_batch()
@@ -69,7 +69,7 @@ async fn merge_readers(
         if order_mode > 0 {
           raise CommError("\{name} is not in sorted order")
         }
-        @stdio.stderr.write("comm: \{name} is not in sorted order\n")
+        @stdio.stderr.text.write("comm: \{name} is not in sorted order\n")
         input.warned = true
       }
       Flush => ()
@@ -96,19 +96,19 @@ async fn merge_readers(
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("comm \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("comm \{MODULE_VERSION}\n")
     return
   }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
-      @stdio.stderr.write("comm: \{message}: '\{option}'\n")
+      @stdio.stderr.text.write("comm: \{message}: '\{option}'\n")
       @env.exit(1)
       return
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write(help_message() + "\n")
+    @stdio.stdout.text.write(help_message() + "\n")
     return
   }
   let hide1 = parsed.contains("suppress-1")
@@ -124,7 +124,7 @@ pub async fn run_main() -> Unit {
   let mut column_delimiter = "\t"
   for index, value in delimiters {
     if index > 0 && value != delimiters[0] {
-      @stdio.stderr.write("comm: multiple output delimiters specified\n")
+      @stdio.stderr.text.write("comm: multiple output delimiters specified\n")
       @env.exit(1)
       return
     }
@@ -138,14 +138,14 @@ pub async fn run_main() -> Unit {
   }
   let files = parsed.operands
   if files.length() != 2 {
-    @stdio.stderr.write(
+    @stdio.stderr.text.write(
       "comm: expected exactly two files\n\n" + help_message() + "\n",
     )
     @env.exit(1)
     return
   }
   if files[0] == "-" && files[1] == "-" {
-    @stdio.stderr.write("comm: both inputs cannot be standard input\n")
+    @stdio.stderr.text.write("comm: both inputs cannot be standard input\n")
     @env.exit(1)
     return
   }
@@ -176,12 +176,12 @@ pub async fn run_main() -> Unit {
     }
   } catch {
     CommError(message) => {
-      @stdio.stderr.write("comm: \{message}\n")
+      @stdio.stderr.text.write("comm: \{message}\n")
       @env.exit(1)
       return
     }
     err => {
-      @stdio.stderr.write("comm: \{err}\n")
+      @stdio.stderr.text.write("comm: \{@stream.transport_cause(err)}\n")
       @env.exit(1)
       return
     }

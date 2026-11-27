@@ -160,8 +160,12 @@ fn CatRenderer::flush(self : CatRenderer, terminated : Bool) -> Bytes {
 }
 
 ///|
-async fn CatRenderer::copy(self : CatRenderer, reader : &@io.Reader) -> Unit {
-  while @stream.read_chunk(reader) is Some(chunk) {
+async fn CatRenderer::copy(
+  self : CatRenderer,
+  reader : &@io.BinaryReader,
+) -> Unit {
+  let chunks = @stream.ChunkReader::new(reader)
+  while chunks.read() is Some(chunk) {
     let output : Array[Byte] = []
     for byte in chunk {
       if byte == b'\n' {
@@ -179,9 +183,12 @@ async fn CatRenderer::copy(self : CatRenderer, reader : &@io.Reader) -> Unit {
 }
 
 ///|
-async fn copy_plain(reader : &@io.Reader, buffer : FixedArray[Byte]) -> Unit {
+async fn copy_plain(
+  reader : &@io.BinaryReader,
+  buffer : FixedArray[Byte],
+) -> Unit {
   let bytes = buffer.unsafe_reinterpret_as_bytes()
-  while reader.read(buffer, max_len=buffer.length()) is count && count > 0 {
+  while reader.read_into(buffer.mut_view()) is count && count > 0 {
     @stdio.stdout.write(bytes[:count])
   }
 }
@@ -190,7 +197,7 @@ async fn copy_plain(reader : &@io.Reader, buffer : FixedArray[Byte]) -> Unit {
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("cat \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("cat \{MODULE_VERSION}\n")
     return
   }
   let args = @env.args()[1:]
@@ -224,13 +231,13 @@ pub async fn run_main() -> Unit {
           )
         _ => (text, "")
       }
-      @stdio.stderr.write("cat: \{message}: '\{option}'\n")
+      @stdio.stderr.text.write("cat: \{message}: '\{option}'\n")
       @env.exit(1)
       return
     }
   }
   if parsed.flags.contains("help") {
-    @stdio.stdout.write(help_message() + "\n")
+    @stdio.stdout.text.write(help_message() + "\n")
     return
   }
   let operands = parsed.values.get("operands").unwrap_or([])
@@ -273,7 +280,7 @@ pub async fn run_main() -> Unit {
       }
     } catch {
       err => {
-        @stdio.stderr.write("cat: \{err}\n")
+        @stdio.stderr.text.write("cat: \{@stream.transport_cause(err)}\n")
         failed = true
       }
     }

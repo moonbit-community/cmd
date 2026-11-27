@@ -5,8 +5,15 @@
 /// Bounded output storage. Writes borrow private storage until completion.
 /// Failure consumes the queued prefix and prevents deferred cleanup from
 /// replaying bytes already accepted by the destination.
+priv enum Destination {
+  Legacy(&@io.Writer)
+  Binary(&@binary.BinaryWriter)
+}
+
+///|
 struct BlockWriter {
-  writer : &@io.Writer
+  writer : Destination
+  controller : @binary.BinaryWriterController
   buffer : FixedArray[Byte]
   mut length : Int32
   line_buffered : Bool
@@ -20,8 +27,27 @@ pub fn BlockWriter::new(
   size~ : Int32 = chunk_size,
   line_buffered~ : Bool = false,
 ) -> BlockWriter {
+  BlockWriter::with_destination(Legacy(writer), size, line_buffered)
+}
+
+///|
+pub fn BlockWriter::from_binary(
+  writer : &@binary.BinaryWriter,
+  size~ : Int32 = chunk_size,
+  line_buffered~ : Bool = false,
+) -> BlockWriter {
+  BlockWriter::with_destination(Binary(writer), size, line_buffered)
+}
+
+///|
+fn BlockWriter::with_destination(
+  writer : Destination,
+  size : Int32,
+  line_buffered : Bool,
+) -> BlockWriter {
   {
     writer,
+    controller: @binary.BinaryWriterController(),
     buffer: FixedArray::make(size.max(1), b'\x00'),
     length: 0,
     line_buffered,
@@ -56,7 +82,10 @@ async fn BlockWriter::write_block(
     self.failed = true
     self.length = 0
   }
-  self.writer.write(bytes)
+  match self.writer {
+    Legacy(writer) => writer.write(bytes)
+    Binary(writer) => writer.write(bytes)
+  }
 }
 
 ///|
@@ -145,6 +174,38 @@ pub impl @io.Writer for BlockWriter with fn write_once(
 
 ///|
 pub extend BlockWriter with @io.Writer::{write_once, write, write_reader}
+
+///|
+impl @binary.BinaryWriterImpl for BlockWriter with fn name(_) {
+  "BlockWriter"
+}
+
+///|
+impl @binary.BinaryWriterImpl for BlockWriter with fn get_controller(self) {
+  self.controller
+}
+
+///|
+impl @binary.BinaryWriterImpl for BlockWriter with fn raw_write_impl(
+  self,
+  bytes,
+  offset~,
+  len~,
+) {
+  self.write_bytes(bytes[offset:offset + len])
+  len
+}
+
+///|
+impl @binary.BinaryWriterImpl for BlockWriter with fn flush_partial_data(self) {
+  self.flush()
+  if self.writer is Binary(writer) {
+    writer.flush_partial_data()
+  }
+}
+
+///|
+pub impl @binary.BinaryWriter for BlockWriter
 
 ///|
 /// Accept a complete span without I/O. False leaves the buffer unchanged;

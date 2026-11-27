@@ -2,10 +2,10 @@ import {
   "moonbitlang/core/argparse",
   "cli/core/platform",
   "cli/core/stream",
-  "moonbitlang/async/fs",
-  "moonbitlang/async/io",
-  "moonbitlang/async/os_error",
-  "moonbitlang/async/stdio",
+  "moonbitlang/core/async/fs",
+  "moonbitlang/core/async/io",
+  "moonbitlang/core/async/os_error",
+  "moonbitlang/core/async/stdio",
   "moonbitlang/core/env",
 }
 
@@ -23,5 +23,5 @@ rule(
 dev_build(rule: "gen_version", input: "../../moon.mod", output: "version.mbt")
 
 import {
-  "moonbitlang/async",
+  "moonbitlang/core/async",
 } for "wbtest"

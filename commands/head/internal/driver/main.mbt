@@ -14,16 +14,40 @@ const CHUNK_SIZE : Int32 = 65536
 
 ///|
 priv struct HeadOutput {
-  writer : &@io.Writer
+  writer : &@io.BinaryWriter
   mut failed : Bool
 }
 
 ///|
-impl @io.Writer for HeadOutput with fn write_once(self, data, offset~, len~) {
+impl @io.BinaryWriter for HeadOutput
+
+///|
+impl @io.BinaryWriterImpl for HeadOutput with fn name(_) {
+  "HeadOutput"
+}
+
+///|
+impl @io.BinaryWriterImpl for HeadOutput with fn get_controller(self) {
+  @io.BinaryWriterImpl::get_controller(self.writer)
+}
+
+///|
+impl @io.BinaryWriterImpl for HeadOutput with fn flush_partial_data(self) {
+  self.writer.flush_partial_data()
+}
+
+///|
+impl @io.BinaryWriterImpl for HeadOutput with fn raw_write_impl(
+  self,
+  data,
+  offset~,
+  len~,
+) {
   errdefer {
     self.failed = true
   }
-  self.writer.write_once(data, offset~, len~)
+  self.writer.write(data[offset:offset + len])
+  len
 }
 
 ///|
@@ -163,8 +187,11 @@ fn legacy_count_args(args : ArrayView[String]) -> Array[String] {
 }
 
 ///|
-async fn read_chunk(reader : &@io.Reader, buffer : FixedArray[Byte]) -> Bytes? {
-  let count = reader.read(buffer)
+async fn read_chunk(
+  reader : &@io.BinaryReader,
+  buffer : FixedArray[Byte],
+) -> Bytes? {
+  let count = reader.read_into(buffer.mut_view())
   if count == 0 {
     None
   } else {
@@ -174,7 +201,7 @@ async fn read_chunk(reader : &@io.Reader, buffer : FixedArray[Byte]) -> Bytes? {
 
 ///|
 async fn write_record(
-  writer : &@io.Writer,
+  writer : &@io.BinaryWriter,
   record : @stream.Line,
   delimiter : Byte,
 ) -> Unit {
@@ -186,12 +213,12 @@ async fn write_record(
 
 ///|
 async fn head_records(
-  reader : &@io.Reader,
-  writer : &@io.Writer,
+  reader : &@io.BinaryReader,
+  writer : &@io.BinaryWriter,
   spec : CountSpec,
   delimiter : Byte,
 ) -> Unit {
-  let scanner = @stream.LineScanner::new(reader, delimiter~)
+  let scanner = @stream.LineScanner::from_binary(reader, delimiter~)
   match spec {
     First(count) => {
       let mut remaining = count
@@ -214,8 +241,8 @@ async fn head_records(
 
 ///|
 async fn head_bytes(
-  reader : &@io.Reader,
-  writer : &@io.Writer,
+  reader : &@io.BinaryReader,
+  writer : &@io.BinaryWriter,
   spec : CountSpec,
 ) -> Unit {
   let buffer : FixedArray[Byte] = FixedArray::make(CHUNK_SIZE, 0)
@@ -256,8 +283,8 @@ async fn head_bytes(
 
 ///|
 async fn head_reader(
-  reader : &@io.Reader,
-  writer : &@io.Writer,
+  reader : &@io.BinaryReader,
+  writer : &@io.BinaryWriter,
   spec : CountSpec,
   bytes_mode : Bool,
   delimiter : Byte,
@@ -273,19 +300,19 @@ async fn head_reader(
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("head \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("head \{MODULE_VERSION}\n")
     return
   }
   let args = legacy_count_args(@env.args()[1:])
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
-      @stdio.stderr.write("head: \{message}: '\{option}'\n")
+      @stdio.stderr.text.write("head: \{message}: '\{option}'\n")
       @env.exit(1)
       return
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write(metadata_help())
+    @stdio.stdout.text.write(metadata_help())
     return
   }
   let (spec, bytes_mode) = try {
@@ -296,7 +323,7 @@ pub async fn run_main() -> Unit {
     }
   } catch {
     CliError(message) => {
-      @stdio.stderr.write(message + "\n")
+      @stdio.stderr.text.write(message + "\n")
       @env.exit(1)
       return
     }
@@ -312,13 +339,13 @@ pub async fn run_main() -> Unit {
   }
   let mut failed = false
   let sink : HeadOutput = { writer: @stdio.stdout, failed: false, }
-  let output = @io.BufferedWriter::new(sink, size=CHUNK_SIZE)
+  let output = @io.BufferedWriter(sink, size=CHUNK_SIZE)
   for index, path in sources {
     try {
       if show_headers {
         let name = if path == "-" { "standard input" } else { path }
         let prefix = if index > 0 { "\n" } else { "" }
-        output.write("\{prefix}==> \{name} <==\n")
+        @io.Utf8Writer(output).write("\{prefix}==> \{name} <==\n")
       }
       if path == "-" {
         head_reader(@stdio.stdin, output, spec, bytes_mode, delimiter)
@@ -333,13 +360,15 @@ pub async fn run_main() -> Unit {
         if !sink.failed {
           output.flush() catch {
             write_error => {
-              @stdio.stderr.write("head: \{write_error}\n")
+              @stdio.stderr.text.write(
+                "head: \{@stream.transport_cause(write_error)}\n",
+              )
               @env.exit(1)
               return
             }
           }
         }
-        @stdio.stderr.write("head: \{err}\n")
+        @stdio.stderr.text.write("head: \{@stream.transport_cause(err)}\n")
         failed = true
         if sink.failed {
           break

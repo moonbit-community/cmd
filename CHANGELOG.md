@@ -16,6 +16,8 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 - Migrate eleven command drivers to standard-library asynchronous I/O on MoonBit
   1.0 RC1. These patch versions are development candidates.
+- Migrate fourteen stream consumers to standard binary readers and writers,
+  preserving bounded reads, record ownership and partial-write behavior.
 - Update the workspace for RC1's implicit async runtime, standard SIMD package,
   buffer and collection APIs. Use x 0.5.9 in command modules that depend on x.
 

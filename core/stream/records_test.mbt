@@ -1,4 +1,22 @@
 ///|
+async test "binary chunks retain their full and short reads after reuse" {
+  let full = Bytes::make(@stream.chunk_size, b'x')
+  let source = @binary.MemoryReader(writer => {
+    writer.write(full)
+    writer.write(b"tail")
+    writer.write(b"next")
+  })
+  defer source.close()
+  let chunks = @stream.ChunkReader::new(source)
+  let first = chunks.read()
+  let tail = chunks.read()
+  assert_eq(chunks.read(), Some(b"next"))
+  assert_eq(chunks.read(), None)
+  assert_eq(first, Some(full))
+  assert_eq(tail, Some(b"tail"))
+}
+
+///|
 async test "record batches preserve bytes and view ownership across arbitrary fragments" {
   let input = b"\x00ab\x00\x00" + Bytes::make(131079, b'x') + b"\x00tail"
   for size in [1, 7, 16, 65535, 65536, 65537] {

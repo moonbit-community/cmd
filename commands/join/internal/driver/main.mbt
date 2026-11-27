@@ -251,7 +251,7 @@ async fn next_ordered_row(
         match state.previous_key {
           Some(previous) if compare_bytes(previous, key, ignore_case) > 0 => {
             output.flush()
-            @stdio.stderr.write(
+            @stdio.stderr.text.write(
               "join: \{name}:\{state.line_number}: is not sorted: ",
             )
             let mut end = line.data.length()
@@ -264,8 +264,8 @@ async fn next_ordered_row(
                 break
               }
             }
-            @stdio.stderr.write(line.data[:end].to_owned())
-            @stdio.stderr.write("\n")
+            @stdio.stderr.write(line.data[:end])
+            @stdio.stderr.text.write("\n")
             if order_mode > 0 {
               raise JoinOrderError
             }
@@ -285,8 +285,8 @@ async fn next_ordered_row(
 // Deferred output remains cancellable if the downstream writer stalls.
 #warnings("-cancellable_defer")
 async fn merge_readers(
-  reader1 : &@io.Reader,
-  reader2 : &@io.Reader,
+  reader1 : &@io.BinaryReader,
+  reader2 : &@io.BinaryReader,
   field1 : Int32,
   field2 : Int32,
   separator : Byte?,
@@ -301,9 +301,9 @@ async fn merge_readers(
   auto_format : Bool,
   name1 : String,
   name2 : String,
-  writer~ : &@io.Writer = @stdio.stdout,
+  writer~ : &@io.BinaryWriter = @stdio.stdout,
 ) -> Unit {
-  let output = @stream.BlockWriter::new(writer)
+  let output = @stream.BlockWriter::from_binary(writer)
   defer output.flush()
   let scanner1 = Input::new(reader1, record_delimiter)
   let scanner2 = Input::new(reader2, record_delimiter)
@@ -502,32 +502,32 @@ async fn merge_readers(
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("join \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("join \{MODULE_VERSION}\n")
     return
   }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
-      @stdio.stderr.write("join: \{message}: '\{option}'\n")
+      @stdio.stderr.text.write("join: \{message}: '\{option}'\n")
       @env.exit(1)
       return
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write(help_message() + "\n")
+    @stdio.stdout.text.write(help_message() + "\n")
     return
   }
   let field1 = match parsed.last_value("field1") {
     Some(value) => {
       let number = @string.parse_int(value) catch {
         _ => {
-          @stdio.stderr.write("join: invalid field number: '\{value}'\n")
+          @stdio.stderr.text.write("join: invalid field number: '\{value}'\n")
           @env.exit(1)
           return
         }
       }
       if number < 1 {
-        @stdio.stderr.write("join: invalid field number: '\{value}'\n")
+        @stdio.stderr.text.write("join: invalid field number: '\{value}'\n")
         @env.exit(1)
         return
       }
@@ -539,13 +539,13 @@ pub async fn run_main() -> Unit {
     Some(value) => {
       let number = @string.parse_int(value) catch {
         _ => {
-          @stdio.stderr.write("join: invalid field number: '\{value}'\n")
+          @stdio.stderr.text.write("join: invalid field number: '\{value}'\n")
           @env.exit(1)
           return
         }
       }
       if number < 1 {
-        @stdio.stderr.write("join: invalid field number: '\{value}'\n")
+        @stdio.stderr.text.write("join: invalid field number: '\{value}'\n")
         @env.exit(1)
         return
       }
@@ -557,7 +557,7 @@ pub async fn run_main() -> Unit {
     Some(value) => {
       let encoded = @utf8.encode(value)
       if encoded.length() != 1 {
-        @stdio.stderr.write(
+        @stdio.stderr.text.write(
           "join: the separator must be a single byte in C locale\n",
         )
         @env.exit(1)
@@ -569,14 +569,14 @@ pub async fn run_main() -> Unit {
   }
   let all = parse_file_numbers(parsed, "after") catch {
     err => {
-      @stdio.stderr.write("\{err}\n")
+      @stdio.stderr.text.write("\{err}\n")
       @env.exit(1)
       return
     }
   }
   let only = parse_file_numbers(parsed, "only") catch {
     err => {
-      @stdio.stderr.write("\{err}\n")
+      @stdio.stderr.text.write("\{err}\n")
       @env.exit(1)
       return
     }
@@ -603,13 +603,17 @@ pub async fn run_main() -> Unit {
         None => {
           let item = item.to_owned()
           if item.has_prefix("1.") || item.has_prefix("2.") {
-            @stdio.stderr.write("join: invalid field number: '\{item[2:]}'\n")
+            @stdio.stderr.text.write(
+              "join: invalid field number: '\{item[2:]}'\n",
+            )
           } else if item.has_prefix("0") ||
             item.has_prefix("1") ||
             item.has_prefix("2") {
-            @stdio.stderr.write("join: invalid field specifier: '\{item}'\n")
+            @stdio.stderr.text.write(
+              "join: invalid field specifier: '\{item}'\n",
+            )
           } else {
-            @stdio.stderr.write(
+            @stdio.stderr.text.write(
               "join: invalid file number in field spec: '\{item}'\n",
             )
           }
@@ -626,14 +630,14 @@ pub async fn run_main() -> Unit {
     b'\n'
   }
   if files.length() != 2 {
-    @stdio.stderr.write(
+    @stdio.stderr.text.write(
       "join: expected exactly two files\n\n" + help_message() + "\n",
     )
     @env.exit(1)
     return
   }
   if files[0] == "-" && files[1] == "-" {
-    @stdio.stderr.write("join: both inputs cannot be standard input\n")
+    @stdio.stderr.text.write("join: both inputs cannot be standard input\n")
     @env.exit(1)
     return
   }
@@ -710,12 +714,12 @@ pub async fn run_main() -> Unit {
       return
     }
     JoinError(message) => {
-      @stdio.stderr.write("join: \{message}\n")
+      @stdio.stderr.text.write("join: \{message}\n")
       @env.exit(1)
       return
     }
     err => {
-      @stdio.stderr.write("join: \{err}\n")
+      @stdio.stderr.text.write("join: \{@stream.transport_cause(err)}\n")
       @env.exit(1)
       return
     }

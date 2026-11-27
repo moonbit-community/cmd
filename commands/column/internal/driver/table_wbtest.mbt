@@ -107,7 +107,12 @@ async test "column table batches cross cached data pages and index eviction" {
 async test "column table batching propagates partial output failure without replay" {
   let line = "x".repeat(70000) + ":tail"
   let expected = @utf8.encode(table_reference([line], Some(":"), "  "))
-  let output : PrefixWriter = { bytes: [], remaining: 65537, calls: 0, }
+  let output : PrefixWriter = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+    remaining: 65537,
+    calls: 0,
+  }
   try
     with_snapshot(table=true, separator=Some(":"), snapshot => {
       snapshot.append(line, separator=Some(":"))
@@ -117,7 +122,12 @@ async test "column table batching propagates partial output failure without repl
     })
     |> ignore
   catch {
-    error => assert_true(error.to_string().contains("fixture output failure"))
+    error =>
+      assert_true(
+        @stream.transport_cause(error)
+        .to_string()
+        .contains("fixture output failure"),
+      )
   } noraise {
     _ => fail("must propagate output failure")
   }
@@ -128,7 +138,7 @@ async test "column table batching propagates partial output failure without repl
 ///|
 async test "column table renders completed records after input failure" {
   let source = @io.MemoryReader(writer => {
-    writer.write("one x\npartial")
+    @io.Utf8Writer(writer).write("one x\npartial")
     @async.sleep(1)
     fail("fixture input failure")
   })
@@ -148,5 +158,5 @@ async test "column table renders completed records after input failure" {
     })
   })
   defer output.close()
-  assert_eq(output.read_all().text(), "one  x\n")
+  assert_eq(@io.Utf8Reader(output).read_all(), "one  x\n")
 }

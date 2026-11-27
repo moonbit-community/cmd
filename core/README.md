@@ -15,12 +15,16 @@ assert_eq(args.last_value("output"), Some("result.txt"))
 assert_eq(args.operands, ["input.txt"])
 ```
 
+For standard async I/O, use `stream.ChunkReader` for bounded reads and the
+`from_binary` constructors on `RecordReader`, `LineScanner` and `BlockWriter`.
+Record views retain their bytes across subsequent reads.
+
 ## Packages
 
 | Package | Purpose |
 | --- | --- |
 | cli | Option parsing and structured argument errors. |
-| stream, tempio | Byte streams and temporary-file I/O. |
+| stream, tempio | Bounded binary reads, record scanning, buffered output and temporary-file I/O. |
 | fsops, fswalk, platform | Path/filesystem mechanisms, traversal and host capabilities. |
 | bytesearch, bytere | Byte searching and the supported byte-regex engine. |
 | numfmt, quoting | Numeric parsing/formatting and byte/path quoting. |

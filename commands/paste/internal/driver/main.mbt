@@ -45,9 +45,9 @@ async fn paste_serial(
   scanner : @stream.LineScanner,
   delimiters : Array[Bytes],
   record_delimiter : Byte,
-  writer~ : &@io.Writer = @stdio.stdout,
+  writer~ : &@io.BinaryWriter = @stdio.stdout,
 ) -> Unit {
-  let output = @stream.BlockWriter::new(writer)
+  let output = @stream.BlockWriter::from_binary(writer)
   defer output.flush()
   let mut index = 0
   while scanner.next() is Some(line) {
@@ -67,9 +67,9 @@ async fn paste_parallel(
   scanners : Array[@stream.LineScanner],
   delimiters : Array[Bytes],
   record_delimiter : Byte,
-  writer~ : &@io.Writer = @stdio.stdout,
+  writer~ : &@io.BinaryWriter = @stdio.stdout,
 ) -> Unit {
-  let output = @stream.BlockWriter::new(writer)
+  let output = @stream.BlockWriter::from_binary(writer)
   defer output.flush()
   for ;; {
     let row : Array[Bytes?] = []
@@ -102,19 +102,19 @@ async fn paste_parallel(
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("paste \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("paste \{MODULE_VERSION}\n")
     return
   }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
-      @stdio.stderr.write("paste: \{message}: '\{option}'\n")
+      @stdio.stderr.text.write("paste: \{message}: '\{option}'\n")
       @env.exit(1)
       return
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write(metadata_help())
+    @stdio.stdout.text.write(metadata_help())
     return
   }
   let serial = parsed.contains("serial")
@@ -127,7 +127,7 @@ pub async fn run_main() -> Unit {
     Some(spec) =>
       parse_delimiters(spec) catch {
         DelimiterError(message) => {
-          @stdio.stderr.write(message + "\n")
+          @stdio.stderr.text.write(message + "\n")
           @env.exit(1)
           return
         }
@@ -140,7 +140,7 @@ pub async fn run_main() -> Unit {
   defer (for file in open_files {
     file.close()
   })
-  let stdin_scanner = @stream.LineScanner::new(
+  let stdin_scanner = @stream.LineScanner::from_binary(
     @stdio.stdin,
     delimiter=record_delimiter,
   )
@@ -153,7 +153,7 @@ pub async fn run_main() -> Unit {
           let file = @fs.open(path, mode=ReadOnly)
           open_files.push(file)
           paste_serial(
-            @stream.LineScanner::new(file, delimiter=record_delimiter),
+            @stream.LineScanner::from_binary(file, delimiter=record_delimiter),
             delims,
             record_delimiter,
           )
@@ -168,7 +168,7 @@ pub async fn run_main() -> Unit {
           let file = @fs.open(path, mode=ReadOnly)
           open_files.push(file)
           scanners.push(
-            @stream.LineScanner::new(file, delimiter=record_delimiter),
+            @stream.LineScanner::from_binary(file, delimiter=record_delimiter),
           )
         }
       }
@@ -176,7 +176,7 @@ pub async fn run_main() -> Unit {
     }
   } catch {
     err => {
-      @stdio.stderr.write("paste: \{err}\n")
+      @stdio.stderr.text.write("paste: \{@stream.transport_cause(err)}\n")
       @env.exit(1)
       return
     }

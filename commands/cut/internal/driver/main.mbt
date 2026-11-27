@@ -176,7 +176,7 @@ async fn cut_same_delimiter(
   delimiter : Byte,
   only_delimited : Bool,
   output_delimiter : Bytes,
-  writer~ : &@io.Writer = @stdio.stdout,
+  writer~ : &@io.BinaryWriter = @stdio.stdout,
 ) -> Unit {
   guard scanner.next() is Some(first) else { return }
   let ending = Bytes::from_array([delimiter])
@@ -212,11 +212,11 @@ async fn cut_same_delimiter(
 
 ///|
 async fn cut_no_fields(
-  reader : &@io.Reader,
+  reader : &@io.BinaryReader,
   delimiter : Byte,
   record_delimiter : Byte,
   only_delimited : Bool,
-  writer~ : &@io.Writer = @stdio.stdout,
+  writer~ : &@io.BinaryWriter = @stdio.stdout,
 ) -> Unit {
   // GNU 9.11's empty selection preserves its block-dependent undelimited fast path.
   let buffer = FixedArray::make(256 * 1024, b'\x00')
@@ -230,11 +230,7 @@ async fn cut_no_fields(
       for index in 0..<remaining {
         buffer[index] = buffer[start + index]
       }
-      let read = reader.read(
-        buffer,
-        offset=remaining,
-        max_len=buffer.length() - remaining,
-      )
+      let read = reader.read_into(buffer.mut_view(start=remaining))
       start = 0
       limit = remaining + read
       eof = read == 0
@@ -284,14 +280,14 @@ async fn cut_no_fields(
 // Deferred output remains cancellable if the downstream writer stalls.
 #warnings("-cancellable_defer")
 async fn process_reader(
-  reader : &@io.Reader,
+  reader : &@io.BinaryReader,
   field_ranges : Array[(Int32, Int32)]?,
   char_ranges : Array[(Int32, Int32)]?,
   delimiter : Byte,
   record_delimiter : Byte,
   only_delimited : Bool,
   output_delimiter : Bytes?,
-  writer~ : &@io.Writer = @stdio.stdout,
+  writer~ : &@io.BinaryWriter = @stdio.stdout,
 ) -> Unit {
   if field_ranges is Some(ranges) && ranges.is_empty() {
     cut_no_fields(reader, delimiter, record_delimiter, only_delimited, writer~)
@@ -302,7 +298,7 @@ async fn process_reader(
   )
   if field_ranges is Some(ranges) && delimiter == record_delimiter {
     cut_same_delimiter(
-      @stream.LineScanner::new(reader, delimiter=record_delimiter),
+      @stream.LineScanner::from_binary(reader, delimiter=record_delimiter),
       ranges,
       delimiter,
       only_delimited,
@@ -311,10 +307,13 @@ async fn process_reader(
     )
     return
   }
-  let scanner = @stream.RecordReader::new(reader, delimiter=record_delimiter)
+  let scanner = @stream.RecordReader::from_binary(
+    reader,
+    delimiter=record_delimiter,
+  )
   let field_delimiter = Bytes::from_array([delimiter])
   let output = @buffer.Buffer(capacity=@stream.chunk_size)
-  defer @stream.flush_buffer(writer, output)
+  defer @stream.flush_binary(writer, output)
   let consume_record : (BytesView, Bool) -> Bool = match
     (field_ranges, char_ranges) {
     (Some(ranges), _) =>
@@ -351,7 +350,7 @@ async fn process_reader(
   }
   while scanner.next_batch() is Some(batch) {
     while !batch.each_while(consume_record) {
-      @stream.flush_buffer(writer, output)
+      @stream.flush_binary(writer, output)
     }
   }
 }
@@ -360,19 +359,19 @@ async fn process_reader(
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("cut \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("cut \{MODULE_VERSION}\n")
     return
   }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
-      @stdio.stderr.write("cut: \{message}: '\{option}'\n")
+      @stdio.stderr.text.write("cut: \{message}: '\{option}'\n")
       @env.exit(1)
       return
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write(metadata_help())
+    @stdio.stdout.text.write(metadata_help())
     return
   }
   let only_delimited = parsed.contains("only-delimited")
@@ -385,7 +384,7 @@ pub async fn run_main() -> Unit {
     Some(d) => {
       let encoded = @utf8.encode(d)
       if encoded.length() > 1 {
-        @stdio.stderr.write(
+        @stdio.stderr.text.write(
           "cut: the delimiter must be a single byte in C locale\n",
         )
         @env.exit(1)
@@ -406,13 +405,13 @@ pub async fn run_main() -> Unit {
     (if chars_spec is Some(_) { 1 } else { 0 }) +
     (if bytes_spec is Some(_) { 1 } else { 0 })
   if mode_count > 1 {
-    @stdio.stderr.write(
+    @stdio.stderr.text.write(
       "cut: only one list may be specified\nTry 'cut --help' for more information.\n",
     )
     @env.exit(1)
     return
   } else if mode_count == 0 {
-    @stdio.stderr.write(
+    @stdio.stderr.text.write(
       "cut: you must specify a list of fields (-f) or characters (-c)\n",
     )
     @env.exit(1)
@@ -420,7 +419,7 @@ pub async fn run_main() -> Unit {
   }
   if fields_spec is None &&
     (parsed.contains("delimiter") || parsed.contains("only-delimited")) {
-    @stdio.stderr.write(
+    @stdio.stderr.text.write(
       if parsed.contains("delimiter") {
         "cut: an input delimiter makes sense\n\tonly when operating on fields\nTry 'cut --help' for more information.\n"
       } else {
@@ -450,7 +449,7 @@ pub async fn run_main() -> Unit {
     }
   } catch {
     CliError(msg) => {
-      @stdio.stderr.write("\{msg}\n")
+      @stdio.stderr.text.write("\{msg}\n")
       @env.exit(1)
       return
     }
@@ -478,7 +477,7 @@ pub async fn run_main() -> Unit {
       }
     } catch {
       err => {
-        @stdio.stderr.write("cut: \{err}\n")
+        @stdio.stderr.text.write("cut: \{@stream.transport_cause(err)}\n")
         failed = true
         continue
       }

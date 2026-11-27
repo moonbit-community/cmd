@@ -15,5 +15,5 @@ preferred_target = "wasm"
 description = "printf command for MoonX."
 
 import {
-  "cli/core@0.11.2",
+  "cli/core@0.11.3",
 }

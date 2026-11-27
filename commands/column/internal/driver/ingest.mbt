@@ -67,13 +67,13 @@ fn Snapshot::stage_records(
 ///|
 async fn SpoolBatch::flush(
   self : SpoolBatch,
-  data : &@io.Writer,
-  index : &@io.Writer,
+  data : &@io.BinaryWriter,
+  index : &@io.BinaryWriter,
 ) -> Unit {
-  @stream.flush_buffer(data, self.data)
+  @stream.flush_binary(data, self.data)
   if self.deferred is Some(bytes) {
     self.deferred = None
     data.write(bytes)
   }
-  @stream.flush_buffer(index, self.index)
+  @stream.flush_binary(index, self.index)
 }

@@ -33,10 +33,9 @@ pub fn RecordBatch::next(self : RecordBatch) -> RecordView? {
 
 ///|
 struct RecordReader {
-  reader : &@io.Reader
+  read : async () -> Bytes?
   delimiter : Bytes
   pending : @buffer.Buffer
-  read_size : Int32
   mut eof : Bool
 }
 
@@ -79,20 +78,30 @@ pub fn RecordReader::new(
   reader : &@io.Reader,
   delimiter~ : Byte = b'\n',
 ) -> RecordReader {
-  RecordReader::with_read_size(reader, delimiter, 1048576)
+  RecordReader::with_source(() => reader.read_some(max_len=1048576), delimiter)
 }
 
 ///|
-fn RecordReader::with_read_size(
-  reader : &@io.Reader,
+pub fn RecordReader::from_binary(
+  reader : &@binary.BinaryReader,
+  delimiter~ : Byte = b'\n',
+) -> RecordReader {
+  let chunks = ChunkReader::{
+    reader,
+    buffer: FixedArray::make(1048576, b'\x00'),
+  }
+  RecordReader::with_source(() => chunks.read(), delimiter)
+}
+
+///|
+fn RecordReader::with_source(
+  read : async () -> Bytes?,
   delimiter : Byte,
-  read_size : Int32,
 ) -> RecordReader {
   {
-    reader,
+    read,
     delimiter: Bytes::from_array([delimiter]),
     pending: @buffer.Buffer(),
-    read_size,
     eof: false,
   }
 }
@@ -103,7 +112,7 @@ fn RecordReader::with_read_size(
 /// unreported, matching `LineScanner`; previously returned views stay valid.
 pub async fn RecordReader::next_batch(self : RecordReader) -> RecordBatch? {
   while !self.eof {
-    guard self.reader.read_some(max_len=self.read_size) is Some(chunk) else {
+    guard (self.read)() is Some(chunk) else {
       self.eof = true
       if self.pending.is_empty() {
         return None
@@ -150,6 +159,18 @@ pub async fn RecordReader::next_batch(self : RecordReader) -> RecordBatch? {
 /// failed or partially completed write must never be retried by deferred cleanup.
 pub async fn flush_buffer(
   writer : &@io.Writer,
+  buffer : @buffer.Buffer,
+) -> Unit {
+  if !buffer.is_empty() {
+    let data = buffer.to_bytes()
+    buffer.reset()
+    writer.write(data)
+  }
+}
+
+///|
+pub async fn flush_binary(
+  writer : &@binary.BinaryWriter,
   buffer : @buffer.Buffer,
 ) -> Unit {
   if !buffer.is_empty() {

@@ -26,7 +26,12 @@ async test "base64 GNU 9.11 decoding preserves prefixes with fragmented producer
         }
       })
       defer reader.close()
-      let output : EncodingOutput = { bytes: [], calls: 0, fail_after: 100, }
+      let output : EncodingOutput = {
+        controller: @io.BinaryWriterController(),
+        bytes: [],
+        calls: 0,
+        fail_after: 100,
+      }
       let rejected = try {
         decode_stream(reader, false, writer=output)
         false
@@ -48,14 +53,23 @@ async test "base64 failure-prefix output errors are never replayed" {
   for input in [b"Zm9vYmFy!!!!", b"Zm9vYmFy", b"Zm9vYmF"] {
     let reader = @io.MemoryReader(writer => writer.write(input))
     defer reader.close()
-    let output : EncodingOutput = { bytes: [], calls: 0, fail_after: 1, }
+    let output : EncodingOutput = {
+      controller: @io.BinaryWriterController(),
+      bytes: [],
+      calls: 0,
+      fail_after: 1,
+    }
     assert_true(
       try {
         decode_stream(reader, false, writer=output)
         false
       } catch {
         error => {
-          assert_true("\{error}".contains("encoding write failed"))
+          assert_true(
+            @stream.transport_cause(error)
+            .to_string()
+            .contains("encoding write failed"),
+          )
           true
         }
       },
@@ -81,7 +95,12 @@ async test "base64 quantum survives the public read chunk boundary" {
     writer.write(Bytes::from_array(encoded))
   })
   defer reader.close()
-  let output : EncodingOutput = { bytes: [], calls: 0, fail_after: 100000, }
+  let output : EncodingOutput = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+    calls: 0,
+    fail_after: 100000,
+  }
   decode_stream(reader, false, writer=output)
   assert_eq(Bytes::from_array(output.bytes), Bytes::from_array(expected))
 }

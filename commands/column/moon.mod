@@ -15,6 +15,5 @@ preferred_target = "wasm"
 description = "column command for MoonX."
 
 import {
-  "cli/core@0.11.2",
-  "moonbitlang/async@0.22.9",
+  "cli/core@0.11.3",
 }

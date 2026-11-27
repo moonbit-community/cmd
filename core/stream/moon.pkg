@@ -3,6 +3,7 @@ import {
   "moonbitlang/core/buffer",
   "moonbitlang/core/debug",
   "moonbitlang/async/io",
+  "moonbitlang/core/async/io" @binary,
 }
 
 import {
@@ -13,6 +14,7 @@ import {
   "moonbitlang/async",
   "moonbitlang/async/io",
   "moonbitlang/core/buffer",
+  "moonbitlang/core/async/io" @binary,
 } for "test"
 
 supported_targets = "wasm"

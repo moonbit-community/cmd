@@ -15,5 +15,5 @@ preferred_target = "wasm"
 description = "pwd command for MoonX."
 
 import {
-  "cli/core@0.11.1",
+  "cli/core@0.11.3",
 }
