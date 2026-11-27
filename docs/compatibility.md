@@ -93,7 +93,7 @@ identify the principal refusals and platform differences.
 | [md5sum](../commands/md5sum/README.md) | Streaming MD5 and checksum manifest verification. | Binary/text modes do not translate bytes. |
 | [mkdir](../commands/mkdir/README.md) | Multiple directories, parents and supported POSIX leaf modes. | No Windows mode setting or complete umask/parent-mode parity. |
 | [mktemp](../commands/mktemp/README.md) | Exclusive temporary files/directories with templates and suffixes. | No unsafe dry-run names. |
-| [mv](../commands/mv/README.md) | Rename, overwrite/update selection and simple or numbered backups. | No cross-filesystem fallback; Windows link restrictions; equal-time `-i` / `-u` use file identities on POSIX. |
+| [mv](../commands/mv/README.md) | Rename, --no-copy, overwrite/update selection and simple or numbered backups. A failed --no-copy rename retains the backup at its backup name. | No cross-filesystem fallback; Windows link restrictions; equal-time `-i` / `-u` use file identities on POSIX. |
 | [nl](../commands/nl/README.md) | Page/section numbering, regex selection, width and separators. | Byte-oriented matching and delimiters. |
 | [od](../commands/od/README.md) | Typed byte dumps, offsets, widths and limits. | Fixed Linux numeric profile; C locale. |
 | [paste](../commands/paste/README.md) | Parallel/serial joining, delimiter cycles and NUL records. | Byte delimiters. |

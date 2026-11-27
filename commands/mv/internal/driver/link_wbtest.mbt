@@ -31,6 +31,7 @@ async test "Windows equal-time updates reject aliases before rename" {
 ///|
 fn link_move_options() -> MvOptions {
   {
+    no_copy: false,
     no_clobber: false,
     interactive: false,
     no_target_directory: true,

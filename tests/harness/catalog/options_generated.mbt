@@ -148,8 +148,8 @@ fn command_options(name : String) -> Array[String] {
     "mktemp" => ["directory", "quiet", "suffix", "tmpdir"]
     "mv" =>
       [
-        "force", "no-clobber", "no-target-directory", "verbose", "interactive", "update",
-        "update-mode", "backup", "backup-control", "suffix",
+        "no-copy", "force", "no-clobber", "no-target-directory", "verbose", "interactive",
+        "update", "update-mode", "backup", "backup-control", "suffix",
       ]
     "nl" =>
       [

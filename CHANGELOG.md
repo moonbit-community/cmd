@@ -20,6 +20,7 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 - Add POSIX file identity comparisons to the development version of `test`.
 - Match GNU patch when replacing a default reject file in the development version.
 - Expand regular-file symbolic permission expressions in the development version of `chmod`.
+- Support explicit rename-only moves with `mv --no-copy` in development.
 
 ## 2026-11-27
 
