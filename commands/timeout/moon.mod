@@ -16,5 +16,4 @@ description = "timeout command for MoonX."
 
 import {
   "cli/core@0.10.0",
-  "moonbitlang/async@0.22.9",
 }

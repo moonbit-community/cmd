@@ -68,17 +68,33 @@ async fn builtin_error(context : Context, message : String) -> Int32 {
 }
 
 ///|
-async fn copy_child_input(reader : &@io.Reader, writer : &@io.Writer) -> Unit {
+async fn copy_child_input(
+  reader : &@io.Reader,
+  writer : @async_process.WriteToProcess,
+) -> Unit {
   let buffer : FixedArray[Byte] = FixedArray::make(8192, 0)
   let bytes = buffer.unsafe_reinterpret_as_bytes()
   while reader.read(buffer) is count && count > 0 {
     writer.write(bytes[:count]) catch {
-      @io.PipeClosed => return
       // This is the owned pipe's write, not the source read. A child may close
       // stdin before consuming it; its own exit status remains authoritative.
-      @os_error.OSError(_) => return
+      @binary.WriterError::TransportError(@process_error.OsError(_, ..), ..) =>
+        return
       error => raise error
     }
+  }
+}
+
+///|
+async fn copy_child_output(
+  reader : @async_process.ReadFromProcess,
+  writer : &@io.Writer,
+) -> Unit {
+  defer reader.close()
+  let buffer : FixedArray[Byte] = FixedArray::make(8192, 0)
+  let bytes = buffer.unsafe_reinterpret_as_bytes()
+  while reader.read_into(buffer.mut_view()) is count && count > 0 {
+    writer.write(bytes[:count])
   }
 }
 
@@ -86,22 +102,22 @@ async fn copy_child_input(reader : &@io.Reader, writer : &@io.Writer) -> Unit {
 async fn launch_external(
   prepared : Prepared,
   context : Context,
-  stdin? : &@async_process.ProcessInput,
-  stdout? : &@async_process.ProcessOutput,
-  stderr? : &@async_process.ProcessOutput,
+  stdin? : @async_process.SharedProcessInput,
+  stdout? : @async_process.SharedProcessOutput,
+  stderr? : @async_process.SharedProcessOutput,
 ) -> Int32 {
   @child_process.run(
     @child_process.child(prepared.argv[0], prepared.argv[1:].to_owned(), context={
       cwd: context.cwd,
       env: prepared.env,
     }),
-    stdin?,
-    stdout?,
-    stderr?,
+    stdin?=stdin.map(handle => @async_process.ProcessInput::Shared(handle)),
+    stdout?=stdout.map(handle => @async_process.ProcessOutput::Shared(handle)),
+    stderr?=stderr.map(handle => @async_process.ProcessOutput::Shared(handle)),
   ) catch {
-    @os_error.OSError(_) as error => {
+    @process_error.OsError(kind, ..) as error => {
       write_output(context, "sh: \{prepared.argv[0]}: \{error}\n", error=true)
-      if error.is_ENOENT() || error.is_ENOTDIR() {
+      if kind is (NotFound | NotDirectory) {
         127
       } else {
         126
@@ -114,7 +130,7 @@ async fn launch_external(
 ///|
 async fn run_external(prepared : Prepared, context : Context) -> Int32 {
   @async.with_task_group() <| group => {
-    let stdin : &@async_process.ProcessInput? = match context.input {
+    let stdin : @async_process.SharedProcessInput? = match context.input {
       None => None
       Some(reader) => {
         let (input, writer) = @async_process.write_to_process()
@@ -128,41 +144,37 @@ async fn run_external(prepared : Prepared, context : Context) -> Int32 {
         Some(input)
       }
     }
+    defer (if stdin is Some(handle) { handle.close() })
     if context.output_channel == context.error_channel {
       let (reader, output) = @async_process.read_from_process()
+      defer output.close()
       let writer = output_writer(context)
-      group.spawn_bg(() => {
-        defer reader.close()
-        writer.write_reader(reader)
-      })
+      group.spawn_bg(() => copy_child_output(reader, writer))
       return normalize_status(
         launch_external(prepared, context, stdin?, stdout=output, stderr=output),
         context,
       )
     }
-    let stdout : &@async_process.ProcessOutput? = if context.output is Some(_) ||
+    let stdout : @async_process.SharedProcessOutput? = if context.output
+      is Some(_) ||
       context.capture is Some(_) {
       let (reader, output) = @async_process.read_from_process()
       let writer = output_writer(context)
-      group.spawn_bg(() => {
-        defer reader.close()
-        writer.write_reader(reader)
-      })
+      group.spawn_bg(() => copy_child_output(reader, writer))
       Some(output)
     } else {
       None
     }
-    let stderr : &@async_process.ProcessOutput? = if context.error
+    defer (if stdout is Some(handle) { handle.close() })
+    let stderr : @async_process.SharedProcessOutput? = if context.error
       is Some(writer) {
       let (reader, output) = @async_process.read_from_process()
-      group.spawn_bg(() => {
-        defer reader.close()
-        writer.write_reader(reader)
-      })
+      group.spawn_bg(() => copy_child_output(reader, writer))
       Some(output)
     } else {
       None
     }
+    defer (if stderr is Some(handle) { handle.close() })
     normalize_status(
       launch_external(prepared, context, stdin?, stdout?, stderr?),
       context,

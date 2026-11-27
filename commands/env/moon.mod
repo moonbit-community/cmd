@@ -16,6 +16,5 @@ description = "env command for MoonX."
 
 import {
   "cli/core@0.11.3",
-  "moonbitlang/async@0.22.9",
   "moonbitlang/x@0.5.9",
 }

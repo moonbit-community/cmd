@@ -32,7 +32,7 @@ Record views retain their bytes across subsequent reads.
 | gzipops, gzipops/cli | Gzip streams and shared codec command handling. |
 | [netops](netops/README.md) | Scoped HTTP transport, URL, IDNA and public-suffix mechanisms. |
 | time_zone | Timezone selection, TZif/POSIX conversion and local-time validation. |
-| process, shell | Child execution and the supported shell language. |
+| process, shell | Standard async child processes, redirection and the supported shell language. |
 
 The generated `pkg.generated.mbti` in each package lists its current public
 API. Command-specific argument policy, diagnostics and effects remain in the

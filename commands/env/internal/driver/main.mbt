@@ -38,7 +38,7 @@ fn empty_child_environment_unavailable() -> Bool {
 pub async fn run_main() -> Unit {
   let metadata_args = @core_env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("env \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("env \{MODULE_VERSION}\n")
     return
   }
   let mut args = @core_env.args()[1:].to_owned()
@@ -72,10 +72,10 @@ pub async fn run_main() -> Unit {
     } else if options && arg == "--" {
       options = false
     } else if options && metadata_option_matches("help", arg) {
-      @stdio.stdout.write(metadata_help())
+      @stdio.stdout.text.write(metadata_help())
       return
     } else if options && metadata_option_matches("version", arg) {
-      @stdio.stdout.write("env \{MODULE_VERSION}\n")
+      @stdio.stdout.text.write("env \{MODULE_VERSION}\n")
       return
     } else if options && metadata_option_matches("ignore-environment", arg) {
       ignore_environment = true
@@ -97,7 +97,7 @@ pub async fn run_main() -> Unit {
           } else {
             "option '--split-string' requires an argument"
           }
-          @stdio.stderr.write(
+          @stdio.stderr.text.write(
             "env: \{description}\nTry 'env --help' for more information.\n",
           )
           @core_env.exit(125)
@@ -111,7 +111,7 @@ pub async fn run_main() -> Unit {
       }
       let words = split_string(value, original_environment) catch {
         SplitError(message) => {
-          @stdio.stderr.write("env: \{message}\n")
+          @stdio.stderr.text.write("env: \{message}\n")
           @core_env.exit(125)
           return
         }
@@ -120,7 +120,7 @@ pub async fn run_main() -> Unit {
       continue
     } else if options && metadata_option_matches("chdir", arg) {
       if i + 1 >= args.length() {
-        @stdio.stderr.write("env: option requires an argument: \{arg}\n")
+        @stdio.stderr.text.write("env: option requires an argument: \{arg}\n")
         @core_env.exit(125)
         return
       }
@@ -135,7 +135,7 @@ pub async fn run_main() -> Unit {
       cwd = directory_in(base_cwd, arg[2:].to_owned())
     } else if options && metadata_option_matches("unset", arg) {
       if i + 1 >= args.length() {
-        @stdio.stderr.write("env: option requires an argument: \{arg}\n")
+        @stdio.stderr.text.write("env: option requires an argument: \{arg}\n")
         @core_env.exit(125)
         return
       }
@@ -151,13 +151,13 @@ pub async fn run_main() -> Unit {
     } else if !options && split_assignment(arg) is Some((key, value)) {
       assignments.push((key, value))
     } else if arg.has_prefix("=") {
-      @stdio.stderr.write(
+      @stdio.stderr.text.write(
         "env: invalid environment variable assignment: \{arg}\n",
       )
       @core_env.exit(125)
       return
     } else if arg.has_prefix("-") && options {
-      @stdio.stderr.write("env: unsupported option: \{arg}\n")
+      @stdio.stderr.text.write("env: unsupported option: \{arg}\n")
       @core_env.exit(125)
       return
     } else {
@@ -184,13 +184,13 @@ pub async fn run_main() -> Unit {
         lines.push("\{key}=\{value}")
       }
       for line in lines {
-        @stdio.stdout.write(line)
-        @stdio.stdout.write(if null_output { "\u0000" } else { "\n" })
+        @stdio.stdout.text.write(line)
+        @stdio.stdout.text.write(if null_output { "\u0000" } else { "\n" })
       }
     }
     Some(program) => {
       if null_output {
-        @stdio.stderr.write(
+        @stdio.stderr.text.write(
           "env: cannot specify --null (-0) with command\nTry 'env --help' for more information.\n",
         )
         @core_env.exit(125)
@@ -199,7 +199,7 @@ pub async fn run_main() -> Unit {
       if chdir_requested {
         let cwd_kind = @fs.kind(cwd) catch {
           err => {
-            @stdio.stderr.write(
+            @stdio.stderr.text.write(
               "env: cannot change directory to '\{cwd}': \{err}\n",
             )
             @core_env.exit(125)
@@ -209,7 +209,7 @@ pub async fn run_main() -> Unit {
         match cwd_kind {
           Directory => ()
           _ => {
-            @stdio.stderr.write(
+            @stdio.stderr.text.write(
               "env: cannot change directory to '\{cwd}': not a directory\n",
             )
             @core_env.exit(125)
@@ -218,7 +218,7 @@ pub async fn run_main() -> Unit {
         }
       }
       if variables.is_empty() && empty_child_environment_unavailable() {
-        @stdio.stderr.write(
+        @stdio.stderr.text.write(
           "env: unsupported capability: Windows Native empty child environment\n",
         )
         @core_env.exit(125)
@@ -227,9 +227,9 @@ pub async fn run_main() -> Unit {
       let context : @process.ExecutionContext = { cwd, env: variables, }
       let code = @process.run(@process.child(program, command_args, context~)) catch {
         err => {
-          @stdio.stderr.write("env: cannot run '\{program}': \{err}\n")
+          @stdio.stderr.text.write("env: cannot run '\{program}': \{err}\n")
           let missing = match err {
-            @os_error.OSError(_) as os => os.is_ENOENT()
+            @os_error.OsError(NotFound, ..) => true
             _ => false
           }
           let explicit_path = @path.Path(program).is_absolute() ||

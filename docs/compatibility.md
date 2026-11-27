@@ -14,7 +14,9 @@ The workspace targets MoonBit 1.0 RC1 (2026-11-26). The basename, date, dirname,
 echo, false, printenv, printf, pwd, sleep, true and yes commands use the
 standard library for asynchronous I/O. The base64, cat, column, comm, cut, fold,
 head, join, nl, paste, rev, tr, uniq and wc drivers also use standard binary
-streams. Binary output preserves arbitrary bytes.
+streams. Binary output preserves arbitrary bytes. `env`, `timeout`, `xargs` and
+external commands launched by `sh` use standard async child processes. Shell
+redirections retain the parent-owned pipes until the child exits.
 Workspace commands use the RC1 runtime entry point and the shared byte-search
 code uses the standard library's experimental SIMD package on Wasm.
 

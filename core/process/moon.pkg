@@ -1,6 +1,6 @@
 import {
   "moonbitlang/core/debug",
-  "moonbitlang/async/process" @async_process,
+  "moonbitlang/core/async/process" @async_process,
   "moonbitlang/core/env",
   "moonbitlang/core/encoding/utf8",
 }
