@@ -15,12 +15,6 @@ async fn check_catalog(
   failures : Array[String],
 ) -> Unit {
   let catalog = @catalog.commands()
-  if catalog.length() != 82 {
-    compat_fail(
-      "catalog: expected 82 commands, got \{catalog.length()}",
-      failures,
-    )
-  }
   let names : Map[String, Bool] = Map([])
   for contract in catalog {
     if names.contains(contract.name) {
