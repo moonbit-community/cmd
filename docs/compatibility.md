@@ -1,7 +1,7 @@
 # Compatibility
 
 This guide describes the current workspace's supported command behavior.
-It covers 82 command modules implemented in pure MoonBit for MoonX/Wasm.
+The workspace command modules use pure MoonBit on MoonX/Wasm.
 Support means the documented profile, not complete GNU, POSIX or upstream parity.
 
 All command packages declare Wasm as their only build target. Core packages
@@ -55,6 +55,9 @@ identify the principal refusals and platform differences.
 
 | Command | Supported behavior | Limits |
 | --- | --- | --- |
+| [tar](../commands/tar/README.md) | GNU tar create, list, extract and stdout profiles for ustar and gzip. | UTF-8 names, regular files and directories, fixed archive metadata, new files only. |
+| [zip](../commands/zip/README.md) | Info-ZIP recursive archive creation, stored entries and Deflate levels 1–9. | New archives, relative names, synthetic metadata. |
+| [unzip](../commands/unzip/README.md) | Info-ZIP name listing, verification, stdout and named-directory extraction. | Exact selections, regular files and directories, no overwrite or metadata restoration. |
 | [base32](../commands/base32/README.md) | RFC 4648 Base32 encoding and decoding; wrapping and garbage filtering. | Uppercase alphabet; decoding retains the whole input. |
 | [base64](../commands/base64/README.md) | Streaming Base64 encoding and decoding; wrapping and garbage filtering. | Standard alphabet and canonical tail bits; malformed padding fails. |
 | [basename](../commands/basename/README.md) | Lexical basename and literal suffix removal; multiple and NUL-separated output. | No filesystem lookup. |

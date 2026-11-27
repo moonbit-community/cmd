@@ -5100,6 +5100,104 @@
         "serve-failure-diagnostic-source-name"
       ],
       "oracle_boundary": "Project-specific server; the pinned oracle has no corresponding executable or upstream contract."
+    },
+    {
+      "name": "tar",
+      "package_name": "cli/tar",
+      "compare_profile": "gnu",
+      "supported_options": [
+        "create",
+        "list",
+        "extract",
+        "file",
+        "gzip",
+        "to-stdout",
+        "help",
+        "version",
+        "directory"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "archive-tar-version",
+        "archive-tar-gzip-list",
+        "archive-tar-pipe-selected",
+        "archive-tar-extract-directory",
+        "archive-tar-create-gzip",
+        "archive-tar-stdout",
+        "archive-tar-stdin",
+        "archive-tar-existing-output",
+        "archive-tar-existing-member",
+        "archive-tar-invalid",
+        "archive-tar-help"
+      ]
+    },
+    {
+      "name": "zip",
+      "package_name": "cli/zip",
+      "compare_profile": "info-zip",
+      "supported_options": [
+        "recursive",
+        "quiet",
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "help",
+        "version",
+        "test"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "archive-zip-version",
+        "archive-zip-verify-system",
+        "archive-zip-deflate",
+        "archive-zip-directory",
+        "archive-zip-refuse-update",
+        "archive-zip-deflate-1",
+        "archive-zip-deflate-2",
+        "archive-zip-deflate-3",
+        "archive-zip-deflate-4",
+        "archive-zip-deflate-5",
+        "archive-zip-deflate-6",
+        "archive-zip-deflate-7",
+        "archive-zip-deflate-8",
+        "archive-zip-help"
+      ]
+    },
+    {
+      "name": "unzip",
+      "package_name": "cli/unzip",
+      "compare_profile": "info-zip",
+      "supported_options": [
+        "names",
+        "pipe",
+        "test",
+        "quiet",
+        "never-overwrite",
+        "directory",
+        "help",
+        "version"
+      ],
+      "policy_sensitive": true,
+      "releasable": true,
+      "case_ids": [
+        "archive-unzip-version",
+        "archive-unzip-names",
+        "archive-unzip-binary-pipe",
+        "archive-unzip-extract",
+        "archive-unzip-skip-existing",
+        "archive-unzip-crc",
+        "archive-unzip-invalid",
+        "archive-unzip-help"
+      ]
     }
   ]
 }

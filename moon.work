@@ -84,4 +84,7 @@ members = [
   "./commands/which",
   "./commands/date",
   "./commands/serve",
+  "./commands/tar",
+  "./commands/zip",
+  "./commands/unzip",
 ]

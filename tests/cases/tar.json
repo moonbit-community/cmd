@@ -1,0 +1,304 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "archive-tar-version",
+      "command": "tar",
+      "args": [
+        "--version"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "version"
+      ],
+      "expected_stdout_text": "tar 0.1.0\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "archive-tar-gzip-list",
+      "command": "tar",
+      "args": [
+        "-tzf",
+        "reference.tgz"
+      ],
+      "files": [
+        {
+          "path": "reference.tgz",
+          "content_hex": "1f8b0800a1b9096b00032b4ecc2dc84965a0293030303033315100d1e666a6601a086034089828189a1a1b18191b9b9899182a18181a991b19332818d0d65910505a5c925804744a79665e496a116e75e519a9a93978cc41f59402b59d492b90c890f47fa0dd300a46c1281805a380fe0000a5c8988b00080000"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "list",
+        "gzip",
+        "file"
+      ],
+      "expected_stdout_text": "sample\n",
+      "expected_stderr_text": "",
+      "oracle": true
+    },
+    {
+      "id": "archive-tar-pipe-selected",
+      "command": "tar",
+      "args": [
+        "xOf",
+        "reference.tgz",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "reference.tgz",
+          "content_hex": "1f8b0800a1b9096b00032b4ecc2dc84965a0293030303033315100d1e666a6601a086034089828189a1a1b18191b9b9899182a18181a991b19332818d0d65910505a5c925804744a79665e496a116e75e519a9a93978cc41f59402b59d492b90c890f47fa0dd300a46c1281805a380fe0000a5c8988b00080000"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "extract",
+        "to-stdout",
+        "file"
+      ],
+      "expected_stderr_text": "",
+      "oracle": true,
+      "expected_stdout_hex": "610062ff"
+    },
+    {
+      "id": "archive-tar-extract-directory",
+      "command": "tar",
+      "args": [
+        "-xf",
+        "reference.tgz",
+        "-C",
+        "out"
+      ],
+      "files": [
+        {
+          "path": "reference.tgz",
+          "content_hex": "1f8b0800a1b9096b00032b4ecc2dc84965a0293030303033315100d1e666a6601a086034089828189a1a1b18191b9b9899182a18181a991b19332818d0d65910505a5c925804744a79665e496a116e75e519a9a93978cc41f59402b59d492b90c890f47fa0dd300a46c1281805a380fe0000a5c8988b00080000"
+        },
+        {
+          "path": "out",
+          "kind": "directory"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "extract",
+        "file",
+        "directory"
+      ],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "oracle": true,
+      "expected_files": [
+        {
+          "path": "out/sample",
+          "content_hex": "610062ff"
+        }
+      ]
+    },
+    {
+      "id": "archive-tar-create-gzip",
+      "command": "tar",
+      "args": [
+        "-czf",
+        "packed.tgz",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "create",
+        "gzip",
+        "file"
+      ],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "",
+      "expected_files": [
+        {
+          "path": "packed.tgz",
+          "content_hex": "1f8b08000000000000ffedcdb10984501444d129654bb88b0fade709660ae2d7fa158cc4dc8fe09ce44e3625a7791cf4288036e22c702f10978da0fb47a31faa602b6b2ea2cad70ba5fa5d6666f63907c976980f00080000"
+        }
+      ]
+    },
+    {
+      "id": "archive-tar-stdout",
+      "command": "tar",
+      "args": [
+        "-czf",
+        "-",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        }
+      ],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "create",
+        "gzip",
+        "file"
+      ],
+      "expected_stderr_text": "",
+      "expected_stdout_hex": "1f8b08000000000000ffedcdb10984501444d129654bb88b0fade709660ae2d7fa158cc4dc8fe09ce44e3625a7791cf4288036e22c702f10978da0fb47a31faa602b6b2ea2cad70ba5fa5d6666f63907c976980f00080000"
+    },
+    {
+      "id": "archive-tar-stdin",
+      "command": "tar",
+      "args": [
+        "-tf",
+        "-"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "list",
+        "file"
+      ],
+      "expected_stdout_text": "sample\n",
+      "expected_stderr_text": "",
+      "stdin_hex": "1f8b0800a1b9096b00032b4ecc2dc84965a0293030303033315100d1e666a6601a086034089828189a1a1b18191b9b9899182a18181a991b19332818d0d65910505a5c925804744a79665e496a116e75e519a9a93978cc41f59402b59d492b90c890f47fa0dd300a46c1281805a380fe0000a5c8988b00080000"
+    },
+    {
+      "id": "archive-tar-existing-output",
+      "command": "tar",
+      "args": [
+        "-cf",
+        "out",
+        "sample"
+      ],
+      "files": [
+        {
+          "path": "sample",
+          "content_hex": "610062ff"
+        },
+        {
+          "path": "out",
+          "content_hex": "41"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "create"
+      ],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "tar: archive already exists: out\n",
+      "expected_files": [
+        {
+          "path": "out",
+          "content_hex": "41"
+        }
+      ]
+    },
+    {
+      "id": "archive-tar-existing-member",
+      "command": "tar",
+      "args": [
+        "-xf",
+        "reference.tgz"
+      ],
+      "files": [
+        {
+          "path": "reference.tgz",
+          "content_hex": "1f8b0800a1b9096b00032b4ecc2dc84965a0293030303033315100d1e666a6601a086034089828189a1a1b18191b9b9899182a18181a991b19332818d0d65910505a5c925804744a79665e496a116e75e519a9a93978cc41f59402b59d492b90c890f47fa0dd300a46c1281805a380fe0000a5c8988b00080000"
+        },
+        {
+          "path": "sample",
+          "content_hex": "00"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "extract"
+      ],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "tar: destination already exists: ./sample\n",
+      "expected_files": [
+        {
+          "path": "sample",
+          "content_hex": "00"
+        }
+      ]
+    },
+    {
+      "id": "archive-tar-invalid",
+      "command": "tar",
+      "args": [
+        "-xf",
+        "bad.tar"
+      ],
+      "files": [
+        {
+          "path": "bad.tar",
+          "content_hex": "616263"
+        }
+      ],
+      "environment": {},
+      "expected_status": 2,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "extract"
+      ],
+      "expected_stdout_text": "",
+      "expected_stderr_text": "tar: missing end of ustar archive\n",
+      "expected_files": [
+        {
+          "path": "sample",
+          "exists": false
+        }
+      ]
+    },
+    {
+      "id": "archive-tar-help",
+      "command": "tar",
+      "args": [
+        "--help"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "comparison": "contract",
+      "normalizations": [],
+      "coverage": [
+        "help"
+      ],
+      "expected_stdout_text": "Usage: tar -c|-t|-x [-zO] -f ARCHIVE [FILE...]\n  -c  Create an archive.\n  -t  List member names.\n  -x  Extract selected members.\n  -f  Use this archive or - for a standard stream.\n  -z  Use gzip compression.\n  -O  Extract file contents to stdout.\n  -C DIRECTORY  Choose an existing extraction directory.\n  --help  Show command help.\n  --version  Show the package version.\n\nThe 64 MiB ustar profile creates and extracts new regular files and directories. Extraction requires a caller-controlled destination.\n",
+      "expected_stderr_text": ""
+    }
+  ]
+}

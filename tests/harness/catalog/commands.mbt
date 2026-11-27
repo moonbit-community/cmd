@@ -306,6 +306,25 @@ pub fn commands() -> Array[CommandContract] {
     contract("fmt", Core, FileOrStdin, ByteStream, [FileRead]),
     // The gzip family streams input and output, including validation mode.
     contract("gzip", Extended, FileOrStdin, ByteStream, [FileRead]),
+    contract("tar", Extended, FileOrStdin, ByteStream, [FileRead, FileWrite], exit_codes=[
+      0, 2,
+    ]),
+    contract(
+      "zip",
+      Extended,
+      OptionalStdin,
+      ByteStream,
+      [FileRead, FileWrite],
+      exit_codes=[0, 1],
+    ),
+    contract(
+      "unzip",
+      Extended,
+      FileOrStdin,
+      ByteStream,
+      [FileRead, FileWrite],
+      exit_codes=[0, 1],
+    ),
     contract("gunzip", Extended, FileOrStdin, ByteStream, [FileRead]),
     contract("zcat", Core, FileOrStdin, ByteStream, [FileRead]),
     contract("strings", Core, FileOrStdin, LineStream, [FileRead]),

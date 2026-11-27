@@ -1,0 +1,142 @@
+{
+  "schema": 1,
+  "command": "unzip",
+  "help": "Usage: unzip [-Z1|-p|-t] [-qn] [-d DIRECTORY] ARCHIVE [MEMBER...]\n{{help:names:0}}\n{{help:pipe:0}}\n{{help:test:0}}\n{{help:quiet:0}}\n{{help:never-overwrite:0}}\n{{help:directory:0}}\n{{help:help:0}}\n{{help:version:0}}\n\nExtract new regular files in a caller-controlled directory. Exact selections and payloads up to 64 MiB are supported.\n",
+  "catalog_options": [
+    "names",
+    "pipe",
+    "test",
+    "quiet",
+    "never-overwrite",
+    "directory",
+    "help",
+    "version"
+  ],
+  "options": [
+    {
+      "name": "names",
+      "aliases": [
+        "-Z1"
+      ],
+      "value": "none",
+      "description": "List archive member names.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -Z1  List archive member names."
+      ]
+    },
+    {
+      "name": "pipe",
+      "aliases": [
+        "-p"
+      ],
+      "value": "none",
+      "description": "Write selected file contents to stdout.",
+      "short": "p",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -p  Write selected file contents to stdout."
+      ]
+    },
+    {
+      "name": "test",
+      "aliases": [
+        "-t"
+      ],
+      "value": "none",
+      "description": "Verify entry data and checksums.",
+      "short": "t",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -t  Verify entry data and checksums."
+      ]
+    },
+    {
+      "name": "quiet",
+      "aliases": [
+        "-q"
+      ],
+      "value": "none",
+      "description": "Suppress extraction progress.",
+      "short": "q",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -q  Suppress extraction progress."
+      ]
+    },
+    {
+      "name": "never-overwrite",
+      "aliases": [
+        "-n"
+      ],
+      "value": "none",
+      "description": "Skip existing output files.",
+      "short": "n",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -n  Skip existing output files."
+      ]
+    },
+    {
+      "name": "directory",
+      "aliases": [
+        "-d"
+      ],
+      "value": "required",
+      "description": "Choose the extraction directory.",
+      "short": "d",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -d  Choose the extraction directory."
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show command help.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  --help  Show command help."
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show the package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  --version  Show the package version."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "pipe",
+        "test",
+        "quiet",
+        "never-overwrite",
+        "directory",
+        "help",
+        "version",
+        "names"
+      ]
+    }
+  ]
+}
