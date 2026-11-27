@@ -56,9 +56,9 @@ fn help_message() -> String {
 ///|
 async fn read_input(path : String) -> Bytes {
   if path == "-" {
-    @stdio.stdin.read_all().binary()
+    @stdio.stdin.read_all()
   } else {
-    @fs.read_file(path).binary()
+    @fs.read_binary(path)
   }
 }
 
@@ -66,23 +66,23 @@ async fn read_input(path : String) -> Bytes {
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("expand \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("expand \{MODULE_VERSION}\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
-      @stdio.stderr.write("expand: \{message}: '\{option}'\n")
+      @stdio.stderr.text.write("expand: \{message}: '\{option}'\n")
       @env.exit(1)
       return
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write(help_message() + "\n")
+    @stdio.stdout.text.write(help_message() + "\n")
     return
   }
   let stops = parse_tabs(parsed.values("tabs")) catch {
     TabError(message) => {
-      @stdio.stderr.write("expand: \{message}\n")
+      @stdio.stderr.text.write("expand: \{message}\n")
       @env.exit(1)
       return
     }
@@ -96,14 +96,14 @@ pub async fn run_main() -> Unit {
   for path in sources {
     let data = read_input(path) catch {
       err => {
-        @stdio.stderr.write("expand: \{path}: \{err}\n")
+        @stdio.stderr.text.write("expand: \{path}: \{err}\n")
         failed = true
         continue
       }
     }
     let expanded = expand_bytes(data, parsed.contains("initial"), stops) catch {
       TabError(message) => {
-        @stdio.stderr.write("expand: \{message}\n")
+        @stdio.stderr.text.write("expand: \{message}\n")
         @env.exit(1)
         return
       }

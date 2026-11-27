@@ -17,7 +17,8 @@ assert_eq(args.operands, ["input.txt"])
 
 For standard async I/O, use `stream.ChunkReader` for bounded reads and the
 `from_binary` constructors on `RecordReader`, `LineScanner` and `BlockWriter`.
-Record views retain their bytes across subsequent reads.
+Record views retain their bytes across subsequent reads. The checksum and
+gzip codecs accept standard binary readers and writers.
 
 ## Packages
 

@@ -2,7 +2,7 @@
 // One cursor spans the envelope and DEFLATE stream. Alignment discards only
 // partial-byte padding; complete prefetched bytes can belong to the trailer.
 priv struct Bits {
-  reader : &@io.Reader
+  reader : &@io.BinaryReader
   buffer : FixedArray[Byte]
   mut position : Int32
   mut end : Int32
@@ -12,7 +12,7 @@ priv struct Bits {
 }
 
 ///|
-fn Bits::new(reader : &@io.Reader) -> Bits {
+fn Bits::new(reader : &@io.BinaryReader) -> Bits {
   {
     reader,
     buffer: FixedArray::make(65536, b'\x00'),
@@ -32,7 +32,7 @@ async fn Bits::refill(self : Bits) -> Bool {
   if self.eof {
     return false
   }
-  self.end = self.reader.read(self.buffer)
+  self.end = self.reader.read_into(self.buffer.mut_view())
   self.position = 0
   self.eof = self.end == 0
   !self.eof

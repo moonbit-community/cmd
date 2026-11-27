@@ -1,12 +1,36 @@
 ///|
 priv struct DecodeOutput {
+  controller : @io.BinaryWriterController
   bytes : Array[Byte]
   mut calls : Int32
   fail_after : Int32
 }
 
 ///|
-impl @io.Writer for DecodeOutput with fn write_once(self, bytes, offset~, len~) {
+impl @io.BinaryWriter for DecodeOutput
+
+///|
+impl @io.BinaryWriterImpl for DecodeOutput with fn name(_) {
+  "DecodeOutput"
+}
+
+///|
+impl @io.BinaryWriterImpl for DecodeOutput with fn get_controller(self) {
+  self.controller
+}
+
+///|
+impl @io.BinaryWriterImpl for DecodeOutput with fn flush_partial_data(_) {
+  ()
+}
+
+///|
+impl @io.BinaryWriterImpl for DecodeOutput with fn raw_write_impl(
+  self,
+  bytes,
+  offset~,
+  len~,
+) {
   self.calls += 1
   guard self.calls <= self.fail_after else { fail("decode output failed") }
   let count = len.min(2)
@@ -39,7 +63,12 @@ async test "base32 GNU 9.11 final padding and failure prefixes" {
       (b"MFRGGZDFMY=", b"abcde", true),
       (b"MY!", b"f", true),
     ] {
-    let output : DecodeOutput = { bytes: [], calls: 0, fail_after: 100, }
+    let output : DecodeOutput = {
+      controller: @io.BinaryWriterController(),
+      bytes: [],
+      calls: 0,
+      fail_after: 100,
+    }
     let rejected = try {
       decode_to_writer(input, false, output)
       false
@@ -57,7 +86,12 @@ async test "base32 GNU 9.11 final padding and failure prefixes" {
 ///|
 async test "base32 failure-prefix output errors are never replayed" {
   for input in [b"MFRGGZDF!", b"MFRGGZ=="] {
-    let output : DecodeOutput = { bytes: [], calls: 0, fail_after: 1, }
+    let output : DecodeOutput = {
+      controller: @io.BinaryWriterController(),
+      bytes: [],
+      calls: 0,
+      fail_after: 1,
+    }
     assert_true(
       try {
         decode_to_writer(input, false, output)

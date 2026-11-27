@@ -20,6 +20,7 @@ import {
 
 import {
   "cli/core/gzipops",
+  "moonbitlang/core/async/fs" @binary_fs,
   "moonbitlang/core/buffer",
   "moonbitlang/core/double",
 } for "wbtest"

@@ -1,7 +1,7 @@
 import {
   "cli/core/numfmt",
-  "moonbitlang/async/stdio",
-  "moonbitlang/async/io",
+  "moonbitlang/core/async/stdio",
+  "moonbitlang/core/async/io",
   "moonbitlang/core/env",
   "moonbitlang/core/string",
   "moonbitlang/core/encoding/utf8",
@@ -17,5 +17,5 @@ rule(
 dev_build(rule: "gen_version", input: "../../moon.mod", output: "version.mbt")
 
 import {
-  "moonbitlang/async",
+  "moonbitlang/core/async",
 } for "wbtest"

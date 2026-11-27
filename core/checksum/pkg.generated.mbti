@@ -2,11 +2,11 @@
 package "cli/core/checksum"
 
 import {
-  "moonbitlang/async/io",
+  "moonbitlang/core/async/io",
 }
 
 // Values
-pub async fn digest_reader(DigestSpec, &@io.Reader) -> (Bytes, UInt64)
+pub async fn digest_reader(DigestSpec, &@io.BinaryReader) -> (Bytes, UInt64)
 
 // Errors
 

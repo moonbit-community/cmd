@@ -11,7 +11,7 @@ fn deflate_noise(count : Int32) -> Bytes {
 
 ///|
 async fn assert_raw_deflate(encoded : Bytes, payload : Bytes) -> Unit {
-  let output : Collected = { bytes: [], }
+  let output : Collected = Collected::new()
   let input = cursor(encoded)
   defer input.close()
   let bits = Bits::new(input)
@@ -63,7 +63,7 @@ async test "deflate streams reused trees changed alphabets and all search levels
 ///|
 async test "gzip encoding levels preserve envelope checksum and empty payloads" {
   for level in 1..<=9 {
-    let encoded : Collected = { bytes: [], }
+    let encoded : Collected = Collected::new()
     let input = cursor(b"")
     defer input.close()
     encode(input, encoded, level~)
@@ -81,7 +81,7 @@ async test "gzip encoding levels preserve envelope checksum and empty payloads" 
     )
     assert_eq(data[9], b'\xff')
     assert_eq(data[10:].to_owned(), b"\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00")
-    let output : Collected = { bytes: [], }
+    let output : Collected = Collected::new()
     assert_true(!decode(data, output, false))
     assert_true(output.bytes.is_empty())
   }

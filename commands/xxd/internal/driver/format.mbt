@@ -75,7 +75,7 @@ fn ZeroLines::finish(self : ZeroLines, output : @buffer.Buffer) -> Unit {
 
 ///|
 async fn dump_stream(
-  reader : &@io.Reader,
+  reader : &@io.BinaryReader,
   output : Output,
   opts : Options,
   start_offset : Int64,
@@ -103,14 +103,12 @@ async fn dump_stream(
     }
     let count = match positioned_file {
       Some(file) =>
-        file.read_at(
-          buffer,
-          position=checked_add(
-            start_offset, consumed, 4, "xxd: input offset overflow.",
-          ),
-          len=maximum,
+        file
+        .at(
+          checked_add(start_offset, consumed, 4, "xxd: input offset overflow."),
         )
-      None => reader.read(buffer, max_len=maximum)
+        .read_into(buffer.mut_view(end=maximum))
+      None => reader.read_into(buffer.mut_view(end=maximum))
     }
     if count == 0 {
       break

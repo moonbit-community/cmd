@@ -14,7 +14,7 @@ async test "gzip synchronous decoding preserves exact full literal buffers and t
     let reader = cursor(encoded)
     defer reader.close()
     let bits = Bits::new(reader)
-    let output : Collected = { bytes: [], }
+    let output : Collected = Collected::new()
     let (checksum, size) = inflate(bits, output, false)
     let expected = Bytes::make(count, b'A')
     assert_eq(Bytes::from_array(output.bytes), expected)
@@ -42,7 +42,7 @@ async test "gzip synchronous match tail preserves overlap across a full output b
   let reader = cursor(raw.drain() + b"trailer")
   defer reader.close()
   let bits = Bits::new(reader)
-  let output : Collected = { bytes: [], }
+  let output : Collected = Collected::new()
   let (checksum, size) = inflate(bits, output, false)
   let expected = Bytes::make(65535 + 258, b'A')
   assert_eq(Bytes::from_array(output.bytes), expected)

@@ -51,8 +51,8 @@ async fn gzip_header(bits : Bits, first : Byte, second : Byte) -> Unit {
 /// buffers. Returns true for trailing garbage. A late format/read error keeps
 /// the decoded prefix already written; `test_only` validates without output.
 pub async fn decode_reader(
-  input : &@io.Reader,
-  output : &@io.Writer,
+  input : &@io.BinaryReader,
+  output : &@io.BinaryWriter,
   test_only : Bool,
 ) -> Bool {
   let bits = Bits::new(input)
@@ -93,8 +93,8 @@ pub async fn decode_reader(
 
 ///|
 pub async fn encode(
-  input : &@io.Reader,
-  output : &@io.Writer,
+  input : &@io.BinaryReader,
+  output : &@io.BinaryWriter,
   level~ : Int32 = 6,
 ) -> Unit {
   guard level >= 1 && level <= 9 else {
@@ -116,11 +116,7 @@ pub async fn encode(
   let mut crc = 0xffffffffU
   let mut size = 0U
   for ;; {
-    let received = input.read(
-      buffer,
-      offset=count,
-      max_len=buffer.length() - count,
-    )
+    let received = input.read_into(buffer.mut_view(start=count))
     count += received
     if count == buffer.length() || received == 0 {
       let bytes = buffer.unsafe_reinterpret_as_bytes()[:count].to_owned()

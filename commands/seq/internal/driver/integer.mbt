@@ -115,7 +115,7 @@ fn IntegerSequence::fill(
 ///|
 async fn print_integers(
   sequence : IntegerSequence,
-  writer : &@io.Writer,
+  writer : &@io.BinaryWriter,
 ) -> Unit {
   let buffer = FixedArray::make(65536, b'\x00')
   while !sequence.done {

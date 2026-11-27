@@ -22,7 +22,7 @@ async fn scan_strings(
     )
   })
   defer output.close()
-  output.read_all().binary()
+  output.read_all()
 }
 
 ///|
@@ -49,15 +49,14 @@ async test "strings crosses chunks and streams long printable runs" {
   let text = "x".repeat(65533) +
     "\u0000abcdef\u0000short\u0000" +
     "z".repeat(131073)
-  let data : &@io.Data = text
-  let expected : &@io.Data = "{standard input}:       0 " +
+  let expected = "{standard input}:       0 " +
     "x".repeat(65533) +
     "\n{standard input}:   65534 abcdef\n{standard input}:   65547 " +
     "z".repeat(131073) +
     "\n"
   assert_eq(
-    scan_strings(data.binary(), 6, prefix=true, radix=Some(10)),
-    expected.binary(),
+    scan_strings(@utf8.encode(text), 6, prefix=true, radix=Some(10)),
+    @utf8.encode(expected),
   )
   assert_eq(scan_strings(b"abcdef", 7), b"")
 }
@@ -89,11 +88,12 @@ async test "strings retains completed output before a producer error" {
     defer input.close()
     let output = @io.MemoryReader(writer => {
       emit_stream(input, writer, "-", 4, false, None, false) catch {
-        StringsInputError => writer.write("error")
+        error if @stream.transport_cause(error) is StringsInputError =>
+          writer.write(b"error")
         error => raise error
       }
     })
     defer output.close()
-    assert_eq(output.read_all().binary(), expected)
+    assert_eq(output.read_all(), expected)
   }
 }

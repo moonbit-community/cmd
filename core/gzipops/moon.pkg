@@ -1,10 +1,10 @@
 import {
   "moonbitlang/core/buffer",
-  "moonbitlang/async/io",
+  "moonbitlang/core/async/io",
 }
 
 import {
-  "moonbitlang/async",
+  "moonbitlang/core/async",
 } for "wbtest"
 
 supported_targets = "native+wasm"

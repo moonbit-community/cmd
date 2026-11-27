@@ -58,7 +58,7 @@ pub async fn load(utc~ : Bool = false) -> Zone {
     @env.get_env_var("TZDIR").unwrap_or("/usr/share/zoneinfo") + "/" + name
   }
   if @fs.exists(file) {
-    return decode(@fs.read_file(file).binary())
+    return decode(@fs.read_binary(file))
   }
   if tz is None {
     fail("local timezone database unavailable; set TZ or use -u")

@@ -174,7 +174,7 @@ fn zero_pad(text : String, width : Int32) -> String {
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("seq \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("seq \{MODULE_VERSION}\n")
     return
   }
   let args = @env.args()[1:]
@@ -192,7 +192,7 @@ pub async fn run_main() -> Unit {
       equal_width = true
     } else if options && metadata_option_matches("format", arg) {
       if i + 1 >= args.length() {
-        @stdio.stderr.write(
+        @stdio.stderr.text.write(
           "seq: option '\{arg}' requires an argument\nTry 'seq --help' for more information.\n",
         )
         @env.exit(1)
@@ -206,7 +206,7 @@ pub async fn run_main() -> Unit {
       format = Some(arg[2:].to_owned())
     } else if options && metadata_option_matches("separator", arg) {
       if i + 1 >= args.length() {
-        @stdio.stderr.write("seq: missing separator\n")
+        @stdio.stderr.text.write("seq: missing separator\n")
         @env.exit(1)
         return
       }
@@ -217,16 +217,16 @@ pub async fn run_main() -> Unit {
     } else if options && arg.has_prefix("--separator=") {
       separator = arg[12:].to_owned()
     } else if options && metadata_option_matches("help", arg) {
-      @stdio.stdout.write(metadata_help())
+      @stdio.stdout.text.write(metadata_help())
       return
     } else if options && metadata_option_matches("version", arg) {
-      @stdio.stdout.write("seq \{MODULE_VERSION}\n")
+      @stdio.stdout.text.write("seq \{MODULE_VERSION}\n")
       return
     } else if options &&
       arg.has_prefix("-") &&
       arg.length() > 1 &&
       !(arg[1] is ('0'..<='9' | '.')) {
-      @stdio.stderr.write("seq: invalid option: '\{arg}'\n")
+      @stdio.stderr.text.write("seq: invalid option: '\{arg}'\n")
       @env.exit(1)
       return
     } else {
@@ -236,7 +236,7 @@ pub async fn run_main() -> Unit {
     i += 1
   }
   if operands.length() < 1 || operands.length() > 3 {
-    @stdio.stderr.write("seq: expected one to three operands\n")
+    @stdio.stderr.text.write("seq: expected one to three operands\n")
     @env.exit(1)
     return
   }
@@ -251,11 +251,11 @@ pub async fn run_main() -> Unit {
       print_formatted(operands, descriptor, separator)
     } catch {
       SeqError(message) => {
-        @stdio.stderr.write("seq: \{message}\n")
+        @stdio.stderr.text.write("seq: \{message}\n")
         @env.exit(1)
       }
       error => {
-        @stdio.stderr.write("seq: \{error}\n")
+        @stdio.stderr.text.write("seq: \{error}\n")
         @env.exit(1)
       }
     }
@@ -265,7 +265,7 @@ pub async fn run_main() -> Unit {
   for operand in operands {
     let number = parse_decimal(operand) catch {
       SeqError(message) => {
-        @stdio.stderr.write("seq: \{message}\n")
+        @stdio.stderr.text.write("seq: \{message}\n")
         @env.exit(1)
         return
       }
@@ -280,7 +280,7 @@ pub async fn run_main() -> Unit {
   }
   let step_direction = step.coefficient.compare_int(0)
   if step_direction == 0 {
-    @stdio.stderr.write("seq: zero increment\n")
+    @stdio.stderr.text.write("seq: zero increment\n")
     @env.exit(1)
     return
   }
@@ -315,7 +315,8 @@ pub async fn run_main() -> Unit {
   }
   let mut current = first
   let mut emitted = false
-  let output = @io.BufferedWriter::new(@stdio.stdout, size=65536)
+  let buffer = @io.BufferedWriter(@stdio.stdout, size=65536)
+  let output = @io.Utf8Writer(buffer)
   while (step_direction > 0 && current.compare(last) <= 0) ||
         (step_direction < 0 && current.compare(last) >= 0) {
     if emitted {
@@ -329,5 +330,5 @@ pub async fn run_main() -> Unit {
   if emitted {
     output.write("\n")
   }
-  output.flush()
+  buffer.flush()
 }

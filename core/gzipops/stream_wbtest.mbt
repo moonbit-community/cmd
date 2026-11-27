@@ -21,7 +21,7 @@ async test "gzip Reader handles byte feeds through optional headers and members"
   for chunk in [1, 2, 7] {
     let input = byte_feed(gzip_member + abc + b"\x00\x00", chunk)
     defer input.close()
-    let output : Collected = { bytes: [], }
+    let output : Collected = Collected::new()
     assert_true(!decode_reader(input, output, false))
     assert_eq(Bytes::from_array(output.bytes), b"abcabc")
   }
@@ -29,9 +29,9 @@ async test "gzip Reader handles byte feeds through optional headers and members"
   defer input.close()
   let buffer = FixedArray::make(64, b'\x00')
   for _ in 0..<abc.length() {
-    assert_eq(input.read(buffer), 1)
+    assert_eq(input.read_into(buffer.mut_view()), 1)
   }
-  assert_eq(input.read(buffer), 0)
+  assert_eq(input.read_into(buffer.mut_view()), 0)
   let long_header = b"\x1f\x8b\x08\x0a\x00\x00\x00\x00\x00\xff" +
     Bytes::make(70000, b'n') +
     b"\x00"
@@ -42,7 +42,7 @@ async test "gzip Reader handles byte feeds through optional headers and members"
     abc[10:].to_owned(),
   )
   defer long_input.close()
-  let output : Collected = { bytes: [], }
+  let output : Collected = Collected::new()
   assert_true(!decode_reader(long_input, output, false))
   assert_eq(Bytes::from_array(output.bytes), b"abc")
 }
@@ -52,7 +52,7 @@ async test "gzip Reader preserves prefixes for every fixed-member truncation" {
   for length in 0..<abc.length() {
     let input = byte_feed(abc[:length].to_owned(), 1)
     defer input.close()
-    let output : Collected = { bytes: [], }
+    let output : Collected = Collected::new()
     try decode_reader(input, output, false) catch {
       _ => ()
     } noraise {
@@ -79,7 +79,7 @@ async test "gzip Reader retains prefetched trailer bytes and stored block bytes"
   let input = cursor(raw.drain())
   defer input.close()
   let bits = Bits::new(input)
-  let output : Collected = { bytes: [], }
+  let output : Collected = Collected::new()
   let (checksum, size) = inflate(bits, output, false)
   assert_eq(checksum, crc32(payload[:]))
   assert_eq(size, payload.length().reinterpret_as_uint())
@@ -87,7 +87,7 @@ async test "gzip Reader retains prefetched trailer bytes and stored block bytes"
   assert_true(bits.next_byte() is None)
   let members = cursor(abc + abc)
   defer members.close()
-  let decoded : Collected = { bytes: [], }
+  let decoded : Collected = Collected::new()
   assert_true(!decode_reader(members, decoded, false))
   assert_eq(Bytes::from_array(decoded.bytes), b"abcabc")
 }
@@ -99,7 +99,7 @@ async test "gzip Reader rejects reserved blocks stored lengths and absent histor
   for raw in [b"\x07", b"\x01\x01\x00\xff\xffx", b"\x03\x02"] {
     let input = byte_feed(raw, 1)
     defer input.close()
-    let output : Collected = { bytes: [], }
+    let output : Collected = Collected::new()
     try inflate(Bits::new(input), output, false) catch {
       _ => ()
     } noraise {
@@ -144,13 +144,37 @@ test "gzip Huffman tables match canonical codes including secondary entries" {
 
 ///|
 priv struct LimitedWriter {
+  controller : @io.BinaryWriterController
   bytes : Array[Byte]
   mut remaining : Int32
   mut calls : Int32
 }
 
 ///|
-impl @io.Writer for LimitedWriter with fn write_once(self, data, offset~, len~) {
+impl @io.BinaryWriter for LimitedWriter
+
+///|
+impl @io.BinaryWriterImpl for LimitedWriter with fn name(_) {
+  "LimitedWriter"
+}
+
+///|
+impl @io.BinaryWriterImpl for LimitedWriter with fn get_controller(self) {
+  self.controller
+}
+
+///|
+impl @io.BinaryWriterImpl for LimitedWriter with fn flush_partial_data(_) {
+  ()
+}
+
+///|
+impl @io.BinaryWriterImpl for LimitedWriter with fn raw_write_impl(
+  self,
+  data,
+  offset~,
+  len~,
+) {
   self.calls += 1
   guard self.remaining > 0 else { fail("fixture writer failure") }
   let count = len.min(self.remaining)
@@ -169,22 +193,31 @@ async test "gzip Reader preserves read errors and never retries a failed writer"
     fail("fixture reader failure")
   })
   defer input.close()
-  let output : Collected = { bytes: [], }
+  let output : Collected = Collected::new()
   try decode_reader(input, output, false) catch {
-    error => assert_true(error.to_string().contains("fixture reader failure"))
+    @io.ReaderError::TransportError(cause, ..) =>
+      assert_true(cause.to_string().contains("fixture reader failure"))
+    error => raise error
   } noraise {
     _ => fail("must propagate reader failure")
   }
   assert_eq(Bytes::from_array(output.bytes), b"abc")
-  let encoded : Collected = { bytes: [], }
+  let encoded : Collected = Collected::new()
   let source = cursor(Bytes::make(100000, b'a'))
   defer source.close()
   encode(source, encoded)
   let compressed = cursor(Bytes::from_array(encoded.bytes))
   defer compressed.close()
-  let limited : LimitedWriter = { bytes: [], remaining: 17, calls: 0, }
+  let limited : LimitedWriter = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+    remaining: 17,
+    calls: 0,
+  }
   try decode_reader(compressed, limited, false) catch {
-    error => assert_true(error.to_string().contains("fixture writer failure"))
+    @io.WriterError::TransportError(cause, ..) =>
+      assert_true(cause.to_string().contains("fixture writer failure"))
+    error => raise error
   } noraise {
     _ => fail("must propagate writer failure")
   }

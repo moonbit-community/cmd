@@ -1,10 +1,10 @@
 import {
   "cli/core/cli",
-  "moonbitlang/async/fs",
-  "moonbitlang/async/io",
-  "moonbitlang/async/stdio",
+  "cli/core/stream",
+  "moonbitlang/core/async/fs",
+  "moonbitlang/core/async/io",
+  "moonbitlang/core/async/stdio",
   "moonbitlang/core/env",
-  "moonbitlang/core/buffer",
   "moonbitlang/core/string",
 }
 
@@ -21,5 +21,6 @@ import {
 } for "wbtest"
 
 import {
-  "moonbitlang/async",
+  "moonbitlang/core/async",
+  "moonbitlang/core/buffer",
 } for "wbtest"

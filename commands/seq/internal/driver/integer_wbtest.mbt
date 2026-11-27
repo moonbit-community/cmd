@@ -91,12 +91,36 @@ test "seq bounded integer admission preserves exact decimal and large integer fa
 
 ///|
 priv struct SequenceSink {
+  controller : @io.BinaryWriterController
   bytes : Array[Byte]
   mut calls : Int32
 }
 
 ///|
-impl @io.Writer for SequenceSink with fn write_once(self, bytes, offset~, len~) {
+impl @io.BinaryWriter for SequenceSink
+
+///|
+impl @io.BinaryWriterImpl for SequenceSink with fn name(_) {
+  "SequenceSink"
+}
+
+///|
+impl @io.BinaryWriterImpl for SequenceSink with fn get_controller(self) {
+  self.controller
+}
+
+///|
+impl @io.BinaryWriterImpl for SequenceSink with fn flush_partial_data(_) {
+  ()
+}
+
+///|
+impl @io.BinaryWriterImpl for SequenceSink with fn raw_write_impl(
+  self,
+  bytes,
+  offset~,
+  len~,
+) {
   self.calls += 1
   if self.calls > 1 {
     fail("sequence write failed")
@@ -110,7 +134,11 @@ impl @io.Writer for SequenceSink with fn write_once(self, bytes, offset~, len~) 
 
 ///|
 async test "seq integer output propagates partial write failure without replay" {
-  let sink : SequenceSink = { bytes: [], calls: 0, }
+  let sink : SequenceSink = {
+    controller: @io.BinaryWriterController(),
+    bytes: [],
+    calls: 0,
+  }
   let sequence = IntegerSequence::new(1L, 1L, 1000000L, b"\n", 0)
   assert_true(
     try {

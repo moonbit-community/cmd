@@ -97,7 +97,7 @@ fn decode_block(block : Array[Byte], out : Array[Byte]) -> Unit raise CliError {
 async fn decode_to_writer(
   input : Bytes,
   ignore_garbage : Bool,
-  writer : &@io.Writer,
+  writer : &@io.BinaryWriter,
 ) -> Unit raise CliError {
   let block : Array[Byte] = []
   for byte in input {
@@ -115,13 +115,19 @@ async fn decode_to_writer(
       let mut decoding = true
       errdefer (if decoding && !decoded.is_empty() {
         writer.write(Bytes::from_array(decoded)) catch {
-          write_err => raise CliError("base32: write failed: \{write_err}")
+          write_err =>
+            raise CliError(
+              "base32: write failed: \{@stream.transport_cause(write_err)}",
+            )
         }
       })
       decode_block(block, decoded)
       decoding = false
       writer.write(Bytes::from_array(decoded)) catch {
-        err => raise CliError("base32: write failed: \{err}")
+        err =>
+          raise CliError(
+            "base32: write failed: \{@stream.transport_cause(err)}",
+          )
       }
       block.clear()
     }
@@ -137,7 +143,10 @@ async fn decode_to_writer(
       CliError(message) => {
         if !decoded.is_empty() {
           writer.write(Bytes::from_array(decoded)) catch {
-            write_err => raise CliError("base32: write failed: \{write_err}")
+            write_err =>
+              raise CliError(
+                "base32: write failed: \{@stream.transport_cause(write_err)}",
+              )
           }
         }
         raise CliError(message)
@@ -145,33 +154,27 @@ async fn decode_to_writer(
     }
     if !decoded.is_empty() {
       writer.write(Bytes::from_array(decoded)) catch {
-        write_err => raise CliError("base32: write failed: \{write_err}")
+        write_err =>
+          raise CliError(
+            "base32: write failed: \{@stream.transport_cause(write_err)}",
+          )
       }
     }
   }
 }
 
 ///|
-// Decoding retains its existing whole-input read-error contract.
-async fn read_input(reader : &@io.Reader) -> Bytes {
-  let input = @buffer.Buffer()
-  while reader.read_some(max_len=65536) is Some(chunk) {
-    input.write_bytesview(chunk)
-  }
-  input.to_bytes()
-}
-
-///|
 async fn convert(
-  reader : &@io.Reader,
+  reader : &@io.BinaryReader,
   decode : Bool,
   ignore_garbage : Bool,
   wrap : Int32,
+  writer~ : &@io.BinaryWriter = @stdio.stdout,
 ) -> Unit {
   if decode {
-    decode_to_writer(read_input(reader), ignore_garbage, @stdio.stdout)
+    decode_to_writer(reader.read_all(), ignore_garbage, writer)
   } else {
-    encode_stream(reader, wrap, @stdio.stdout)
+    encode_stream(reader, wrap, writer)
   }
 }
 
@@ -179,36 +182,36 @@ async fn convert(
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("base32 \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("base32 \{MODULE_VERSION}\n")
     return
   }
   let args = @env.args()[1:]
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
-      @stdio.stderr.write("base32: \{message}: '\{option}'\n")
+      @stdio.stderr.text.write("base32: \{message}: '\{option}'\n")
       @env.exit(1)
       return
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write(metadata_help())
+    @stdio.stdout.text.write(metadata_help())
     return
   }
   if parsed.operands.length() > 1 {
-    @stdio.stderr.write("base32: extra operand: '\{parsed.operands[1]}'\n")
+    @stdio.stderr.text.write("base32: extra operand: '\{parsed.operands[1]}'\n")
     @env.exit(1)
     return
   }
   let wrap_text = parsed.last_value("wrap").unwrap_or(DEFAULT_WRAP)
   let wrap = @string.parse_int(wrap_text) catch {
     _ => {
-      @stdio.stderr.write("base32: invalid wrap size: '\{wrap_text}'\n")
+      @stdio.stderr.text.write("base32: invalid wrap size: '\{wrap_text}'\n")
       @env.exit(1)
       return
     }
   }
   if wrap < 0 {
-    @stdio.stderr.write("base32: invalid wrap size: '\{wrap_text}'\n")
+    @stdio.stderr.text.write("base32: invalid wrap size: '\{wrap_text}'\n")
     @env.exit(1)
     return
   }
@@ -233,12 +236,12 @@ pub async fn run_main() -> Unit {
     }
   } catch {
     CliError(msg) => {
-      @stdio.stderr.write("\{msg}\n")
+      @stdio.stderr.text.write("\{msg}\n")
       @env.exit(1)
       return
     }
     err => {
-      @stdio.stderr.write("base32: \{err}\n")
+      @stdio.stderr.text.write("base32: \{@stream.transport_cause(err)}\n")
       @env.exit(1)
       return
     }

@@ -104,7 +104,7 @@ fn settings(parsed : @cli.ParsedArgs) -> DumpState raise OdError {
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("od \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("od \{MODULE_VERSION}\n")
     return
   }
   let args : Array[String] = []
@@ -114,7 +114,7 @@ pub async fn run_main() -> Unit {
       options = false
     }
     if options && arg == "-S" && index == metadata_args.length() - 1 {
-      @stdio.stderr.write(
+      @stdio.stderr.text.write(
         "od: option requires an argument -- 'S'\nTry 'od --help' for more information.\n",
       )
       @env.exit(1)
@@ -132,22 +132,22 @@ pub async fn run_main() -> Unit {
   }
   let parsed = @cli.parse(args, option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
-      @stdio.stderr.write("od: \{message}: '\{option}'\n")
+      @stdio.stderr.text.write("od: \{message}: '\{option}'\n")
       @env.exit(1)
       return
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write(help_message() + "\n")
+    @stdio.stdout.text.write(help_message() + "\n")
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("od \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("od \{MODULE_VERSION}\n")
     return
   }
   let state = settings(parsed) catch {
     OdError(message) => {
-      @stdio.stderr.write("od: \{message}\n")
+      @stdio.stderr.text.write("od: \{message}\n")
       @env.exit(1)
       return
     }
@@ -155,14 +155,14 @@ pub async fn run_main() -> Unit {
   if parsed.last_value("width") is Some(value) {
     let requested = @string.parse_int(value) catch { _ => 0 }
     if requested != 0 && requested != state.width {
-      @stdio.stderr.write(
+      @stdio.stderr.text.write(
         "od: warning: invalid width \{requested}; using \{state.width} instead\n",
       )
     }
   }
   let (files, old_skip, label) = traditional_operands(parsed) catch {
     OdError(message) => {
-      @stdio.stderr.write("od: \{message}\n")
+      @stdio.stderr.text.write("od: \{message}\n")
       @env.exit(1)
       return
     }
@@ -177,7 +177,7 @@ pub async fn run_main() -> Unit {
       parsed.last_value("strings").unwrap_or(DEFAULT_STRINGS),
     ) catch {
       OdError(message) => {
-        @stdio.stderr.write("od: \{message}\n")
+        @stdio.stderr.text.write("od: \{message}\n")
         @env.exit(1)
         return
       }
@@ -210,7 +210,7 @@ pub async fn run_main() -> Unit {
         }
       } catch {
         error => {
-          @stdio.stderr.write("od: \{source}: \{error}\n")
+          @stdio.stderr.text.write("od: \{source}: \{error}\n")
           failed = true
         }
       }
@@ -222,7 +222,7 @@ pub async fn run_main() -> Unit {
       return
     }
     if strings.skip > 0L {
-      @stdio.stderr.write("od: cannot skip past end of combined input\n")
+      @stdio.stderr.text.write("od: cannot skip past end of combined input\n")
       failed = true
     }
     if failed {
@@ -248,7 +248,7 @@ pub async fn run_main() -> Unit {
       }
     } catch {
       err => {
-        @stdio.stderr.write("od: \{path}: \{err}\n")
+        @stdio.stderr.text.write("od: \{path}: \{err}\n")
         failed = true
       }
     }
@@ -260,15 +260,15 @@ pub async fn run_main() -> Unit {
     return
   }
   if state.skip > 0L {
-    @stdio.stderr.write("od: cannot skip past end of combined input\n")
+    @stdio.stderr.text.write("od: cannot skip past end of combined input\n")
     @env.exit(1)
     return
   }
   if !state.pending.is_empty() {
-    @stdio.stdout.write(state.row())
+    @stdio.stdout.text.write(state.row())
   }
   if state.base != 0 || state.label is Some(_) {
-    @stdio.stdout.write(
+    @stdio.stdout.text.write(
       @format.labeled_address(state.offset, state.base, state.label) + "\n",
     )
   }

@@ -92,12 +92,13 @@ fn Base32Encoder::finish(self : Base32Encoder) -> Bytes {
 
 ///|
 async fn encode_stream(
-  reader : &@io.Reader,
+  reader : &@io.BinaryReader,
   wrap : Int32,
-  writer : &@io.Writer,
+  writer : &@io.BinaryWriter,
 ) -> Unit {
   let encoder = Base32Encoder::new(wrap)
-  while reader.read_some(max_len=65536) is Some(chunk) {
+  let chunks = @stream.ChunkReader::new(reader)
+  while chunks.read() is Some(chunk) {
     let output = encoder.encode(chunk)
     if !output.is_empty() {
       writer.write(output)

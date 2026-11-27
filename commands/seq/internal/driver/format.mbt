@@ -213,7 +213,8 @@ async fn print_formatted(
   if !before_end(first) {
     return
   }
-  let output = @io.BufferedWriter::new(@stdio.stdout, size=65536)
+  let buffer = @io.BufferedWriter(@stdio.stdout, size=65536)
+  let output = @io.Utf8Writer(buffer)
   let mut current = first
   let mut index = BigInt::from_int(1)
   let mut emitted = false
@@ -248,5 +249,5 @@ async fn print_formatted(
     current = next
   }
   output.write("\n")
-  output.flush()
+  buffer.flush()
 }

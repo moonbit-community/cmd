@@ -44,16 +44,16 @@ pub async fn run(
 ) -> Int32 {
   let parsed = parse_gzip_args(args) catch {
     @args.CliError(message~, option~, ..) => {
-      @stdio.stderr.write("\{command}: \{message}: '\{option}'\n")
+      @stdio.stderr.text.write("\{command}: \{message}: '\{option}'\n")
       return 2
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write(help(command))
+    @stdio.stdout.text.write(help(command))
     return 0
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("\{command} \{version}\n")
+    @stdio.stdout.text.write("\{command} \{version}\n")
     return 0
   }
   let level = gzip_level(parsed)
@@ -63,13 +63,13 @@ pub async fn run(
     test_only
   let named = parsed.operands.any(path => path != "-")
   if named && !test_only && command != "zcat" && !parsed.contains("stdout") {
-    @stdio.stderr.write(
+    @stdio.stderr.text.write(
       "\{command}: in-place replacement is unsupported; use -c\n",
     )
     return 2
   }
   if named && !decompress && !parsed.contains("no-name") {
-    @stdio.stderr.write(
+    @stdio.stderr.text.write(
       "\{command}: saved filename metadata is unsupported; use -n\n",
     )
     return 2
@@ -88,7 +88,7 @@ pub async fn run(
         }
         if trailing {
           if !parsed.contains("quiet") {
-            @stdio.stderr.write(
+            @stdio.stderr.text.write(
               "\{command}: \{path}: decompression OK, trailing garbage ignored\n",
             )
           }
@@ -105,7 +105,9 @@ pub async fn run(
       }
     } catch {
       err => {
-        @stdio.stderr.write("\{command}: \{path}: \{err}\n")
+        @stdio.stderr.text.write(
+          "\{command}: \{path}: \{@stream.transport_cause(err)}\n",
+        )
         status = 1
       }
     }

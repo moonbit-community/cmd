@@ -1,8 +1,9 @@
 import {
+  "cli/core/stream",
   "cli/core/gzipops",
   "cli/core/cli" @args,
-  "moonbitlang/async/fs",
-  "moonbitlang/async/stdio",
+  "moonbitlang/core/async/fs",
+  "moonbitlang/core/async/stdio",
 }
 
 supported_targets = "wasm"

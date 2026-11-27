@@ -72,7 +72,10 @@ fn StringDump::feed(self : StringDump, data : BytesView) -> String {
 }
 
 ///|
-async fn StringDump::read(self : StringDump, reader : &@io.Reader) -> Unit {
+async fn StringDump::read(
+  self : StringDump,
+  reader : &@io.BinaryReader,
+) -> Unit {
   let buffer = FixedArray::make(65536, b'\x00')
   let data = buffer.unsafe_reinterpret_as_bytes()
   let capacity = buffer.length().to_int64()
@@ -82,10 +85,10 @@ async fn StringDump::read(self : StringDump, reader : &@io.Reader) -> Unit {
         (self.skip.min(capacity) + left.min(capacity)).min(capacity).to_int()
       None => buffer.length()
     }
-    let count = reader.read(buffer, max_len=request)
+    let count = reader.read_into(buffer.mut_view(end=request))
     if count == 0 {
       break
     }
-    @stdio.stdout.write(self.feed(data[:count]))
+    @stdio.stdout.text.write(self.feed(data[:count]))
   }
 }

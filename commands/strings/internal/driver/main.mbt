@@ -67,8 +67,8 @@ fn record_prefix(
 // Deferred output remains cancellable if the downstream writer stalls.
 #warnings("-cancellable_defer")
 async fn emit_stream(
-  reader : &@io.Reader,
-  writer : &@io.Writer,
+  reader : &@io.BinaryReader,
+  writer : &@io.BinaryWriter,
   path : String,
   minimum : Int32,
   prefix : Bool,
@@ -76,21 +76,23 @@ async fn emit_stream(
   eight_bit : Bool,
   separator~ : String = "\n",
 ) -> Unit {
+  let chunks = @stream.ChunkReader::new(reader)
+  let separator_bytes = @utf8.encode(separator)
   let pending : Array[Byte] = []
   let mut offset : Int64 = 0
   let mut start : Int64 = 0
   let mut emitting = false
   for ;; {
     let chunk = {
-      errdefer (if emitting { writer.write(separator) })
-      reader.read_some(max_len=65536)
+      errdefer (if emitting { writer.write(separator_bytes) })
+      chunks.read()
     }
     guard chunk is Some(chunk) else { break }
     let mut index = 0
     while index < chunk.length() {
       if !printable(chunk[index], eight_bit) {
         if emitting {
-          writer.write(separator)
+          writer.write(separator_bytes)
         }
         pending.clear()
         emitting = false
@@ -105,7 +107,7 @@ async fn emit_stream(
       if emitting {
         writer.write(chunk[segment:index])
       } else if pending.length() + index - segment >= minimum {
-        writer.write(record_prefix(path, start, prefix, radix))
+        writer.write(@utf8.encode(record_prefix(path, start, prefix, radix)))
         if !pending.is_empty() {
           writer.write(Bytes::from_array(pending))
           pending.clear()
@@ -121,7 +123,7 @@ async fn emit_stream(
     offset += chunk.length().to_int64()
   }
   if emitting {
-    writer.write(separator)
+    writer.write(separator_bytes)
   }
 }
 
@@ -129,22 +131,22 @@ async fn emit_stream(
 pub async fn run_main() -> Unit {
   let metadata_args = @env.args()[1:]
   if metadata_args.length() == 1 && metadata_args[0] == "--version" {
-    @stdio.stdout.write("strings \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("strings \{MODULE_VERSION}\n")
     return
   }
   let parsed = @cli.parse(@env.args()[1:], option_specs()) catch {
     @cli.CliError(option~, message~, ..) => {
-      @stdio.stderr.write("strings: \{message}: '\{option}'\n")
+      @stdio.stderr.text.write("strings: \{message}: '\{option}'\n")
       @env.exit(1)
       return
     }
   }
   if parsed.contains("help") {
-    @stdio.stdout.write(help_message() + "\n")
+    @stdio.stdout.text.write(help_message() + "\n")
     return
   }
   if parsed.contains("version") {
-    @stdio.stdout.write("strings \{MODULE_VERSION}\n")
+    @stdio.stdout.text.write("strings \{MODULE_VERSION}\n")
     return
   }
   let minimum = @string.parse_int(
@@ -153,26 +155,26 @@ pub async fn run_main() -> Unit {
     _ => 0
   }
   if minimum < 1 {
-    @stdio.stderr.write("strings: invalid minimum string length\n")
+    @stdio.stderr.text.write("strings: invalid minimum string length\n")
     @env.exit(1)
     return
   }
   if parsed
     .values("encoding")
     .any(value => !["s", "S", "b", "l", "B", "L"].contains(value)) {
-    @stdio.stderr.write("strings: invalid encoding\n")
+    @stdio.stderr.text.write("strings: invalid encoding\n")
     @env.exit(1)
     return
   }
   if parsed.values("encoding").any(value => value != "s" && value != "S") {
-    @stdio.stderr.write(
+    @stdio.stderr.text.write(
       "strings: unsupported encoding; use s (7-bit) or S (8-bit)\n",
     )
     @env.exit(2)
     return
   }
   if parsed.values("radix").any(value => parse_radix(value) is None) {
-    @stdio.stderr.write("strings: invalid radix\n")
+    @stdio.stderr.text.write("strings: invalid radix\n")
     @env.exit(1)
     return
   }
@@ -182,7 +184,7 @@ pub async fn run_main() -> Unit {
     match parse_radix(parsed.last_value("radix").unwrap_or(DEFAULT_RADIX)) {
       Some(value) => Some(value)
       None => {
-        @stdio.stderr.write("strings: invalid radix\n")
+        @stdio.stderr.text.write("strings: invalid radix\n")
         @env.exit(1)
         return
       }
@@ -198,7 +200,7 @@ pub async fn run_main() -> Unit {
   let separator = parsed
     .last_value("output-separator")
     .unwrap_or(DEFAULT_OUTPUT_SEPARATOR)
-  let writer = @io.BufferedWriter::new(@stdio.stdout, size=65536)
+  let writer = @io.BufferedWriter(@stdio.stdout, size=65536)
   let mut failed = false
   for path in sources {
     try {
@@ -229,7 +231,9 @@ pub async fn run_main() -> Unit {
       }
     } catch {
       err => {
-        @stdio.stderr.write("strings: \{path}: \{err}\n")
+        @stdio.stderr.text.write(
+          "strings: \{path}: \{@stream.transport_cause(err)}\n",
+        )
         failed = true
       }
     }

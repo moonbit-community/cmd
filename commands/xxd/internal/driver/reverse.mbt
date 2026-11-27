@@ -8,7 +8,7 @@ async fn flush_reverse(output : Output, pending : Array[Byte]) -> Unit {
 
 ///|
 async fn reverse_stream(
-  reader : &@io.Reader,
+  reader : &@io.BinaryReader,
   output : Output,
   opts : Options,
 ) -> Unit {
@@ -21,7 +21,8 @@ async fn reverse_stream(
   }
   let decoder = @codec.Decoder::new(opts.style, opts.cols, base)
   let pending : Array[Byte] = []
-  while @stream.read_chunk(reader) is Some(chunk) {
+  let chunks = @stream.ChunkReader::new(reader)
+  while chunks.read() is Some(chunk) {
     try {
       for byte in chunk {
         if (decoder.feed(byte) catch {
