@@ -59,7 +59,7 @@ identify the principal refusals and platform differences.
 | [base64](../commands/base64/README.md) | Streaming Base64 encoding and decoding; wrapping and garbage filtering. | Standard alphabet and canonical tail bits; malformed padding fails. |
 | [basename](../commands/basename/README.md) | Lexical basename and literal suffix removal; multiple and NUL-separated output. | No filesystem lookup. |
 | [cat](../commands/cat/README.md) | Streaming concatenation, line numbering and visible byte formatting. | Byte-oriented display; -u has no effect. |
-| [chmod](../commands/chmod/README.md) | POSIX numeric modes and closed symbolic assignments on regular files. | No Windows, reference or incremental symbolic modes. |
+| [chmod](../commands/chmod/README.md) | POSIX numeric modes and symbolic expressions with a known final regular-file mode. | Omitted classes, results depending on the old mode, reference modes and Windows remain unsupported. |
 | [cksum](../commands/cksum/README.md) | POSIX CRC and selected digest families; modern digest manifests. | No legacy-algorithm manifest checks; raw output is single-input. |
 | [cmp](../commands/cmp/README.md) | Byte comparison with skip/limit, quiet and list modes. | C-byte diagnostics. |
 | [column](../commands/column/README.md) | Grid/table layout, C.UTF-8 cell widths, ANSI-aware table fields and temporary spooling. | No automatic terminal width or full util-linux grammar. |

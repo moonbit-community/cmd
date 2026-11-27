@@ -825,6 +825,84 @@
       "oracle_profile": "pinned-oracle-v1"
     },
     {
+      "behavior_id": "case:chmod-symbolic-increments",
+      "command": "chmod",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/chmod.json",
+      "case_id": "chmod-symbolic-increments",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:chmod-symbolic-copy",
+      "command": "chmod",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/chmod.json",
+      "case_id": "chmod-symbolic-copy",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:chmod-symbolic-conditional",
+      "command": "chmod",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/chmod.json",
+      "case_id": "chmod-symbolic-conditional",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:chmod-symbolic-subtract-copy",
+      "command": "chmod",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/chmod.json",
+      "case_id": "chmod-symbolic-subtract-copy",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:chmod-symbolic-depends",
+      "command": "chmod",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/chmod.json",
+      "case_id": "chmod-symbolic-depends",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
+      "behavior_id": "case:chmod-symbolic-subtract-mixed",
+      "command": "chmod",
+      "status": "boundary",
+      "implementation": "json-case",
+      "source": "tests/cases/chmod.json",
+      "case_id": "chmod-symbolic-subtract-mixed",
+      "aliases": [],
+      "platforms": [
+        "posix"
+      ],
+      "oracle_profile": ""
+    },
+    {
       "behavior_id": "case:p8-chmod-symbolic-assignment",
       "command": "chmod",
       "status": "supported",
