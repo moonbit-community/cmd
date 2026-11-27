@@ -1,0 +1,166 @@
+{
+  "schema": 1,
+  "command": "tar",
+  "help": "Usage: tar -c|-t|-x [-zO] -f ARCHIVE [FILE...]\n{{help:create:0}}\n{{help:list:0}}\n{{help:extract:0}}\n{{help:file:0}}\n{{help:gzip:0}}\n{{help:to-stdout:0}}\n{{help:directory:0}}\n{{help:help:0}}\n{{help:version:0}}\n\nThe 64 MiB ustar profile creates and extracts new regular files and directories. Extraction requires a caller-controlled destination.\n",
+  "catalog_options": [
+    "create",
+    "list",
+    "extract",
+    "file",
+    "gzip",
+    "to-stdout",
+    "help",
+    "version",
+    "directory"
+  ],
+  "options": [
+    {
+      "name": "create",
+      "aliases": [
+        "-c",
+        "--create"
+      ],
+      "value": "none",
+      "description": "Create an archive.",
+      "short": "c",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -c  Create an archive."
+      ]
+    },
+    {
+      "name": "list",
+      "aliases": [
+        "-t",
+        "--list"
+      ],
+      "value": "none",
+      "description": "List member names.",
+      "short": "t",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -t  List member names."
+      ]
+    },
+    {
+      "name": "extract",
+      "aliases": [
+        "-x",
+        "--extract"
+      ],
+      "value": "none",
+      "description": "Extract selected members.",
+      "short": "x",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -x  Extract selected members."
+      ]
+    },
+    {
+      "name": "file",
+      "aliases": [
+        "-f",
+        "--file"
+      ],
+      "value": "required",
+      "description": "Use this archive or - for a standard stream.",
+      "short": "f",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -f  Use this archive or - for a standard stream."
+      ]
+    },
+    {
+      "name": "gzip",
+      "aliases": [
+        "-z",
+        "--gzip"
+      ],
+      "value": "none",
+      "description": "Use gzip compression.",
+      "short": "z",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -z  Use gzip compression."
+      ]
+    },
+    {
+      "name": "to-stdout",
+      "aliases": [
+        "-O",
+        "--to-stdout"
+      ],
+      "value": "none",
+      "description": "Extract file contents to stdout.",
+      "short": "O",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  -O  Extract file contents to stdout."
+      ]
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show command help.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  --help  Show command help."
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show the package version.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "  --version  Show the package version."
+      ]
+    },
+    {
+      "name": "directory",
+      "aliases": [
+        "-C",
+        "--directory"
+      ],
+      "value": "required",
+      "description": "Choose an existing extraction directory.",
+      "short": "C",
+      "repeatable": true,
+      "allow_attached": true,
+      "help_lines": [
+        "  -C DIRECTORY  Choose an existing extraction directory."
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "create",
+        "list",
+        "extract",
+        "file",
+        "gzip",
+        "to-stdout",
+        "help",
+        "version",
+        "directory"
+      ]
+    }
+  ]
+}

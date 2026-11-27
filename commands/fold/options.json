@@ -32,12 +32,12 @@
         "--characters"
       ],
       "value": "none",
-      "description": "count characters in the C-locale byte profile",
+      "description": "count characters in the selected locale profile",
       "short": "c",
       "repeatable": true,
       "allow_attached": false,
       "help_lines": [
-        "  -c, --characters     count characters in the C-locale byte profile"
+        "  -c, --characters     count characters in the selected locale profile"
       ]
     },
     {

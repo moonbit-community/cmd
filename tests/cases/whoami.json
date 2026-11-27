@@ -1,0 +1,32 @@
+{
+  "schema": 2,
+  "cases": [
+    {
+      "id": "whoami-extra-operand",
+      "command": "whoami",
+      "args": [
+        "unexpected"
+      ],
+      "files": [],
+      "environment": {},
+      "expected_status": 1,
+      "normalizations": [],
+      "comparison": "contract",
+      "expected_stdout_text": "",
+      "expected_stderr_text": "whoami: unexpected operand: unexpected\n"
+    },
+    {
+      "id": "whoami-linux-reference",
+      "command": "whoami",
+      "args": [],
+      "files": [],
+      "environment": {},
+      "expected_status": 0,
+      "normalizations": [],
+      "comparison": "scenario",
+      "host_platforms": [
+        "linux"
+      ]
+    }
+  ]
+}

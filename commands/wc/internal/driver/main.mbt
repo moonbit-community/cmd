@@ -49,10 +49,17 @@ async fn count_reader(
   reader : &@io.BinaryReader,
   selection : Selection,
   counts? : Counts,
+  profile~ : @textwidth.Profile = CBytes,
+  posix~ : Bool = false,
 ) -> Counts {
   let counts = match counts {
     Some(counts) => counts
     None => Counts::new()
+  }
+  if profile == Utf8 &&
+    (selection.words || selection.chars || selection.max_line_length) {
+    count_utf8(reader, counts, selection, posix~)
+    return counts
   }
   let buffer = FixedArray::make(1048576, b'\x00')
   let data = buffer.unsafe_reinterpret_as_bytes()
@@ -335,10 +342,12 @@ async fn read_counted(
   reader : &@io.BinaryReader,
   path : String,
   selection : Selection,
+  profile~ : @textwidth.Profile,
+  posix~ : Bool,
 ) -> (Counts?, String?) {
   let counts = Counts::new()
   let error = try {
-    ignore(count_reader(reader, selection, counts~))
+    ignore(count_reader(reader, selection, counts~, profile~, posix~))
     None
   } catch {
     error => Some(input_error(path, error))
@@ -350,9 +359,11 @@ async fn read_counted(
 async fn count_source(
   path : String,
   selection : Selection,
+  profile~ : @textwidth.Profile,
+  posix~ : Bool,
 ) -> (Counts?, String?) {
   if path == "-" {
-    read_counted(@stdio.stdin, path, selection)
+    read_counted(@stdio.stdin, path, selection, profile~, posix~)
   } else {
     let file = @async_fs.open(path, mode=ReadOnly) catch {
       error => return (None, Some(input_error(path, error)))
@@ -364,7 +375,7 @@ async fn count_source(
         Some("wc: " + quoted_name(path) + ": Is a directory"),
       )
     } else {
-      read_counted(file, path, selection)
+      read_counted(file, path, selection, profile~, posix~)
     }
   }
 }
@@ -478,6 +489,8 @@ pub async fn run_main() -> Unit {
     !parsed.values.contains("files0-from")
   let sources = if implicit_stdin { ["-"] } else { files }
   let width = if mode is Only { 1 } else { count_width(sources, selection) }
+  let profile = @textwidth.current()
+  let posix = @env.get_env_var("POSIXLY_CORRECT") is Some(_)
   let total = Counts::new()
   let mut failed = false
   for index, path in sources {
@@ -500,7 +513,7 @@ pub async fn run_main() -> Unit {
       failed = true
       continue
     }
-    let (counts, error) = count_source(path, selection)
+    let (counts, error) = count_source(path, selection, profile~, posix~)
     if error is Some(message) {
       @stdio.stderr.text.write(message + "\n")
       failed = true

@@ -2,6 +2,46 @@
   "schema": 2,
   "cases": [
     {
+      "id": "tr-locale-c-byte-case-classes",
+      "command": "tr",
+      "args": [
+        "[:lower:]",
+        "[:upper:]"
+      ],
+      "stdin_hex": "7a0ac3840a610ac3a40a5b210a410aff0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "5a0ac3840a410ac3a40a5b210a410aff0a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "tr-locale-utf8-byte-case-classes",
+      "command": "tr",
+      "args": [
+        "[:lower:]",
+        "[:upper:]"
+      ],
+      "stdin_hex": "7a0ac3840a610ac3a40a5b210a410aff0a",
+      "files": [],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "5a0ac3840a410ac3a40a5b210a410aff0a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11",
+      "expected_stderr_text": ""
+    },
+    {
       "id": "phase3-tr-range",
       "command": "tr",
       "args": [

@@ -35,6 +35,6 @@ Print three columns: records unique to the first file, unique to the second, and
 
 Build from source with the MoonBit 1.0 RC1 toolchain.
 
-- Inputs must use C-locale byte ordering. Order-check options control diagnostics; they do not sort the files.
+- C and C.UTF-8 use the same unsigned byte ordering, including for malformed UTF-8. Supply both files in that order.
 
 See the [compatibility guide](../../docs/compatibility.md) for the supported profile.

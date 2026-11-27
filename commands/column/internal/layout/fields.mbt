@@ -6,13 +6,18 @@ pub struct Field {
 }
 
 ///|
-// Snapshot table payloads are already normalized to the ASCII C-byte display
-// representation. Borrow them directly instead of decoding and re-encoding.
-fn table_width(data : BytesView) -> Int32 {
+// Measure the normalized snapshot directly so field offsets remain byte offsets.
+fn table_width(data : BytesView, profile : @textwidth.Profile) -> Int32 {
   let mut width = 0
   let mut i = 0
   while i < data.length() {
     let byte = data[i]
+    if profile == Utf8 && byte >= 128 {
+      let (ch, len) = profile.next(data, i)
+      width += @textwidth.cells(ch, fallback=0)
+      i += len
+      continue
+    }
     i += 1
     if byte >= b' ' && byte <= b'~' {
       width += 1
@@ -34,6 +39,7 @@ fn table_width(data : BytesView) -> Int32 {
 priv struct FieldSpan {
   start : Int32
   end : Int32
+  next : Int32
   present : Bool
 }
 
@@ -45,19 +51,26 @@ fn Separator::next_field(
   from : Int32,
 ) -> FieldSpan {
   let mut start = from
-  for i = from; i < data.length(); i = i + 1 {
+  for i = from; i < data.length(); {
     let byte = data[i].to_int()
-    if byte < 128 && self.members[byte] {
-      if self.preserve_empty || i > start {
-        return { start, end: i, present: true, }
-      }
-      start = i + 1
+    let (separator, len) = if byte < 128 || self.wide.is_empty() {
+      (byte < 128 && self.members[byte], 1)
+    } else {
+      let (ch, len) = self.profile.next(data, i)
+      (ch is Some(c) && self.wide.contains(c), len)
     }
+    if separator {
+      if self.preserve_empty || i > start {
+        return { start, end: i, next: i + len, present: true, }
+      }
+      start = i + len
+    }
+    continue i + len
   }
   if start <= data.length() && (self.preserve_empty || start < data.length()) {
-    { start, end: data.length(), present: true, }
+    { start, end: data.length(), next: data.length() + 1, present: true, }
   } else {
-    { start, end: data.length(), present: false, }
+    { start, end: data.length(), next: data.length() + 1, present: false, }
   }
 }
 
@@ -69,9 +82,9 @@ pub fn Separator::table_fields(
   let fields : Array[Field] = []
   for span = self.next_field(data, 0)
       span.present
-      span = self.next_field(data, span.end + 1) {
+      span = self.next_field(data, span.next) {
     let field = data[span.start:span.end]
-    fields.push({ data: field, width: table_width(field), })
+    fields.push({ data: field, width: table_width(field, self.profile), })
   }
   fields
 }

@@ -1,0 +1,73 @@
+{
+  "schema": 1,
+  "command": "ps",
+  "help": "Usage: ps -p PID -o FIELD=\nPrint the command name of a selected Linux process.\n  -p, --pid  Select a positive numeric process ID.\n  -o, --format  Print selected no-heading process fields.\n{{help:help:0}}\n{{help:version:0}}\n",
+  "catalog_options": [
+    "pid",
+    "format"
+  ],
+  "options": [
+    {
+      "name": "pid",
+      "aliases": [
+        "-p",
+        "--pid"
+      ],
+      "value": "required",
+      "description": "Select a positive numeric process ID.",
+      "short": "p",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "format",
+      "aliases": [
+        "-o",
+        "--format"
+      ],
+      "value": "required",
+      "description": "Print selected no-heading process fields.",
+      "short": "o",
+      "repeatable": true,
+      "allow_attached": true
+    },
+    {
+      "name": "help",
+      "aliases": [
+        "--help"
+      ],
+      "value": "none",
+      "description": "Show help.",
+      "repeatable": true,
+      "allow_attached": false,
+      "help_lines": [
+        "      --help      display this help and exit"
+      ]
+    },
+    {
+      "name": "version",
+      "aliases": [
+        "--version"
+      ],
+      "value": "none",
+      "description": "Show the version.",
+      "repeatable": false,
+      "allow_attached": false,
+      "help_lines": [
+        "      --version   display version and exit"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "function_name": "option_specs",
+      "import_alias": "cli",
+      "options": [
+        "pid",
+        "format",
+        "help",
+        "version"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "cli/core/textwidth"
+
+// Values
+pub fn cells(Char?, fallback~ : Int32) -> Int32
+
+pub fn current() -> Profile
+
+pub fn is_blank(Char?) -> Bool
+
+// Errors
+
+// Types and methods
+pub struct Decoder {
+  // private fields
+}
+pub fn Decoder::Decoder(Profile) -> Self
+pub fn Decoder::feed(Self, BytesView, (Char?, BytesView) -> Unit, eof? : Bool) -> Unit
+
+#derive(Eq)
+pub(all) enum Profile {
+  CBytes
+  Utf8
+}
+pub fn Profile::next(Self, BytesView, Int32, eof? : Bool) -> (Char?, Int32)
+
+// Type aliases
+
+// Traits

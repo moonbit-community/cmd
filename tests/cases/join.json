@@ -2,6 +2,68 @@
   "schema": 2,
   "cases": [
     {
+      "id": "join-locale-c-folded-sort-order",
+      "command": "join",
+      "args": [
+        "--check-order",
+        "-i",
+        "left",
+        "right"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "left",
+          "content_hex": "5a2066697273740a5b2070756e6374756174696f6e0ac384206c6566740ac3a420756d6c6175740aff206261640a"
+        },
+        {
+          "path": "right",
+          "content_hex": "7a2074686972640a5b207365636f6e640ac3a42072696768740aff207261770a"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "5a2066697273742074686972640a5b2070756e6374756174696f6e207365636f6e640ac3a420756d6c6175742072696768740aff20626164207261770a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "join-locale-utf8-folded-sort-order",
+      "command": "join",
+      "args": [
+        "--check-order",
+        "-i",
+        "left",
+        "right"
+      ],
+      "stdin_hex": "",
+      "files": [
+        {
+          "path": "left",
+          "content_hex": "5a2066697273740a5b2070756e6374756174696f6e0ac384206c6566740ac3a420756d6c6175740aff206261640a"
+        },
+        {
+          "path": "right",
+          "content_hex": "7a2074686972640a5b207365636f6e640ac3a42072696768740aff207261770a"
+        }
+      ],
+      "environment": {
+        "LC_ALL": "C.UTF-8"
+      },
+      "expected_status": 0,
+      "expected_stdout_hex": "5a2066697273742074686972640a5b2070756e6374756174696f6e207365636f6e640ac3a420756d6c6175742072696768740aff20626164207261770a",
+      "comparison": "contract",
+      "normalizations": [],
+      "oracle": true,
+      "source_version": "GNU coreutils 9.11",
+      "expected_stderr_text": ""
+    },
+    {
       "id": "p9-join-check-order",
       "command": "join",
       "args": [
@@ -303,7 +365,7 @@
         "version"
       ],
       "source_version": "workspace cli/join@0.2.6 metadata contract",
-      "expected_stdout_text": "join 0.2.9\n",
+      "expected_stdout_text": "join 0.2.10\n",
       "expected_stderr_text": ""
     },
     {

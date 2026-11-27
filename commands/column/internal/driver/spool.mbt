@@ -51,6 +51,7 @@ priv struct Snapshot {
   data_writer : @stream.BlockWriter
   index_writer : @stream.BlockWriter
   table : Bool
+  profile : @textwidth.Profile
   separator : @layout.Separator
   widths : Array[Int32]
   field_plans : Map[Int64, Bytes]
@@ -65,6 +66,7 @@ async fn with_snapshot(
   table~ : Bool,
   separator~ : String?,
   action : async (Snapshot) -> Bool,
+  profile~ : @textwidth.Profile = CBytes,
 ) -> Bool {
   let directory = @tempio.Directory::new(prefix="cli-column-")
   defer directory.close()
@@ -101,7 +103,8 @@ async fn with_snapshot(
     data_writer: @stream.BlockWriter::from_binary(data),
     index_writer: @stream.BlockWriter::from_binary(index),
     table,
-    separator: @layout.Separator::new(separator),
+    profile,
+    separator: @layout.Separator::new(separator, profile~),
     widths: [],
     field_plans: Map([]),
     field_plan_bytes: 0,
@@ -228,7 +231,7 @@ async fn Snapshot::render_grid(
       }
       let line = self.line(index)
       output.write(@utf8.encode(line))
-      position += @layout.display_width(line).to_int64()
+      position += @layout.display_width(line, profile=self.profile).to_int64()
     }
     output.write(b"\n")
   }
@@ -237,13 +240,14 @@ async fn Snapshot::render_grid(
 ///|
 async fn run_layout(
   paths : Array[String],
+  profile~ : @textwidth.Profile,
   table~ : Bool,
   separator~ : String?,
   output_separator~ : String,
   width~ : Int32,
   fill_rows~ : Bool,
 ) -> Bool {
-  with_snapshot(table~, separator~, snapshot => {
+  with_snapshot(table~, separator~, profile~, snapshot => {
     let mut failed = false
     if paths.is_empty() {
       snapshot.consume(@stdio.stdin) catch {

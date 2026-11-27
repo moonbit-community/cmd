@@ -53,6 +53,7 @@ pub async fn run_main() -> Unit {
   }
   let sources = if parsed.operands.is_empty() { ["-"] } else { parsed.operands }
   let mode = parsed.last_occurrence(["bytes", "characters"])
+  let profile = @textwidth.current()
   let mut failed = false
   for path in sources {
     let state = FoldState::new(
@@ -60,6 +61,7 @@ pub async fn run_main() -> Unit {
       mode == Some("bytes"),
       mode == Some("characters"),
       parsed.contains("spaces"),
+      profile~,
     )
     try {
       if path == "-" {
