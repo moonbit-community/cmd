@@ -100,6 +100,8 @@
       "policy_sensitive": true,
       "releasable": true,
       "case_ids": [
+        "awk-readme-account-fields",
+        "awk-readme-sum-by-key",
         "awk-dynamic-getline-with-main-stdin",
         "awk-dynamic-getline-from-stdin",
         "awk-rules-fields-and-counters",

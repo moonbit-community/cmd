@@ -1,12 +1,12 @@
 # awk
 
-Run pattern-action programs over UTF-8 records. This development command runs from the repository on Linux, macOS and Windows.
+Run pattern-action programs over UTF-8 records on Linux, macOS and Windows.
 
 ## Usage
 
 ```sh
-moon run --target wasm commands/awk -- -F : '{ print $1, $3 }' accounts.txt
-moon run --target wasm commands/awk -- '{ sum[$1] += $2 } END { for (k in sum) print k, sum[k] }' data.txt
+moonx cli/awk -F : '{ print $1, $3 }' accounts.txt
+moonx cli/awk '{ sum[$1] += $2 } END { for (k in sum) print k, sum[k] }' data.txt
 ```
 
 ## Common options
