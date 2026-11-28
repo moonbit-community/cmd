@@ -27,7 +27,7 @@ Default to the current directory on 127.0.0.1:8000. Serve regular files with GET
 
 ## Library
 
-The unpublished candidate adds the Wasm package `cli/serve/static_files`.
+The `cli/serve` module includes the Wasm library `cli/serve/static_files`.
 Construct a `Directory::Directory(path)` for each site, then call its `serve`
 method from a `moonbitlang/core/async/http` request handler. Instances may share a listener or use separate
 listeners; routing, access policy and cancellation belong to the caller.
