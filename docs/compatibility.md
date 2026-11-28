@@ -58,7 +58,8 @@ Jq and jqlog use the shared `cli/jq/engine` value-filter API introduced in
 cli/jq 0.2.10. Unversioned MoonX examples use the local registry index;
 run `moon update` to refresh it, or append `@<version>` to pin a release.
 The [release manifest](../tests/release/latest.json) lists 104 published
-command versions. The 2026-11-28 release resolved every coordinate through
+command versions and their direct dependencies as recorded by Mooncakes.
+The 2026-11-28 release resolved every coordinate through
 MoonX on Linux, macOS and Windows. Linux also compared the installed
 artifacts with their pinned upstream tools. [Release acceptance](https://github.com/moonbit-community/cmd/actions/runs/46149462673).
 
