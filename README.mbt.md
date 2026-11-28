@@ -28,11 +28,10 @@ ready to use without building the entire repository.
 - [x] Network and serving: `curl`, `wget`, and `serve`.
 - [x] Typesetting: `typst`.
 
-`awk`, the new filesystem and archive commands, system queries, and terminal
-commands are available in the workspace. See the [compatibility guide](docs/compatibility.md)
-for platform and option coverage and the [published coordinates](tests/release/latest.json)
-for registry availability.
-`timeout` is currently local-only and has not been published.
+Run any of the 104 published commands with `moonx cli/<command>` or pin one
+with `moonx cli/<command>@<version>`. The [release manifest](tests/release/latest.json)
+lists every coordinate. See the [compatibility guide](docs/compatibility.md)
+for platform and option coverage. Run `timeout` from the workspace.
 
 ## Documentation
 

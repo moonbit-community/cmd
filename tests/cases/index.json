@@ -28,6 +28,28 @@
       "oracle_profile": ""
     },
     {
+      "behavior_id": "case:awk-readme-account-fields",
+      "command": "awk",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/awk.json",
+      "case_id": "awk-readme-account-fields",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
+      "behavior_id": "case:awk-readme-sum-by-key",
+      "command": "awk",
+      "status": "supported",
+      "implementation": "json-case",
+      "source": "tests/cases/awk.json",
+      "case_id": "awk-readme-sum-by-key",
+      "aliases": [],
+      "platforms": [],
+      "oracle_profile": "pinned-oracle-v1"
+    },
+    {
       "behavior_id": "case:awk-dynamic-getline-with-main-stdin",
       "command": "awk",
       "status": "supported",

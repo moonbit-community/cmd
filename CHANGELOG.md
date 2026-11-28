@@ -14,6 +14,9 @@ and [ADRs](https://github.com/moonbit-community/cmd/tree/c4ea7795b0eb6e6fd6d0dff
 
 ## 2026-11-28
 
+- Published 104 MoonX command versions (23 first releases and 81 updates) and their
+  `cli/core` dependencies at 0.11.3 and 0.11.10. [Three-platform release acceptance](https://github.com/moonbit-community/cmd/actions/runs/46149462673).
+
 - Add POSIX single-file `cp --remove-destination --no-preserve=mode` with hard-link, symbolic-link and failure-side-effect checks.
 
 - Add Wasm tput, clear, redirected-input tty, signal-name lookup and the standalone test -t redirection predicate.

@@ -1,7 +1,7 @@
 # Static files
 
 Serve independent directory roots through caller-owned Wasm HTTP listeners.
-This public package is part of the unpublished serve candidate.
+This public Wasm package is included in `cli/serve`.
 
 Import `cli/serve/static_files` as `@static_files` and
 `moonbitlang/core/async/http` and `moonbitlang/core/async/socket` for the listener:

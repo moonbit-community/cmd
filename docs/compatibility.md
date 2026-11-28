@@ -57,18 +57,11 @@ its README shows the repository invocation. Module versions come from
 Jq and jqlog use the shared `cli/jq/engine` value-filter API introduced in
 cli/jq 0.2.10. Unversioned MoonX examples use the local registry index;
 run `moon update` to refresh it, or append `@<version>` to pin a release.
-The frozen [published inventory](../tests/release/latest.json) records the 81
-published coordinates; it is independent of current workspace behavior.
-
-The published coordinates were checked through MoonX on 2026-11-16. Complete
-local macOS acceptance passed 3,890 checks with 40 declared platform skips and
-no failures; 508 help/version and README checks covered exact and unversioned
-calls. The core and jq engine public API examples also compiled and passed.
-[Release PR #132](https://github.com/moonbit-community/cmd/pull/132) records the
-development checks and three-platform publication gate, including the pinned
-Linux upstream comparison. These checks cover the declared profile, not full
-upstream parity or performance qualification. See [validation](../tests/README.md)
-for reproduction and [CHANGELOG](../CHANGELOG.md) for dated release results.
+The [release manifest](../tests/release/latest.json) lists 104 published
+command versions and their direct dependencies as recorded by Mooncakes.
+The 2026-11-28 release resolved every coordinate through
+MoonX on Linux, macOS and Windows. Linux also compared the installed
+artifacts with their pinned upstream tools. [Release acceptance](https://github.com/moonbit-community/cmd/actions/runs/46149462673).
 
 ## Command support
 
@@ -173,7 +166,7 @@ identify the principal refusals and platform differences.
 | [yes](../commands/yes/README.md) | Repeated output until interruption or output failure. | No exact signal-status parity. |
 | [zcat](../commands/zcat/README.md) | Gzip decompression to stdout across files and members. | Partial output can precede a corruption error. |
 
-The unpublished serve candidate adds `cli/serve/static_files` for Wasm library
+The published `cli/serve` module includes `cli/serve/static_files` for Wasm library
 users. `Directory::Directory(path)` validates and stores one canonical root;
 `Directory::serve` handles one request with optional route-relative URL path
 mapping. Multiple instances may serve concurrently through one or several

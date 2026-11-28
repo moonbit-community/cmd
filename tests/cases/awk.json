@@ -2,6 +2,52 @@
   "schema": 2,
   "cases": [
     {
+      "id": "awk-readme-account-fields",
+      "command": "awk",
+      "args": [
+        "-F",
+        ":",
+        "{ print $1, $3 }",
+        "accounts.txt"
+      ],
+      "files": [
+        {
+          "path": "accounts.txt",
+          "content_text": "ada:x:42:staff\nlin:x:7:staff\n"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "ada 42\nlin 7\n",
+      "expected_stderr_text": ""
+    },
+    {
+      "id": "awk-readme-sum-by-key",
+      "command": "awk",
+      "args": [
+        "{ sum[$1] += $2 } END { for (k in sum) print k, sum[k] }",
+        "data.txt"
+      ],
+      "files": [
+        {
+          "path": "data.txt",
+          "content_text": "pear 4\npear 7\n"
+        }
+      ],
+      "environment": {},
+      "normalizations": [],
+      "comparison": "contract",
+      "oracle": true,
+      "source_version": "GNU Awk 5.4.1",
+      "expected_status": 0,
+      "expected_stdout_text": "pear 11\n",
+      "expected_stderr_text": ""
+    },
+    {
       "id": "awk-dynamic-getline-with-main-stdin",
       "command": "awk",
       "args": [
